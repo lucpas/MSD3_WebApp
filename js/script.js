@@ -44,6 +44,24 @@ const eventJSON = `[{
   }
 ]`;
 
+// Collection of all DOM elements required to run script
+const DOM = {};
+
+// Initialization and first render
+window.onload = () => {
+  DOM.table = document.getElementById('tableEvents'),
+  DOM.tHeader = document.getElementById('tableHeader'),
+  DOM.searchField = document.getElementById('searchfield'),
+
+  events = JSON.parse(eventJSON);
+  drawTable(events);
+
+  DOM.searchField.addEventListener(
+    'input', 
+    event => filterTable(event.target.value)
+  );
+};
+
 const orderedTableMapping = {
   title: 0,
   description: 1,
@@ -58,18 +76,15 @@ const orderedTableMapping = {
 
 function drawTable(events) {
   const rows = events.length - 1;
-  const cells = document.getElementById('tableEvents').rows[0].cells.length;
+  const cells = DOM.table.rows[0].cells.length;
 
-  const table = document.getElementById('tableEvents');
-  const tableHeader = document.getElementById('tableHeader');
-
-  table.innerHTML = '';
-  table.appendChild(tableHeader);
+  DOM.table.innerHTML = '';
+  DOM.table.appendChild(DOM.tHeader);
 
   var row = '';
   var cell = '';
   for (var i = 0; i <= rows; i++) {
-    row = table.insertRow(-1);
+    row = DOM.table.insertRow(-1);
     for (var j = 0; j <= cells; j++) {
       cell = row.insertCell(-1);
       var position = j;
@@ -108,12 +123,10 @@ function drawTable(events) {
 }
 
 function printTable() {
-  //Get the tabledata by id
-  var table = document.getElementById('tableEvents');
   //new empty window
   var printWin = window.open('');
   //fill tabledata in new window
-  printWin.document.write(table.outerHTML);
+  printWin.document.write(DOM.table.outerHTML);
   //function to open printdialog
   printWin.print();
   //close the "new page" after printing
@@ -130,7 +143,7 @@ function filterTable(filterText) {
     for (let key in event) {
       if (event[key].toLowerCase().includes(filterText)) {
         matches.push({ index: matchCount, key });
-        matchCount++
+        matchCount++;
         return true;
       }
     }
@@ -139,8 +152,7 @@ function filterTable(filterText) {
 
   // Redraw table
   drawTable(filteredEvents);
-  console.log(matches);
-  
+
   // Highlight matching cells
   matches.forEach(match => {
     highlightTableCell(match.index, orderedTableMapping[match.key]);
@@ -148,22 +160,10 @@ function filterTable(filterText) {
 }
 
 function highlightTableCell(rowIndex, columnIndex) {
-  document
-    .getElementById('tableEvents')
+  DOM.table
     .rows[rowIndex + 1] //increment due to table header
     .cells[columnIndex]
     .style
     .backgroundColor = '#9600189e';
 }
 
-window.onload = () => {
-  events = JSON.parse(eventJSON);
-  drawTable(events);
-
-  document
-    .getElementById('searchfield')
-    .addEventListener('input', event => filterTable(event.target.value));
-};
-
-//console.log(eventData[0].title)
-console.log('Script loaded');
