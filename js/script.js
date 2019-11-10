@@ -1,13 +1,11 @@
-var events = {};
-
-var eventJSON = `[{
+const eventJSON = `[{
     "title": "Sommerfest 2020",
     "description": "Wir feiern den Sommer!",
     "date": "20.06.2020",
     "time": "15:00",
     "place": "Innenhof FH Joanneum Graz",
     "contact": "sommerfest@fh-joanneum.at",
-    "institut": "Bauplanung und Bauwirtschaft",
+    "institute": "Bauplanung und Bauwirtschaft",
     "entry": "Gratis",
     "bouncycastle": "Ja"
   },
@@ -18,7 +16,7 @@ var eventJSON = `[{
     "time": "17:00",
     "place": "Medienfabrik Graz",
     "contact": "moodley.at/get-in-touch/",
-    "institut": "Institut Design & Kommunikation",
+    "institute": "Institut Design & Kommunikation",
     "entry": "fh-joanneum.at",
     "bouncycastle": "Nein"
   },
@@ -29,7 +27,7 @@ var eventJSON = `[{
     "time": "08:30-15:00",
     "place": "FH Joanneum Graz",
     "contact": "fh-joanneum.at",
-    "institut": "Verschiedene",
+    "institute": "Verschiedene",
     "entry": "Gratis",
     "bouncycastle": "Ja"
   },
@@ -40,11 +38,23 @@ var eventJSON = `[{
     "time": "19:00",
     "place": "FH Joanneum Graz",
     "contact": "fh-joanneum.at/weihnachtsfest",
-    "institut": "Campus",
+    "institute": "Campus",
     "entry": "15€",
     "bouncycastle": "Ja"
   }
 ]`;
+
+const orderedTableMapping = {
+  title: 0,
+  description: 1,
+  date: 2,
+  time: 3,
+  place: 4,
+  contact: 5,
+  institute: 6,
+  entry: 7,
+  boundycastle: 8,
+};
 
 function drawTable(events) {
   const rows = events.length - 1;
@@ -83,7 +93,7 @@ function drawTable(events) {
           cell.innerHTML = events[i].contact;
           break;
         case 6:
-          cell.innerHTML = events[i].institut;
+          cell.innerHTML = events[i].institute;
           break;
         case 7:
           cell.innerHTML = events[i].entry;
@@ -112,17 +122,38 @@ function printTable() {
 
 function filterTable(filterText) {
   filterText = filterText.toLowerCase();
+  const matches = [];
+  let matchCount = 0;
 
+  // Filter events
   const filteredEvents = events.filter(event => {
     for (let key in event) {
       if (event[key].toLowerCase().includes(filterText)) {
+        matches.push({ index: matchCount, key });
+        matchCount++
         return true;
       }
     }
     return false;
   });
 
+  // Redraw table
   drawTable(filteredEvents);
+  console.log(matches);
+  
+  // Highlight matching cells
+  matches.forEach(match => {
+    highlightTableCell(match.index, orderedTableMapping[match.key]);
+  });
+}
+
+function highlightTableCell(rowIndex, columnIndex) {
+  document
+    .getElementById('tableEvents')
+    .rows[rowIndex + 1] //increment due to table header
+    .cells[columnIndex]
+    .style
+    .backgroundColor = '#9600189e';
 }
 
 window.onload = () => {
