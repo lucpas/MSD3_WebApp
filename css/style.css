@@ -1,5 +1,5 @@
 body {
-  background: url(fire.jpg) black;
+  /*background: url(fire.jpg) black;*/
   background-size: 1000px;
   background-color: black;
   width: 1000px;
@@ -31,11 +31,16 @@ h1 {
 
 #tableHeader {
   font-family: sans-serif;
-  position: absolute;
+  position: relative;
+
 
   color: white;
   width: 1000px;
-  margin: 20px  200px 0px 200px;
+
+}
+
+#tableEvents {
+  color: white;
 }
 
 
@@ -55,7 +60,7 @@ button {
     border: solid 3px #960019;
 
     color: white;
-    margin: 20px 40% 0px 40%;
+    margin: 20px 40% 20px 40%;
     width: 200px;
 
     padding: 15px 32px;
