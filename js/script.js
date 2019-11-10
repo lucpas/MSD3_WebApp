@@ -1,6 +1,6 @@
 var events = {};
 
-var eventData = [{
+var eventJSON = `[{
     "title": "Sommerfest 2020",
     "description": "Wir feiern den Sommer!",
     "date": "20.06.2020",
@@ -44,16 +44,20 @@ var eventData = [{
     "entry": "15€",
     "bouncycastle": "Ja"
   }
-]
+]`;
 
 window.onload = () => {
-  events.drawTable(eventData.length - 1, document.getElementById('tableEvents').rows[0].cells.length);
-}
+  events = JSON.parse(eventJSON);
+  drawTable(events);
+};
 
-events.drawTable = function(rows, cells) {
-  var table = document.getElementById('tableEvents')
-  var row = "";
-  var cell = "";
+function drawTable(events) {
+  const rows = events.length - 1;
+  const cells = document.getElementById('tableEvents').rows[0].cells.length;
+
+  var table = document.getElementById('tableEvents');
+  var row = '';
+  var cell = '';
   for (var i = 0; i <= rows; i++) {
     row = table.insertRow(-1);
     for (var j = 0; j <= cells; j++) {
@@ -61,31 +65,31 @@ events.drawTable = function(rows, cells) {
       var position = j;
       switch (position) {
         case 0:
-          cell.innerHTML = eventData[i].title;
+          cell.innerHTML = events[i].title;
           break;
         case 1:
-          cell.innerHTML = eventData[i].description;
+          cell.innerHTML = events[i].description;
           break;
         case 2:
-          cell.innerHTML = eventData[i].date;
+          cell.innerHTML = events[i].date;
           break;
         case 3:
-          cell.innerHTML = eventData[i].time;
+          cell.innerHTML = events[i].time;
           break;
         case 4:
-          cell.innerHTML = eventData[i].place;
+          cell.innerHTML = events[i].place;
           break;
         case 5:
-          cell.innerHTML = eventData[i].contact;
+          cell.innerHTML = events[i].contact;
           break;
         case 6:
-          cell.innerHTML = eventData[i].institut;
+          cell.innerHTML = events[i].institut;
           break;
         case 7:
-          cell.innerHTML = eventData[i].entry;
+          cell.innerHTML = events[i].entry;
           break;
         case 8:
-          cell.innerHTML = eventData[i].bouncycastle;
+          cell.innerHTML = events[i].bouncycastle;
           break;
         default:
       }
@@ -93,11 +97,11 @@ events.drawTable = function(rows, cells) {
   }
 };
 
-function printTable(){
+function printTable() {
   //Get the tabledata by id
-  var table = document.getElementById("tableEvents");
+  var table = document.getElementById('tableEvents');
   //new empty window
-  var printWin = window.open("");
+  var printWin = window.open('');
   //fill tabledata in new window
   printWin.document.write(table.outerHTML);
   //function to open printdialog
@@ -106,7 +110,5 @@ function printTable(){
   printWin.close();
 }
 
-
-
 //console.log(eventData[0].title)
-console.log("Script loaded");
+console.log('Script loaded');
