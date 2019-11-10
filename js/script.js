@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 // Temporary sample data
 const eventJSON = `[{
@@ -143,36 +143,42 @@ function printTable() {
 }
 
 function filterTable(filterText) {
+  // do not filter if less than 3 characters were entered
+  if (filterText.length < 3) {
+    drawTable(events);
+    return;
+  }
+
   filterText = filterText.toLowerCase();
   const matches = [];
   let matchCount = 0;
 
-  // Filter events
+  // filter events
   const filteredEvents = events.filter(event => {
+    let isMatch = false;
     for (let key in event) {
       if (event[key].toLowerCase().includes(filterText)) {
         matches.push({ index: matchCount, key });
-        matchCount++;
-        return true;
+        isMatch = true;
       }
     }
-    return false;
+
+    if (isMatch) {
+      matchCount++;
+    }
+    return isMatch;
   });
 
-  // Redraw table
+  // redraw table
   drawTable(filteredEvents);
 
-  // Highlight matching cells
+  // highlight matching cells
   matches.forEach(match => {
     highlightTableCell(match.index, orderedTableMapping[match.key]);
   });
 }
 
 function highlightTableCell(rowIndex, columnIndex) {
-  //increment row index due to table header
-  DOM.table
-    .rows[rowIndex + 1]
-    .cells[columnIndex]
-    .style
-    .backgroundColor = '#9600189e';
+  // increment row index to account for table header
+  DOM.table.rows[rowIndex + 1].cells[columnIndex].classList.add('highlight');
 }

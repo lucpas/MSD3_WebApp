@@ -9,8 +9,8 @@ body {
 
 h1 {
   color: black;
-  opacity:0.2;
-  background-color:#FFFFFF;
+  opacity: 0.2;
+  background-color: #ffffff;
   font-family: sans-serif;
   font-size: 60px;
   text-align: center;
@@ -19,8 +19,8 @@ h1 {
 
 #specification {
   color: black;
-  opacity:0.4;
-  background-color:#FFFFFF;
+  opacity: 0.4;
+  background-color: #ffffff;
   font-size: medium;
   font-family: monospace;
   position: absolute;
@@ -33,16 +33,13 @@ h1 {
   font-family: sans-serif;
   position: relative;
 
-
   color: white;
   width: 1000px;
-
 }
 
 #tableEvents {
   color: white;
 }
-
 
 #searchfield {
   font-family: sans-serif;
@@ -50,25 +47,24 @@ h1 {
   border-color: #960019;
   text-align: left;
   margin: 30px 40% 0px 40%;
-	padding: 15px 32px;
+  padding: 15px 32px;
   width: 130px;
-
 }
 
 button {
-    background-color: #960019;
-    border: solid 3px #960019;
+  background-color: #960019;
+  border: solid 3px #960019;
 
-    color: white;
-    margin: 20px 40% 20px 40%;
-    width: 200px;
+  color: white;
+  margin: 20px 40% 20px 40%;
+  width: 200px;
 
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-family: sans-serif;
-    font-size: 16px;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-family: sans-serif;
+  font-size: 16px;
 }
 
 button:hover {
@@ -78,10 +74,13 @@ button:hover {
 
 p {
   color: black;
-  background-color:rgba(255,255,255,0.4);
+  background-color: rgba(255, 255, 255, 0.4);
 
   font-family: sans-serif;
   font-size: 18px;
   text-align: center;
+}
 
+.highlight {
+  background-color: #9600189e;
 }
