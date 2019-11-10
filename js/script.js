@@ -49,16 +49,17 @@ const DOM = {};
 
 // Initialization and first render
 window.onload = () => {
-  DOM.table = document.getElementById('tableEvents'),
-  DOM.tHeader = document.getElementById('tableHeader'),
-  DOM.searchField = document.getElementById('searchfield'),
-
-  events = JSON.parse(eventJSON);
+  (DOM.table = document.getElementById('tableEvents')),
+    (DOM.tHeader = document.getElementById('tableHeader')),
+    (DOM.printButton = document.getElementById('printButton')),
+    (DOM.searchField = document.getElementById('searchfield')),
+    (events = JSON.parse(eventJSON));
   drawTable(events);
 
-  DOM.searchField.addEventListener(
-    'input', 
-    event => filterTable(event.target.value)
+  DOM.printButton.addEventListener('click', printTable);
+
+  DOM.searchField.addEventListener('input', event =>
+    filterTable(event.target.value),
   );
 };
 
@@ -160,10 +161,7 @@ function filterTable(filterText) {
 }
 
 function highlightTableCell(rowIndex, columnIndex) {
-  DOM.table
-    .rows[rowIndex + 1] //increment due to table header
-    .cells[columnIndex]
-    .style
-    .backgroundColor = '#9600189e';
+  //increment row index due to table header
+  DOM.table.rows[rowIndex + 1].cells[columnIndex].style.backgroundColor =
+    '#9600189e';
 }
-
