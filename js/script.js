@@ -46,16 +46,16 @@ var eventJSON = `[{
   }
 ]`;
 
-window.onload = () => {
-  events = JSON.parse(eventJSON);
-  drawTable(events);
-};
-
 function drawTable(events) {
   const rows = events.length - 1;
   const cells = document.getElementById('tableEvents').rows[0].cells.length;
 
-  var table = document.getElementById('tableEvents');
+  const table = document.getElementById('tableEvents');
+  const tableHeader = document.getElementById('tableHeader');
+
+  table.innerHTML = '';
+  table.appendChild(tableHeader);
+
   var row = '';
   var cell = '';
   for (var i = 0; i <= rows; i++) {
@@ -95,7 +95,7 @@ function drawTable(events) {
       }
     }
   }
-};
+}
 
 function printTable() {
   //Get the tabledata by id
@@ -109,6 +109,30 @@ function printTable() {
   //close the "new page" after printing
   printWin.close();
 }
+
+function filterTable(filterText) {
+  filterText = filterText.toLowerCase();
+
+  const filteredEvents = events.filter(event => {
+    for (let key in event) {
+      if (event[key].toLowerCase().includes(filterText)) {
+        return true;
+      }
+    }
+    return false;
+  });
+
+  drawTable(filteredEvents);
+}
+
+window.onload = () => {
+  events = JSON.parse(eventJSON);
+  drawTable(events);
+
+  document
+    .getElementById('searchfield')
+    .addEventListener('input', event => filterTable(event.target.value));
+};
 
 //console.log(eventData[0].title)
 console.log('Script loaded');
