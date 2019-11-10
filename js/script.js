@@ -46,6 +46,10 @@ var eventData = [{
   }
 ]
 
+window.onload = () => {
+  events.drawTable(eventData.length - 1, document.getElementById('tableEvents').rows[0].cells.length);
+}
+
 events.drawTable = function(rows, cells) {
   var table = document.getElementById('tableEvents')
   var row = "";
