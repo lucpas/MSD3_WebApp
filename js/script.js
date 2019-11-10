@@ -48,17 +48,17 @@ const eventJSON = `[{
 ]`;
 
 // Mapping of event keys to their respective table column index
-const orderedTableMapping = {
-  title: 0,
-  description: 1,
-  date: 2,
-  time: 3,
-  place: 4,
-  contact: 5,
-  institute: 6,
-  entry: 7,
-  boundycastle: 8,
-};
+const orderedTableColumns = [
+  'title',
+  'description',
+  'date',
+  'time',
+  'place',
+  'contact',
+  'institute',
+  'entry',
+  'bouncycastle',
+];
 
 // Collection of all loaded events
 let events = [];
@@ -82,6 +82,23 @@ window.onload = () => {
     filterTable(event.target.value),
   );
 };
+
+// Shorter version of drawTable function
+// function drawTable(events) {
+//   DOM.table.innerHTML = '';
+//   DOM.table.appendChild(DOM.tHeader);
+
+//   let row;
+//   let cell;
+
+//   events.forEach(event => {
+//     row = DOM.table.insertRow(-1);
+//     for (let column of orderedTableColumns) {
+//       cell = row.insertCell(-1);
+//       cell.innerText = event[column];
+//     }
+//   });
+// }
 
 function drawTable(events) {
   const rows = events.length - 1;
@@ -174,7 +191,10 @@ function filterTable(filterText) {
 
   // highlight matching cells
   matches.forEach(match => {
-    highlightTableCell(match.index, orderedTableMapping[match.key]);
+    highlightTableCell(
+      match.index,
+      orderedTableColumns.findIndex(key => key === match.key),
+    );
   });
 }
 
