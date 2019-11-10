@@ -49,11 +49,12 @@ const DOM = {};
 
 // Initialization and first render
 window.onload = () => {
-  (DOM.table = document.getElementById('tableEvents')),
-    (DOM.tHeader = document.getElementById('tableHeader')),
-    (DOM.printButton = document.getElementById('printButton')),
-    (DOM.searchField = document.getElementById('searchfield')),
-    (events = JSON.parse(eventJSON));
+  DOM.table = document.getElementById('tableEvents');
+  DOM.tHeader = document.getElementById('tableHeader');
+  DOM.printButton = document.getElementById('printButton');
+  DOM.searchField = document.getElementById('searchfield');
+
+  events = JSON.parse(eventJSON);
   drawTable(events);
 
   DOM.printButton.addEventListener('click', printTable);
@@ -162,6 +163,9 @@ function filterTable(filterText) {
 
 function highlightTableCell(rowIndex, columnIndex) {
   //increment row index due to table header
-  DOM.table.rows[rowIndex + 1].cells[columnIndex].style.backgroundColor =
-    '#9600189e';
+  DOM.table
+    .rows[rowIndex + 1]
+    .cells[columnIndex]
+    .style
+    .backgroundColor = '#9600189e';
 }
