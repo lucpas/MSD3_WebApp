@@ -1,0 +1,82 @@
+body {
+  background: url(fire.jpg) black;
+  background-size: 1000px;
+  background-color: black;
+  width: 1000px;
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+h1 {
+  color: black;
+  opacity:0.2;
+  background-color:#FFFFFF;
+  font-family: sans-serif;
+  font-size: 60px;
+  text-align: center;
+  margin-top: 150px;
+}
+
+#specification {
+  color: black;
+  opacity:0.4;
+  background-color:#FFFFFF;
+  font-size: medium;
+  font-family: monospace;
+  position: absolute;
+  bottom: 0;
+  width: 1000px;
+  max-width: 90%;
+}
+
+#tableHeader {
+  font-family: sans-serif;
+  position: absolute;
+
+  color: white;
+  width: 1000px;
+  margin: 20px  200px 0px 200px;
+}
+
+
+#searchfield {
+  font-family: sans-serif;
+  border: solid;
+  border-color: #960019;
+  text-align: left;
+  margin: 30px 40% 0px 40%;
+	padding: 15px 32px;
+  width: 130px;
+
+}
+
+button {
+    background-color: #960019;
+    border: solid 3px #960019;
+
+    color: white;
+    margin: 20px 40% 0px 40%;
+    width: 200px;
+
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-family: sans-serif;
+    font-size: 16px;
+}
+
+button:hover {
+  color: #960019;
+  background-color: white;
+}
+
+p {
+  color: black;
+  background-color:rgba(255,255,255,0.4);
+
+  font-family: sans-serif;
+  font-size: 18px;
+  text-align: center;
+
+}
