@@ -1,3 +1,6 @@
+'use strict'
+
+// Temporary sample data
 const eventJSON = `[{
     "title": "Sommerfest 2020",
     "description": "Wir feiern den Sommer!",
@@ -44,6 +47,22 @@ const eventJSON = `[{
   }
 ]`;
 
+// Mapping of event keys to their respective table column index
+const orderedTableMapping = {
+  title: 0,
+  description: 1,
+  date: 2,
+  time: 3,
+  place: 4,
+  contact: 5,
+  institute: 6,
+  entry: 7,
+  boundycastle: 8,
+};
+
+// Collection of all loaded events
+let events = [];
+
 // Collection of all DOM elements required to run script
 const DOM = {};
 
@@ -62,18 +81,6 @@ window.onload = () => {
   DOM.searchField.addEventListener('input', event =>
     filterTable(event.target.value),
   );
-};
-
-const orderedTableMapping = {
-  title: 0,
-  description: 1,
-  date: 2,
-  time: 3,
-  place: 4,
-  contact: 5,
-  institute: 6,
-  entry: 7,
-  boundycastle: 8,
 };
 
 function drawTable(events) {
