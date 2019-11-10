@@ -89,6 +89,19 @@ events.drawTable = function(rows, cells) {
   }
 };
 
+function printTable(){
+  //Get the tabledata by id
+  var table = document.getElementById("tableEvents");
+  //new empty window
+  var printWin = window.open("");
+  //fill tabledata in new window
+  printWin.document.write(table.outerHTML);
+  //function to open printdialog
+  printWin.print();
+  //close the "new page" after printing
+  printWin.close();
+}
+
 
 
 //console.log(eventData[0].title)
