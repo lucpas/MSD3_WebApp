@@ -73,6 +73,9 @@ window.onload = () => {
   DOM.tHeader = document.getElementById('tableHeader');
   DOM.printButton = document.getElementById('printButton');
   DOM.searchField = document.getElementById('searchfield');
+  DOM.modal = document.getElementById('addEventModal');
+  DOM.modalButton = document.getElementById('addEventButton');
+  DOM.modalCloseSpan = document.getElementsByClassName('close')[0];
 
   events = JSON.parse(eventJSON);
   drawTable(events);
@@ -82,6 +85,17 @@ window.onload = () => {
   DOM.searchField.addEventListener('input', event =>
     filterTable(event.target.value),
   );
+
+DOM.modalButton.onclick = () => DOM.modal.style.display = 'block';
+
+DOM.modalCloseSpan.onclick = () => DOM.modal.style.display = 'none';
+
+};
+
+window.onclick = event => {
+  if (event.target == DOM.modal) {
+    DOM.modal.style.display = 'none';
+  }
 };
 
 // Shorter version of drawTable function
@@ -97,7 +111,7 @@ function drawTable(events) {
     for (let column of orderedTableColumns) {
       cell = row.insertCell(-1);
       cell.innerText = event[column];
-      cell.setAttribute('data-title', column)
+      cell.setAttribute('data-title', column);
     }
   });
 }
