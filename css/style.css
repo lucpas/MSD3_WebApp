@@ -9,7 +9,7 @@ body {
 
 h1 {
   color: black;
-  opacity: 0.2;
+  opacity: 0.6;
   background-color: #ffffff;
   font-family: sans-serif;
   font-size: 60px;
@@ -23,10 +23,10 @@ h1 {
   background-color: #ffffff;
   font-size: medium;
   font-family: monospace;
-  position: absolute;
-  bottom: 0;
+  position: relative;
+  text-align: center;
   width: 1000px;
-  max-width: 90%;
+  max-width: 100%;
 }
 
 #tableHeader {
