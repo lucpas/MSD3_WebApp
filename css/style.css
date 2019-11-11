@@ -46,24 +46,20 @@ h1 {
   border: solid;
   border-color: #960019;
   text-align: left;
-  /* margin: 30px 40% 0px 40%; */
-  padding: 15px 32px;
-  /* width: 130px; */
-
-  display: inherit;
-  margin: auto;
-  margin-top: 50px;
+  
+  padding: 15px 15px;
+  margin: auto 0;
   width: 50%;
 }
 
 #actions {
   display: flex;
+  flex-wrap: wrap;
 }
 
 button {
   background-color: #960019;
   border: solid 3px #960019;
-  align-content: flex-end;
 
   color: white;
   margin: 20px auto;
@@ -95,18 +91,20 @@ p {
   background-color: #9600189e;
 }
 
-@media only screen and (max-width: 800px) {
-  h1 {
-    font-size: 40px;
-    margin-top: 40px;
-  }
-
+@media only screen and (max-width: 1000px) {
   #printButton {
     visibility: hidden;
     height: 0;
     width: 0;
     margin: 0;
     padding: 0;
+  }
+}
+
+@media only screen and (max-width: 850px) {
+  h1 {
+    font-size: 40px;
+    margin-top: 40px;
   }
 
   /* Force table to not be like tables anymore */
@@ -166,9 +164,14 @@ p {
   }
 }
 
-@media only screen and (max-width: 600) {
+@media only screen and (max-width: 600px) {
+  h1 {
+    font-size: 30px;
+    margin-top: 30px;
+  }
+  
   #searchfield {
-    width: 90%
+    width: 100%;
   }
 }
 
@@ -181,8 +184,8 @@ p {
   width: 100%; /* Full width */
   height: 100%; /* Full height */
   overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
 
 /* Modal Content/Box */
