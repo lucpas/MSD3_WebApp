@@ -69,6 +69,7 @@ const DOM = {};
 // Initialization and first render
 window.onload = () => {
   DOM.table = document.getElementById('tableEvents');
+  DOM.tBody = document.getElementById('tableBody');
   DOM.tHeader = document.getElementById('tableHeader');
   DOM.printButton = document.getElementById('printButton');
   DOM.searchField = document.getElementById('searchfield');
@@ -84,68 +85,21 @@ window.onload = () => {
 };
 
 // Shorter version of drawTable function
-// function drawTable(events) {
-//   DOM.table.innerHTML = '';
-//   DOM.table.appendChild(DOM.tHeader);
-
-//   let row;
-//   let cell;
-
-//   events.forEach(event => {
-//     row = DOM.table.insertRow(-1);
-//     for (let column of orderedTableColumns) {
-//       cell = row.insertCell(-1);
-//       cell.innerText = event[column];
-//     }
-//   });
-// }
-
 function drawTable(events) {
-  const rows = events.length - 1;
-  const cells = DOM.table.rows[0].cells.length;
+  DOM.tBody.innerHTML = '';
+  // DOM.table.appendChild(DOM.tHeader);
 
-  DOM.table.innerHTML = '';
-  DOM.table.appendChild(DOM.tHeader);
+  let row;
+  let cell;
 
-  var row = '';
-  var cell = '';
-  for (var i = 0; i <= rows; i++) {
-    row = DOM.table.insertRow(-1);
-    for (var j = 0; j <= cells; j++) {
+  events.forEach(event => {
+    row = DOM.tBody.insertRow(-1);
+    for (let column of orderedTableColumns) {
       cell = row.insertCell(-1);
-      var position = j;
-      switch (position) {
-        case 0:
-          cell.innerHTML = events[i].title;
-          break;
-        case 1:
-          cell.innerHTML = events[i].description;
-          break;
-        case 2:
-          cell.innerHTML = events[i].date;
-          break;
-        case 3:
-          cell.innerHTML = events[i].time;
-          break;
-        case 4:
-          cell.innerHTML = events[i].place;
-          break;
-        case 5:
-          cell.innerHTML = events[i].contact;
-          break;
-        case 6:
-          cell.innerHTML = events[i].institute;
-          break;
-        case 7:
-          cell.innerHTML = events[i].entry;
-          break;
-        case 8:
-          cell.innerHTML = events[i].bouncycastle;
-          break;
-        default:
-      }
+      cell.innerText = event[column];
+      cell.setAttribute('data-title', column)
     }
-  }
+  });
 }
 
 function printTable() {

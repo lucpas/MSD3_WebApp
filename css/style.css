@@ -46,9 +46,14 @@ h1 {
   border: solid;
   border-color: #960019;
   text-align: left;
-  margin: 30px 40% 0px 40%;
+  /* margin: 30px 40% 0px 40%; */
   padding: 15px 32px;
-  width: 130px;
+  /* width: 130px; */
+
+  display: inherit;
+  margin: auto;
+  margin-top: 50px;
+  width: 50%;
 }
 
 button {
@@ -83,4 +88,78 @@ p {
 
 .highlight {
   background-color: #9600189e;
+}
+
+@media only screen and (max-width: 800px) {
+  h1 {
+    font-size: 40px;
+    margin-top: 40px;
+  }
+
+  #printButton {
+    visibility: hidden;
+    height: 10px;
+  }
+
+  /* Force table to not be like tables anymore */
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+  }
+
+  thead {
+    height: 10px;
+  }
+
+  /* Hide table headers (but not display: none;, for accessibility) */
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  tr {
+    border: 1px solid #ccc;
+    padding: 20px 5px;
+  }
+
+  td {
+    /* Behave  like a "row" */
+    border: none;
+    /* border-bottom: 1px solid #eee; */
+    position: relative;
+    padding-left: 50%;
+    white-space: normal;
+    text-align: left;
+  }
+
+  td:before {
+    /* Now like a table header */
+    position: absolute;
+    /* Top/left values mimic padding */
+    top: 6px;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    text-align: left;
+    font-weight: bold;
+  }
+
+  /*
+	Label the data
+	*/
+  td:before {
+    content: attr(data-title);
+  }
+}
+
+@media only screen and (max-width: 600) {
+  #searchfield {
+    width: 90%
+  }
 }
