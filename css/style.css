@@ -147,12 +147,12 @@ p {
     /* Now like a table header */
     position: absolute;
     /* Top/left values mimic padding */
-    top: 6px;
+    /* top: 6px; */
     left: 6px;
     width: 45%;
     padding-right: 10px;
     white-space: nowrap;
-    text-align: left;
+    text-align: right;
     font-weight: bold;
   }
 

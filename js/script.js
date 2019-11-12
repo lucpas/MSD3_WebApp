@@ -47,23 +47,50 @@ const eventJSON = `[{
   }
 ]`;
 
-// Mapping of event keys to their respective table column index
-const orderedTableColumns = [
-  'title',
-  'description',
-  'date',
-  'time',
-  'place',
-  'contact',
-  'institute',
-  'entry',
-  'bouncycastle',
+// Ordered definition of events
+const orderedEventDefinitions = [
+  {
+    dataLabel: 'title',
+    presentationLabel: 'Titel',
+  },
+  {
+    dataLabel: 'description',
+    presentationLabel: 'Beschreibung',
+  },
+  {
+    dataLabel: 'date',
+    presentationLabel: 'Datum',
+  },
+  {
+    dataLabel: 'time',
+    presentationLabel: 'Uhrzeit',
+  },
+  {
+    dataLabel: 'place',
+    presentationLabel: 'Ort',
+  },
+  {
+    dataLabel: 'contact',
+    presentationLabel: 'Kontakt',
+  },
+  {
+    dataLabel: 'institute',
+    presentationLabel: 'Institut',
+  },
+  {
+    dataLabel: 'entry',
+    presentationLabel: 'Anmeldung/Eintritt',
+  },
+  {
+    dataLabel: 'bouncycastle',
+    presentationLabel: 'Hüpfburg',
+  },
 ];
 
-// Collection of all loaded events
+// Collection of all loaded events --> filled during onload
 let events = [];
 
-// Collection of all DOM elements required to run script
+// Collection of all DOM elements required to run script --> filled during onload
 const DOM = {};
 
 // Initialization and first render
@@ -86,10 +113,9 @@ window.onload = () => {
     filterTable(event.target.value),
   );
 
-DOM.modalButton.onclick = () => DOM.modal.style.display = 'block';
+  DOM.modalButton.onclick = () => (DOM.modal.style.display = 'block');
 
-DOM.modalCloseSpan.onclick = () => DOM.modal.style.display = 'none';
-
+  DOM.modalCloseSpan.onclick = () => (DOM.modal.style.display = 'none');
 };
 
 window.onclick = event => {
@@ -108,10 +134,10 @@ function drawTable(events) {
 
   events.forEach(event => {
     row = DOM.tBody.insertRow(-1);
-    for (let column of orderedTableColumns) {
+    for (let column of orderedEventDefinitions) {
       cell = row.insertCell(-1);
-      cell.innerText = event[column];
-      cell.setAttribute('data-title', column);
+      cell.innerText = event[column.dataLabel];
+      cell.setAttribute('data-title', column.presentationLabel);
     }
   });
 }
@@ -161,7 +187,9 @@ function filterTable(filterText) {
   matches.forEach(match => {
     highlightTableCell(
       match.index,
-      orderedTableColumns.findIndex(key => key === match.key),
+      orderedEventDefinitions.findIndex(
+        eventDef => eventDef.dataLabel === match.key,
+      ),
     );
   });
 }
