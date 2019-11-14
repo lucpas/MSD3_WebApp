@@ -56,6 +56,21 @@ h1 {
   display: flex;
   flex-wrap: wrap;
 }
+#addInputButton {
+  background-color: #960019;
+  border: solid 3px #960019;
+
+  color: white;
+  margin: 5px auto;
+  width: 70px;
+
+  padding: 3px 3px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-family: sans-serif;
+  font-size: x-small;
+}
 
 button {
   background-color: #960019;
@@ -72,6 +87,8 @@ button {
   font-family: sans-serif;
   font-size: 16px;
 }
+
+
 
 button:hover {
   color: #960019;

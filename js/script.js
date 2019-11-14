@@ -108,12 +108,11 @@ window.onload = () => {
   drawTable(events);
 
   DOM.printButton.addEventListener('click', printTable);
-
   DOM.searchField.addEventListener('input', event =>
     filterTable(event.target.value),
   );
 
-  DOM.modalButton.onclick = () => (DOM.modal.style.display = 'block');
+  DOM.modalButton.onclick = () => (DOM.modal.style.display = 'block', getCurrentDate());
 
   DOM.modalCloseSpan.onclick = () => (DOM.modal.style.display = 'none');
 };
@@ -124,6 +123,7 @@ window.onclick = event => {
   }
 };
 
+DOM.modal.title = "Test";
 // Shorter version of drawTable function
 function drawTable(events) {
   DOM.tBody.innerHTML = '';
@@ -151,6 +151,11 @@ function printTable() {
   printWin.print();
   //close the "new page" after printing
   printWin.close();
+}
+
+function getCurrentDate() {
+  let today = new Date().toISOString().substr(0, 10);
+  document.getElementById("inpDate").value = today;
 }
 
 function filterTable(filterText) {
