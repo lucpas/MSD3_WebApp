@@ -123,7 +123,6 @@ window.onclick = event => {
   }
 };
 
-DOM.modal.title = "Test";
 // Shorter version of drawTable function
 function drawTable(events) {
   DOM.tBody.innerHTML = '';
