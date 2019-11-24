@@ -2,12 +2,14 @@
   "name": "msd3_webapp",
   "version": "1.0.0",
   "description": "Diese Seite wurde im Rahmen der Lehrveranstaltungen \"Agiles Projektmanagement\" und \"Web Application Development\" am Studiengang \"Mobile Software Development\" entwickelt. Es handelt sich um keine offizielle Seite der FH JOANNEUM.",
-  "main": "index.html",
+  "main": "index.js",
   "scripts": {
-    "dev": "live-server",
-    "check:html": "node-w3c-validator -i ./index.html -f lint",
-    "check:css": "stylelint ./css/style.css --config stylelint-config.json",
+    "start": "node index.js",
+    "dev": "concurrently \"nodemon index_dev.js\" \"live-server --port=8081 ./frontend\"",
+    "check:html": "node-w3c-validator -i ./frontend/index.html -f lint",
+    "check:css": "stylelint ./frontend/css/style.css --config stylelint-config.json",
     "check:js": "eslint .",
+    "abc": "nodemon index_dev.js",
     "fix:js": "eslint . --fix"
   },
   "repository": {
@@ -21,12 +23,17 @@
   },
   "homepage": "https://github.com/lucpas/MSD3_WebApp#readme",
   "devDependencies": {
+    "concurrently": "^5.0.0",
     "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
     "live-server": "^1.2.1",
     "node-w3c-validator": "^1.6.0",
+    "nodemon": "^2.0.1",
     "stylelint": "^12.0.0",
     "stylelint-config-standard": "^19.0.0"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
   }
 }
