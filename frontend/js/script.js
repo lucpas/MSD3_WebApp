@@ -9,8 +9,7 @@ const eventJSON = `[{
     "place": "Innenhof FH Joanneum Graz",
     "contact": "sommerfest@fh-joanneum.at",
     "institute": "Bauplanung und Bauwirtschaft",
-    "entry": "Gratis",
-    "bouncycastle": "Ja"
+    "entry": "Gratis"
   },
   {
     "title": "Lectures: Moodley Group 2 von 3",
@@ -20,8 +19,7 @@ const eventJSON = `[{
     "place": "Medienfabrik Graz",
     "contact": "moodley.at/get-in-touch/",
     "institute": "Institut Design & Kommunikation",
-    "entry": "fh-joanneum.at",
-    "bouncycastle": "Nein"
+    "entry": "fh-joanneum.at"
   },
   {
     "title": "FUNtech 2020",
@@ -31,8 +29,7 @@ const eventJSON = `[{
     "place": "FH Joanneum Graz",
     "contact": "fh-joanneum.at",
     "institute": "Verschiedene",
-    "entry": "Gratis",
-    "bouncycastle": "Ja"
+    "entry": "Gratis"
   },
   {
     "title": "Weihnachtsfeier 2020",
@@ -42,8 +39,7 @@ const eventJSON = `[{
     "place": "FH Joanneum Graz",
     "contact": "fh-joanneum.at/weihnachtsfest",
     "institute": "Campus",
-    "entry": "15€",
-    "bouncycastle": "Ja"
+    "entry": "15€"
   }
 ]`;
 
@@ -80,10 +76,6 @@ const orderedEventDefinitions = [
   {
     dataLabel: 'entry',
     presentationLabel: 'Anmeldung/Eintritt',
-  },
-  {
-    dataLabel: 'bouncycastle',
-    presentationLabel: 'Hüpfburg',
   },
 ];
 
