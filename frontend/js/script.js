@@ -159,13 +159,7 @@ function getCurrentDate() {
 
 function filterTable(filterText) {
   // do not filter if less than 3 characters were entered
-  if (filterText.length < 2){
-    drawTable(events);
-    return;
-  }
-  else if (filterText.toLowerCase != "ja"){
-  }
-  else if (filterText.length < 3) {
+  if (filterText.length < 3){
     drawTable(events);
     return;
   }
