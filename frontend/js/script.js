@@ -1,4 +1,3 @@
-'use strict';
 
 // Temporary sample data
 const eventJSON = `[{
@@ -94,38 +93,43 @@ window.onload = () => {
   DOM.searchField = document.getElementById('searchfield');
   DOM.modal = document.getElementById('addEventModal');
   DOM.modalButton = document.getElementById('addEventButton');
+  // eslint-disable-next-line prefer-destructuring
   DOM.modalCloseSpan = document.getElementsByClassName('close')[0];
+  DOM.inputDateElem = document.getElementById('inpDate');
 
   events = JSON.parse(eventJSON);
   drawTable(events);
 
   DOM.printButton.addEventListener('click', printTable);
-  DOM.searchField.addEventListener('input', event =>
-    filterTable(event.target.value),
-  );
+  DOM.searchField.addEventListener('input', (event) => filterTable(event.target.value));
 
-  DOM.modalButton.onclick = () => (DOM.modal.style.display = 'block', getCurrentDate());
+  DOM.modalButton.onclick = () => {
+    DOM.modal.style.display = 'block';
+    getCurrentDate();
+  };
 
-  DOM.modalCloseSpan.onclick = () => (DOM.modal.style.display = 'none');
+  DOM.modalCloseSpan.onclick = () => {
+    (DOM.modal.style.display = 'none');
+  };
 };
 
-window.onclick = event => {
-  if (event.target == DOM.modal) {
+window.onclick = (event) => {
+  if (event.target === DOM.modal) {
     DOM.modal.style.display = 'none';
   }
 };
 
 // Shorter version of drawTable function
-function drawTable(events) {
+function drawTable(selectedEvents) {
   DOM.tBody.innerHTML = '';
   // DOM.table.appendChild(DOM.tHeader);
 
   let row;
   let cell;
 
-  events.forEach(event => {
+  selectedEvents.forEach((event) => {
     row = DOM.tBody.insertRow(-1);
-    for (let column of orderedEventDefinitions) {
+    for (const column of orderedEventDefinitions) {
       cell = row.insertCell(-1);
       cell.innerText = event[column.dataLabel];
       cell.setAttribute('data-title', column.presentationLabel);
@@ -134,44 +138,47 @@ function drawTable(events) {
 }
 
 function printTable() {
-  //new empty window
-  var printWin = window.open('');
-  //fill tabledata in new window
+  // new empty window
+  const printWin = window.open('');
+  // fill tabledata in new window
   printWin.document.write(DOM.table.outerHTML);
-  //function to open printdialog
+  // function to open printdialog
   printWin.print();
-  //close the "new page" after printing
+  // close the "new page" after printing
   printWin.close();
 }
 
 function getCurrentDate() {
-  let today = new Date().toISOString().substr(0, 10);
-  document.getElementById("inpDate").value = today;
+  DOM.inputDateElem.value = new Date().toISOString().substr(0, 10);
+}
+
+function highlightTableCell(rowIndex, columnIndex) {
+  // increment row index to account for table header
+  DOM.table.rows[rowIndex + 1].cells[columnIndex].classList.add('highlight');
 }
 
 function filterTable(filterText) {
   // do not filter if less than 3 characters were entered
-  if (filterText.length < 3){
+  if (filterText.length < 3) {
     drawTable(events);
     return;
   }
 
-  filterText = filterText.toLowerCase();
   const matches = [];
   let matchCount = 0;
 
   // filter events
-  const filteredEvents = events.filter(event => {
+  const filteredEvents = events.filter((event) => {
     let isMatch = false;
-    for (let key in event) {
-      if (event[key].toLowerCase().includes(filterText)) {
+    for (const key in event) {
+      if (event[key].toLowerCase().includes(filterText.toLowerCase())) {
         matches.push({ index: matchCount, key });
         isMatch = true;
       }
     }
 
     if (isMatch) {
-      matchCount++;
+      matchCount += 1;
     }
     return isMatch;
   });
@@ -180,17 +187,12 @@ function filterTable(filterText) {
   drawTable(filteredEvents);
 
   // highlight matching cells
-  matches.forEach(match => {
+  matches.forEach((match) => {
     highlightTableCell(
       match.index,
       orderedEventDefinitions.findIndex(
-        eventDef => eventDef.dataLabel === match.key,
+        (eventDef) => eventDef.dataLabel === match.key,
       ),
     );
   });
-}
-
-function highlightTableCell(rowIndex, columnIndex) {
-  // increment row index to account for table header
-  DOM.table.rows[rowIndex + 1].cells[columnIndex].classList.add('highlight');
 }
