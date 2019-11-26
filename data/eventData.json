@@ -1,41 +1,43 @@
-"events": [{
-    "title": "Sommerfest 2020",
-    "description": "Wir feiern den Sommer!",
-    "date": "20.06.2020",
-    "time": "15:00",
-    "place": "Innenhof FH Joanneum Graz",
-    "contact": "sommerfest@fh-joanneum.at",
-    "institute": "Bauplanung und Bauwirtschaft",
-    "entry": "Gratis"
-  },
-  {
-    "title": "Lectures: Moodley Group 2 von 3",
-    "description": "Corporate Design",
-    "date": "29.11.2019",
-    "time": "17:00",
-    "place": "Medienfabrik Graz",
-    "contact": "moodley.at/get-in-touch/",
-    "institute": "Institut Design & Kommunikation",
-    "entry": "fh-joanneum.at"
-  },
-  {
-    "title": "FUNtech 2020",
-    "description": "Technik zum Angreifen",
-    "date": "10.-13.02.2020",
-    "time": "08:30-15:00",
-    "place": "FH Joanneum Graz",
-    "contact": "fh-joanneum.at",
-    "institute": "Verschiedene",
-    "entry": "Gratis"
-  },
-  {
-    "title": "Weihnachtsfeier 2020",
-    "description": "Merry Christmas!",
-    "date": "20.12.2020",
-    "time": "19:00",
-    "place": "FH Joanneum Graz",
-    "contact": "fh-joanneum.at/weihnachtsfest",
-    "institute": "Campus",
-    "entry": "15€"
-  }
-]
+{
+  "events": [{
+      "title": "Sommerfest 2020",
+      "description": "Wir feiern den Sommer!",
+      "date": "20.06.2020",
+      "time": "15:00",
+      "place": "Innenhof FH Joanneum Graz",
+      "contact": "sommerfest@fh-joanneum.at",
+      "institute": "Bauplanung und Bauwirtschaft",
+      "entry": "Gratis"
+    },
+    {
+      "title": "Lectures: Moodley Group 2 von 3",
+      "description": "Corporate Design",
+      "date": "29.11.2019",
+      "time": "17:00",
+      "place": "Medienfabrik Graz",
+      "contact": "moodley.at/get-in-touch/",
+      "institute": "Institut Design & Kommunikation",
+      "entry": "fh-joanneum.at"
+    },
+    {
+      "title": "FUNtech 2020",
+      "description": "Technik zum Angreifen",
+      "date": "10.-13.02.2020",
+      "time": "08:30-15:00",
+      "place": "FH Joanneum Graz",
+      "contact": "fh-joanneum.at",
+      "institute": "Verschiedene",
+      "entry": "Gratis"
+    },
+    {
+      "title": "Weihnachtsfeier 2020",
+      "description": "Merry Christmas!",
+      "date": "20.12.2020",
+      "time": "19:00",
+      "place": "FH Joanneum Graz",
+      "contact": "fh-joanneum.at/weihnachtsfest",
+      "institute": "Campus",
+      "entry": "15€"
+    }
+  ]
+}
