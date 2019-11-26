@@ -1,52 +1,66 @@
 body {
   /* background: url(../img/fire.jpg) black; */
   background-size: 1000px;
-  background-color: black;
+  background-color: white;
   width: 1000px;
   max-width: 90%;
   margin: 0 auto;
 }
 
+#FH_Logo {
+  position: relative;
+}
+
+#Logo {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+
+}
+
 h1 {
-  color: black;
-  opacity: 0.6;
-  background-color: #ffffff;
-  font-family: sans-serif;
+  color: white;
+  background-color: #384046;
+  font-family: helvetica, sans-serif;
   font-size: 60px;
   text-align: center;
-  margin-top: 150px;
+  margin-top: 0px;
+  margin-bottom: 40px;
 }
 
 #specification {
-  color: black;
-  opacity: 0.4;
-  background-color: #ffffff;
+  color: grey;
+  background-color: #384046;
   font-size: medium;
   font-family: monospace;
   position: relative;
+  margin-top: 30px;
   text-align: center;
   width: 1000px;
   max-width: 100%;
 }
 
 #tableHeader {
-  font-family: sans-serif;
+  font-family: helvetica, sans-serif;
   position: relative;
 
   color: white;
+  background-color: #384046;
   width: 1000px;
 }
 
 #tableEvents {
-  color: white;
+  margin-top: 10px;
+  color: Black;
+  font-family: helvetica, sans-serif;
 }
 
 #searchfield {
-  font-family: sans-serif;
+  font-family: helvetica, sans-serif;
   border: solid;
-  border-color: #960019;
+  border-color: #D4002D;
   text-align: left;
-  
+
   padding: 15px 15px;
   margin: auto 0;
   width: 50%;
@@ -57,8 +71,8 @@ h1 {
   flex-wrap: wrap;
 }
 #addInputButton {
-  background-color: #960019;
-  border: solid 3px #960019;
+  background-color: #D4002D;
+  border: solid 3px #D4002D;
 
   color: white;
   margin: 5px auto;
@@ -68,13 +82,13 @@ h1 {
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-family: sans-serif;
+  font-family: helvetica, sans-serif;
   font-size: x-small;
 }
 
 button {
-  background-color: #960019;
-  border: solid 3px #960019;
+  background-color: #D4002D;
+  border: solid 3px #D4002D;
 
   color: white;
   margin: 20px auto;
@@ -84,22 +98,20 @@ button {
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-family: sans-serif;
+  font-family: helvetica, sans-serif;
   font-size: 16px;
 }
 
 
 
 button:hover {
-  color: #960019;
+  color: #D4002D;
   background-color: white;
 }
 
 p {
   color: black;
-  background-color: rgba(255, 255, 255, 0.4);
-
-  font-family: sans-serif;
+  font-family: helvetica, sans-serif;
   font-size: 18px;
   text-align: center;
 }
@@ -186,7 +198,7 @@ p {
     font-size: 30px;
     margin-top: 30px;
   }
-  
+
   #searchfield {
     width: 100%;
   }
