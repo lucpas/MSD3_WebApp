@@ -1,6 +1,5 @@
 {
-  "events": [
-    {
+  "events": [{
       "id": 0,
       "title": "Sommerfest 2020",
       "description": "Wir feiern den Sommer!",
@@ -25,7 +24,7 @@
     {
       "id": 2,
       "title": "FUNtech 2020",
-      "description": "Technik zum Abgreifen",
+      "description": "Technik zum Angreifen",
       "date": "10.-13.02.2020",
       "time": "08:30-15:00",
       "place": "FH Joanneum Graz",
@@ -43,17 +42,6 @@
       "contact": "fh-joanneum.at/weihnachtsfest",
       "institute": "Campus",
       "entry": "15€"
-    },
-    {
-      "title": "API TESTING",
-      "description": "Fixing stupid shit",
-      "date": "01.01.1900",
-      "time": "13:37",
-      "place": "Leoben",
-      "contact": "irejgihgaeuirf",
-      "institute": "MIT",
-      "entry": "fh-joanneum.at",
-      "id": 4
     }
   ]
 }

@@ -1,7 +1,6 @@
 const express = require('express');
-
-const apiRouter = require('../api/index');
+const jsonServer = require('json-server');
 
 const api = express();
-api.use('/api', apiRouter);
+api.use('/api', jsonServer.router('./data/eventData.json'));
 api.listen(process.env.PORT || 8080);
