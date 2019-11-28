@@ -1,4 +1,3 @@
-
 // Temporary sample data
 const eventJSON = `[{
     "title": "Sommerfest 2020",
@@ -97,9 +96,7 @@ window.onload = () => {
   DOM.modalCloseSpan = document.getElementsByClassName('close')[0];
   DOM.inputDateElem = document.getElementById('inpDate');
 
-  events = JSON.parse(eventJSON);
-  drawTable(events);
-
+  let tableDat = getEvents();
   DOM.printButton.addEventListener('click', printTable);
   DOM.searchField.addEventListener('input', (event) => filterTable(event.target.value));
 
@@ -111,6 +108,8 @@ window.onload = () => {
   DOM.modalCloseSpan.onclick = () => {
     (DOM.modal.style.display = 'none');
   };
+
+
 };
 
 window.onclick = (event) => {
@@ -119,6 +118,31 @@ window.onclick = (event) => {
   }
 };
 
+function getEvents(){
+  const Http = new XMLHttpRequest();
+  const url='https://msd3-webapp.herokuapp.com/api/events';
+  Http.open("GET", url);
+  Http.send();
+
+  Http.onreadystatechange = function () {
+    if (this.readyState === 4 && this.status === 200) {
+      let responseText = Http.responseText;
+      tableData = JSON.parse(responseText);
+      drawTable(tableData);
+      console.log(tableData);
+      return tableData;
+    }
+  }
+}
+
+function updateEvent(selectedEvent) {
+  const Http = new XMLHttpRequest();
+  const url = 'https://msd3-webapp.herokuapp.com/api/events/'+selectedEvent.id;
+  console.log(url);
+  Http.open("PUT",url,true);
+  Http.setRequestHeader('Content-type','application/json; charset=utf-8');
+  Http.send(selectedEvent);
+}
 // Shorter version of drawTable function
 function drawTable(selectedEvents) {
   DOM.tBody.innerHTML = '';
