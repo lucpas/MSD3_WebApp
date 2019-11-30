@@ -89,9 +89,7 @@ function getEvents() {
     if (this.readyState === 4 && this.status === 200) {
       const { responseText } = request;
       events = JSON.parse(responseText);
-      console.log(events);
       drawTable(events);
-      // console.log(tableData);
     }
   };
 }
