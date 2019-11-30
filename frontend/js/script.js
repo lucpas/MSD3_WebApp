@@ -1,46 +1,3 @@
-// Temporary sample data
-const eventJSON = `[{
-    "title": "Sommerfest 2020",
-    "description": "Wir feiern den Sommer!",
-    "date": "20.06.2020",
-    "time": "15:00",
-    "place": "Innenhof FH Joanneum Graz",
-    "contact": "sommerfest@fh-joanneum.at",
-    "institute": "Bauplanung und Bauwirtschaft",
-    "entry": "Gratis"
-  },
-  {
-    "title": "Lectures: Moodley Group 2 von 3",
-    "description": "Corporate Design",
-    "date": "29.11.2019",
-    "time": "17:00",
-    "place": "Medienfabrik Graz",
-    "contact": "moodley.at/get-in-touch/",
-    "institute": "Institut Design & Kommunikation",
-    "entry": "fh-joanneum.at"
-  },
-  {
-    "title": "FUNtech 2020",
-    "description": "Technik zum Angreifen",
-    "date": "10.-13.02.2020",
-    "time": "08:30-15:00",
-    "place": "FH Joanneum Graz",
-    "contact": "fh-joanneum.at",
-    "institute": "Verschiedene",
-    "entry": "Gratis"
-  },
-  {
-    "title": "Weihnachtsfeier 2020",
-    "description": "Merry Christmas!",
-    "date": "20.12.2020",
-    "time": "19:00",
-    "place": "FH Joanneum Graz",
-    "contact": "fh-joanneum.at/weihnachtsfest",
-    "institute": "Campus",
-    "entry": "15€"
-  }
-]`;
-
 // Ordered definition of events
 const orderedEventDefinitions = [
   {
@@ -77,6 +34,10 @@ const orderedEventDefinitions = [
   },
 ];
 
+// URLs of backend api: production, development
+// const url = 'https://msd3-webapp.herokuapp.com/api/events';
+const url = 'http://localhost:8080/api/events';
+
 // Collection of all loaded events --> filled during onload
 let events = [];
 
@@ -96,7 +57,8 @@ window.onload = () => {
   DOM.modalCloseSpan = document.getElementsByClassName('close')[0];
   DOM.inputDateElem = document.getElementById('inpDate');
 
-  let tableDat = getEvents();
+  getEvents();
+
   DOM.printButton.addEventListener('click', printTable);
   DOM.searchField.addEventListener('input', (event) => filterTable(event.target.value));
 
@@ -109,7 +71,7 @@ window.onload = () => {
     (DOM.modal.style.display = 'none');
   };
 
-
+  window.setInterval(() => getEvents(), 30000);
 };
 
 window.onclick = (event) => {
@@ -118,31 +80,29 @@ window.onclick = (event) => {
   }
 };
 
-function getEvents(){
-  const Http = new XMLHttpRequest();
-  const url='https://msd3-webapp.herokuapp.com/api/events';
-  Http.open("GET", url);
-  Http.send();
+function getEvents() {
+  const request = new XMLHttpRequest();
+  request.open('GET', url);
+  request.send();
 
-  Http.onreadystatechange = function () {
+  request.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
-      let responseText = Http.responseText;
-      tableData = JSON.parse(responseText);
-      drawTable(tableData);
-      console.log(tableData);
-      return tableData;
+      const { responseText } = request;
+      events = JSON.parse(responseText);
+      console.log(events);
+      drawTable(events);
+      // console.log(tableData);
     }
-  }
+  };
 }
 
 function updateEvent(selectedEvent) {
-  const Http = new XMLHttpRequest();
-  const url = 'https://msd3-webapp.herokuapp.com/api/events/'+selectedEvent.id;
-  console.log(url);
-  Http.open("PUT",url,true);
-  Http.setRequestHeader('Content-type','application/json; charset=utf-8');
-  Http.send(selectedEvent);
+  const request = new XMLHttpRequest();
+  request.open('PUT', `${url}/${selectedEvent.id}`, true);
+  request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+  request.send(selectedEvent);
 }
+
 // Shorter version of drawTable function
 function drawTable(selectedEvents) {
   DOM.tBody.innerHTML = '';

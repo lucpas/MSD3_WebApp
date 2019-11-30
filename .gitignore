@@ -56,4 +56,5 @@ hs_err_pid*
 # NPM
 node_modules
 
-
+# Environment variables
+setEnv.sh
