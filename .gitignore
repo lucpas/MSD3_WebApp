@@ -57,4 +57,4 @@ hs_err_pid*
 node_modules
 
 # Environment variables
-setEnv.sh
+.env
