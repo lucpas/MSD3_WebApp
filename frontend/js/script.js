@@ -94,6 +94,13 @@ function getEvents() {
   };
 }
 
+function addEvent(selectedEvent) {
+  const request = new XMLHttpRequest();
+  request.open("POST", url);
+  request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+  request.send(JSON.stringify(selectedEvent))
+}
+
 function updateEvent(selectedEvent) {
   const request = new XMLHttpRequest();
   request.open('PUT', `${url}/${selectedEvent.id}`, true);
