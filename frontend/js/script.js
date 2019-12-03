@@ -52,26 +52,37 @@ window.onload = () => {
   DOM.printButton = document.getElementById('printButton');
   DOM.searchField = document.getElementById('searchfield');
   DOM.modal = document.getElementById('addEventModal');
-  DOM.modalButton = document.getElementById('addEventButton');
+  DOM.addEventButton = document.getElementById('addEventButton');
   // eslint-disable-next-line prefer-destructuring
   DOM.modalCloseSpan = document.getElementsByClassName('close')[0];
   DOM.inputDateElem = document.getElementById('inpDate');
-
-  getEvents();
+  DOM.saveEventButton = document.getElementById('saveEventButton');
 
   DOM.printButton.addEventListener('click', printTable);
   DOM.searchField.addEventListener('input', (event) => filterTable(event.target.value));
 
-  DOM.modalButton.onclick = () => {
-    DOM.modal.style.display = 'block';
+  DOM.addEventButton.onclick = () => {
     getCurrentDate();
+    DOM.saveEventButton.value = 'Anlegen';
+    DOM.saveEventButton.onclick = () => {
+      DOM.modal.style.display = 'none';
+      const newEvent = createEvent();
+      if (isValidEvent(newEvent)) {
+        pushNewEvent(newEvent);
+        fetchEvents();
+      } else {
+        // TODO: Show some error
+      }
+    };
+    DOM.modal.style.display = 'block';
   };
 
   DOM.modalCloseSpan.onclick = () => {
-    (DOM.modal.style.display = 'none');
+    DOM.modal.style.display = 'none';
   };
 
-  window.setInterval(() => getEvents(), 30000);
+  fetchEvents();
+  window.setInterval(() => fetchEvents(), 30000);
 };
 
 window.onclick = (event) => {
@@ -80,7 +91,7 @@ window.onclick = (event) => {
   }
 };
 
-function getEvents() {
+function fetchEvents() {
   const request = new XMLHttpRequest();
   request.open('GET', url);
   request.send();
@@ -94,14 +105,14 @@ function getEvents() {
   };
 }
 
-function addEvent(selectedEvent) {
+function pushNewEvent(selectedEvent) {
   const request = new XMLHttpRequest();
-  request.open("POST", url);
+  request.open('POST', url);
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-  request.send(JSON.stringify(selectedEvent))
+  request.send(JSON.stringify(selectedEvent));
 }
 
-function updateEvent(selectedEvent) {
+function pushUpdatedEvent(selectedEvent) {
   const request = new XMLHttpRequest();
   request.open('PUT', `${url}/${selectedEvent.id}`, true);
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
@@ -118,12 +129,46 @@ function drawTable(selectedEvents) {
 
   selectedEvents.forEach((event) => {
     row = DOM.tBody.insertRow(-1);
+
+    // Write event data to table
     for (const column of orderedEventDefinitions) {
       cell = row.insertCell(-1);
       cell.innerText = event[column.dataLabel];
       cell.setAttribute('data-title', column.presentationLabel);
     }
+
+    // Add edit button
+    const editButton = document.createElement('button');
+    editButton.addEventListener('click', () => editEvent(event));
+    editButton.classList.add('btn_edit');
+    editButton.innerText = 'Event bearbeiten';
+    cell = row.insertCell(-1);
+    cell.appendChild(editButton);
   });
+}
+
+function isValidEvent(event) {
+  // TODO: Check if given event has all fields set
+  // TODO: More criteria?
+  // TODO: return true or false
+}
+
+function createEvent() {
+  // TODO: Create new event object out of form data and return it
+}
+
+function editEvent(event) {
+  // TODO: Show modal and input form
+  // TODO: Fill form with event data
+  // TODO: Set submit button text to 'Übernehmen'
+  // TODO: Set submit button click event
+  //       --> Call createEvent to receive new event out of form data
+  //       --> Call isValidEvent
+  //            --> if it returns true
+  //                --> Close modal
+  //                --> Call pushUpdatedElement with updated event
+  //                --> Call fetchEvents()
+  //            --> if not, show some error
 }
 
 function printTable() {
