@@ -2,30 +2,30 @@ body {
   /* background: url(../img/fire.jpg) black; */
   background-size: 1000px;
   background-color: white;
-  width: 1000px;
+  width: auto;
   max-width: 90%;
   margin: 0 auto;
 }
 
 #FH_Logo {
   position: relative;
+  float: right;
 }
 
-#Logo {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-
+.Logo {
+  float: right;
+  max-width: 40%;
+  height: auto;
 }
 
 h1 {
-  color: white;
-  background-color: #384046;
+  color: black;
   font-family: helvetica, sans-serif;
-  font-size: 60px;
-  text-align: center;
-  margin-top: 0px;
-  margin-bottom: 40px;
+  font-weight: bold;
+  text-align: left;
+  font-size: 40px;
+  margin-top: 30px;
+  margin-bottom: 20px;
 }
 
 #specification {
@@ -36,34 +36,40 @@ h1 {
   position: relative;
   margin-top: 30px;
   text-align: center;
-  width: 1000px;
   max-width: 100%;
 }
 
+#tableBody{
+  border: solid;
+  border-color: #a8a8a8;
+  background-color: #f8f8f8;
+}
+
+
 #tableHeader {
   font-family: helvetica, sans-serif;
+  color: #cc0033;
   position: relative;
-
-  color: white;
-  background-color: #384046;
-  width: 1000px;
+  width: 90%;
 }
 
 #tableEvents {
   margin-top: 10px;
   color: Black;
+  background-color: #a8a8a8;
   font-family: helvetica, sans-serif;
+
 }
 
 #searchfield {
   font-family: helvetica, sans-serif;
-  border: solid;
-  border-color: #D4002D;
   text-align: left;
+  border-style: groove;
+  border-color: #a8a8a8;
 
-  padding: 15px 15px;
+  padding: 10px 15px;
   margin: auto 0;
-  width: 50%;
+  width: 20%;
 }
 
 #actions {
@@ -71,8 +77,8 @@ h1 {
   flex-wrap: wrap;
 }
 #addInputButton {
-  background-color: #D4002D;
-  border: solid 3px #D4002D;
+  background-color: #cc0033;
+  border: solid 3px #cc0033;
 
   color: white;
   margin: 5px auto;
@@ -87,8 +93,8 @@ h1 {
 }
 
 button {
-  background-color: #D4002D;
-  border: solid 3px #D4002D;
+  background-color: #cc0033;
+  border: solid 3px #cc0033;
 
   color: white;
   margin: 20px auto;
@@ -102,10 +108,8 @@ button {
   font-size: 16px;
 }
 
-
-
 button:hover {
-  color: #D4002D;
+  color: #cc0033;
   background-color: white;
 }
 
