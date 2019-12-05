@@ -148,13 +148,25 @@ function drawTable(selectedEvents) {
 }
 
 function isValidEvent(event) {
-  // TODO: Check if given event has all fields set
-  // TODO: More criteria?
-  // TODO: return true or false
+  let isValid = false;
+  if (event.title !== "" && event.description !== "" && event.date !== null && event.time !== "" && event.place !== "" && event.contact !== "" && event.institute !== "" && event.entry !== "") {
+    isValid = true;
+  }
+  return isValid;
 }
 
 function createEvent() {
-  // TODO: Create new event object out of form data and return it
+  let event = {
+    title:document.getElementById('inpTitle'),
+    description:document.getElementById('inpDescription'),
+    date:document.getElementById('inpDate'),
+    time:document.getElementById('inpTime'),
+    place:document.getElementById('inpLocation'),
+    contact:document.getElementById('inpContact'),
+    institute:document.getElementById('inpInstitute'),
+    entry:document.getElementById('inpSignup')
+  };
+  return event;
 }
 
 function editEvent(event) {
