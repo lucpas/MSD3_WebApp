@@ -76,6 +76,7 @@ window.onload = () => {
       DOM.modal.style.display = 'none';
       const newEvent = createEvent();
       if (isValidEvent(newEvent)) {
+        console.log(newEvent)
         pushNewEvent(newEvent);
         fetchEvents();
       } else {
@@ -205,6 +206,7 @@ function editEvent(event) {
   //            --> if not, show some error
   DOM.saveEventButton.onclick = () => {
     const updateEvent = createEvent();
+    updateEvent.id = event.id;
     if (isValidEvent(updateEvent)) {
       DOM.modal.style.display = 'none';
       console.log(updateEvent);
