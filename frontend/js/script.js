@@ -127,7 +127,7 @@ function pushUpdatedEvent(selectedEvent) {
   const request = new XMLHttpRequest();
   request.open('PUT', `${url}/${selectedEvent.id}`, true);
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-  request.send(selectedEvent);
+  request.send(JSON.stringify(selectedEvent));
 }
 
 // Shorter version of drawTable function
