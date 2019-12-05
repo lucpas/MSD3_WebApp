@@ -1,6 +1,5 @@
 // Ordered definition of events
-const orderedEventDefinitions = [
-  {
+const orderedEventDefinitions = [{
     dataLabel: 'title',
     presentationLabel: 'Titel',
   },
@@ -63,7 +62,16 @@ window.onload = () => {
 
   DOM.addEventButton.onclick = () => {
     getCurrentDate();
-    DOM.saveEventButton.value = 'Anlegen';
+    document.getElementById('inpTitle').value = "";
+    document.getElementById('inpDescription').value ="";
+    document.getElementById('inpDate').value = new Date().toISOString().substr(0, 10),
+    document.getElementById('inpTime').value = "";
+    document.getElementById('inpLocation').value = "";
+    document.getElementById('inpContact').value = "";
+    document.getElementById('inpInstitute').value = "";
+    document.getElementById('inpSignup').value = "";
+  // TODO: Set submit button text to 'Übernehmen'
+    DOM.saveEventButton.innerHTML = 'Anlegen';
     DOM.saveEventButton.onclick = () => {
       DOM.modal.style.display = 'none';
       const newEvent = createEvent();
@@ -71,7 +79,7 @@ window.onload = () => {
         pushNewEvent(newEvent);
         fetchEvents();
       } else {
-        // TODO: Show some error
+        console.log("Error in POST-Request")
       }
     };
     DOM.modal.style.display = 'block';
@@ -96,9 +104,11 @@ function fetchEvents() {
   request.open('GET', url);
   request.send();
 
-  request.onreadystatechange = function () {
+  request.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 200) {
-      const { responseText } = request;
+      const {
+        responseText
+      } = request;
       events = JSON.parse(responseText);
       drawTable(events);
     }
@@ -157,21 +167,33 @@ function isValidEvent(event) {
 
 function createEvent() {
   let event = {
-    title:document.getElementById('inpTitle'),
-    description:document.getElementById('inpDescription'),
-    date:document.getElementById('inpDate'),
-    time:document.getElementById('inpTime'),
-    place:document.getElementById('inpLocation'),
-    contact:document.getElementById('inpContact'),
-    institute:document.getElementById('inpInstitute'),
-    entry:document.getElementById('inpSignup')
+    title: document.getElementById('inpTitle').value,
+    description: document.getElementById('inpDescription').value,
+    date: document.getElementById('inpDate').value,
+    time: document.getElementById('inpTime').value,
+    place: document.getElementById('inpLocation').value,
+    contact: document.getElementById('inpContact').value,
+    institute: document.getElementById('inpInstitute').value,
+    entry: document.getElementById('inpSignup').value
   };
+  fetchEvents();
+  // console.log(event)
   return event;
 }
 
 function editEvent(event) {
   // TODO: Show modal and input form
   // TODO: Fill form with event data
+  DOM.saveEventButton.innerHTML = 'Übernehmen';
+    document.getElementById('inpTitle').value = event.title,
+    document.getElementById('inpDescription').value = event.description,
+    // document.getElementById('inpDate').value = event.date
+    document.getElementById('inpDate').value = new Date().toISOString().substr(0, 10),
+    document.getElementById('inpTime').value = event.time,
+    document.getElementById('inpLocation').value = event.place,
+    document.getElementById('inpContact').value = event.contact,
+    document.getElementById('inpInstitute').value = event.institute,
+    document.getElementById('inpSignup').value = event.entry
   // TODO: Set submit button text to 'Übernehmen'
   // TODO: Set submit button click event
   //       --> Call createEvent to receive new event out of form data
@@ -181,6 +203,19 @@ function editEvent(event) {
   //                --> Call pushUpdatedElement with updated event
   //                --> Call fetchEvents()
   //            --> if not, show some error
+  DOM.saveEventButton.onclick = () => {
+    const updateEvent = createEvent();
+    if (isValidEvent(updateEvent)) {
+      DOM.modal.style.display = 'none';
+      console.log(updateEvent);
+      pushUpdatedEvent(updateEvent);
+      fetchEvents();
+    } else {
+      console.log("Error in PUT-Request")
+    }
+  };
+  DOM.modal.style.display = 'block';
+
 }
 
 function printTable() {
@@ -218,7 +253,10 @@ function filterTable(filterText) {
     let isMatch = false;
     for (const key in event) {
       if (event[key].toLowerCase().includes(filterText.toLowerCase())) {
-        matches.push({ index: matchCount, key });
+        matches.push({
+          index: matchCount,
+          key
+        });
         isMatch = true;
       }
     }
