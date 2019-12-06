@@ -14,7 +14,7 @@ body {
 
 .Logo {
   float: right;
-  max-width: 40%;
+  max-width: 60%;
   height: auto;
 }
 
@@ -39,6 +39,7 @@ h1 {
   max-width: 100%;
 }
 
+
 #tableBody{
   border: solid;
   border-color: #a8a8a8;
@@ -48,9 +49,10 @@ h1 {
 
 #tableHeader {
   font-family: helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 15px;
   color: #cc0033;
   position: relative;
-  width: 90%;
 }
 
 #tableEvents {
@@ -58,6 +60,8 @@ h1 {
   color: Black;
   background-color: #a8a8a8;
   font-family: helvetica, sans-serif;
+  font-size: 14px;
+
 
 }
 
