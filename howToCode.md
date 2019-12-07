@@ -4,10 +4,10 @@ Coding-Workflow:
 2. Dependencies installieren/updaten: `npm install`
 3. .env aus Trello-Card "Ressourcen" runterladen und ins Projektverzeichnis kopieren
 4. `source .env` im Terminal ausführen
-5. Check- und Fix-Scripte ausführen
+5. Check-Scripts ausführen
 6. Live-Server starten: `npm run dev`
 7. (coding)
-8. Check- und Fix-Skripte ausführen
+8. Check-Scripts ausführen
 9. Wenn mehr Fehler/Warnungen als vorher --> Fixen!!!
 10. Ansonsten git add, commit, push
 
