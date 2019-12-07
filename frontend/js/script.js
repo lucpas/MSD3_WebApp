@@ -78,11 +78,13 @@ window.onload = () => {
     DOM.inputSignup.value = '';
     DOM.saveEventButton.innerHTML = 'Anlegen';
     DOM.saveEventButton.onclick = () => {
-      DOM.modal.style.display = 'none';
       const newEvent = createEvent();
-
       if (isValidEvent(newEvent)) {
-        pushNewEvent(newEvent);
+        pushNewEvent(newEvent, () => {
+          events.push(newEvent);
+          drawTable(events);
+          DOM.modal.style.display = 'none';
+        });
         fetchEvents();
       } else {
         console.log('Error in POST-Request');
@@ -127,11 +129,20 @@ function fetchEvents(callback) {
   };
 }
 
-function pushNewEvent(selectedEvent) {
+function pushNewEvent(selectedEvent, callback) {
   const request = new XMLHttpRequest();
   request.open('POST', url);
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   request.send(JSON.stringify(selectedEvent));
+
+  // eslint-disable-next-line func-names
+  request.onreadystatechange = function () {
+    if (this.readyState === 4 && this.status === 201) {
+      if (typeof callback === 'function') {
+        callback();
+      }
+    }
+  };
 }
 
 function pushUpdatedEvent(selectedEvent, callback) {
@@ -140,11 +151,14 @@ function pushUpdatedEvent(selectedEvent, callback) {
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   request.send(JSON.stringify(selectedEvent));
 
-  if (this.readyState === 4 && this.status === 200) {
-    if (typeof callback === 'function') {
-      callback();
+  // eslint-disable-next-line func-names
+  request.onreadystatechange = function () {
+    if (this.readyState === 4 && this.status === 200) {
+      if (typeof callback === 'function') {
+        callback();
+      }
     }
-  }
+  };
 }
 
 // Shorter version of drawTable function
@@ -210,13 +224,15 @@ function editEvent(event) {
   DOM.inputInst.value = event.institute;
   DOM.inputSignup.value = event.entry;
   DOM.saveEventButton.onclick = () => {
-    const updateEvent = createEvent();
-    updateEvent.id = event.id;
-    if (isValidEvent(updateEvent)) {
-      pushUpdatedEvent(updateEvent);
-      window.setTimeout(() => fetchEvents(() => {
+    const updatedEvent = createEvent();
+    updatedEvent.id = event.id;
+    if (isValidEvent(updatedEvent)) {
+      pushUpdatedEvent(updatedEvent, () => {
+        const eventIndex = events.findIndex((e) => e.id === updatedEvent.id);
+        events[eventIndex] = updatedEvent;
+        drawTable(events);
         DOM.modal.style.display = 'none';
-      }), 200);
+      });
     } else {
       console.log('Error in PUT-Request');
     }
