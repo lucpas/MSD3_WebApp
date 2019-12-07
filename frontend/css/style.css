@@ -1,10 +1,9 @@
 body {
-  /* background: url(../img/fire.jpg) black; */
   background-size: 1000px;
   background-color: white;
   width: auto;
-  max-width: 90%;
-  margin: 0 auto;
+  max-width: 1200px;
+  margin: 0 50px;
 }
 
 #FH_Logo {
@@ -66,14 +65,14 @@ h1 {
   text-align: left;
   border-style: groove;
   border-color: #a8a8a8;
-  padding: 10px 15px;
+  padding: 10px 20px;
   margin: auto 0;
-  width: 20%;
+  width: 60%;
+  height: 30px;
 }
 
 #actions {
   display: flex;
-  flex-wrap: wrap;
 }
 
 #addInputButton {
@@ -102,11 +101,21 @@ button {
   display: inline-block;
   font-family: helvetica, sans-serif;
   font-size: 16px;
+  cursor: pointer;
 }
 
 button:hover {
   color: #c03;
   background-color: white;
+}
+
+img.icon {
+  margin: 10px 10px;
+}
+
+img.icon:hover {
+  cursor: pointer;
+  transform: scale(1.4);
 }
 
 p {
@@ -121,13 +130,13 @@ p {
 }
 
 @media only screen and (max-width: 1000px) {
-  #printButton {
+  /* #printButton {
     visibility: hidden;
     height: 0;
     width: 0;
     margin: 0;
     padding: 0;
-  }
+  } */
 }
 
 @media only screen and (max-width: 850px) {
@@ -197,6 +206,10 @@ p {
 }
 
 @media only screen and (max-width: 600px) {
+  body {
+    margin: 0 10px;
+  }
+
   h1 {
     font-size: 30px;
     margin-top: 30px;
@@ -206,6 +219,16 @@ p {
     width: 100%;
   }
 }
+/* 
+@media print {
+  th:last-of-type {
+    display: none;
+  }
+
+  td:last-of-type {
+    display: none;
+  }
+} */
 
 .modal {
   display: none; /* Hidden by default */

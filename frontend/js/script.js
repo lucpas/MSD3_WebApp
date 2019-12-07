@@ -105,7 +105,7 @@ window.onclick = (event) => {
   }
 };
 
-function fetchEvents() {
+function fetchEvents(callback) {
   // console.log('DEBUG: Starting fetch');
 
   const request = new XMLHttpRequest();
@@ -116,8 +116,13 @@ function fetchEvents() {
   request.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
       events = JSON.parse(request.responseText);
-      // console.log('DEBUG: Completing fetch');
+      // console.log('DEBUG: Completed fetch');
       drawTable(events);
+
+      if (typeof callback === 'function') {
+        // console.log('DEBUG: Executing callback');
+        callback();
+      }
     }
   };
 }
@@ -129,11 +134,17 @@ function pushNewEvent(selectedEvent) {
   request.send(JSON.stringify(selectedEvent));
 }
 
-function pushUpdatedEvent(selectedEvent) {
+function pushUpdatedEvent(selectedEvent, callback) {
   const request = new XMLHttpRequest();
   request.open('PUT', `${url}/${selectedEvent.id}`, true);
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   request.send(JSON.stringify(selectedEvent));
+
+  if (this.readyState === 4 && this.status === 200) {
+    if (typeof callback === 'function') {
+      callback();
+    }
+  }
 }
 
 // Shorter version of drawTable function
@@ -156,11 +167,17 @@ function drawTable(selectedEvents) {
     }
 
     // Add edit button
-    const editButton = document.createElement('button');
+    const editButton = document.createElement('img');
+    editButton.src = 'img/pencil.svg';
+    editButton.alt = 'edit icon';
+    editButton.height = '20';
+    editButton.width = '20';
+
     editButton.addEventListener('click', () => editEvent(event));
-    editButton.classList.add('btn_edit');
-    editButton.innerText = 'Event bearbeiten';
+    editButton.classList.add('icon');
+
     cell = row.insertCell(-1);
+    cell.setAttribute('data-title', 'Aktionen');
     cell.appendChild(editButton);
   });
 }
@@ -196,9 +213,10 @@ function editEvent(event) {
     const updateEvent = createEvent();
     updateEvent.id = event.id;
     if (isValidEvent(updateEvent)) {
-      DOM.modal.style.display = 'none';
       pushUpdatedEvent(updateEvent);
-      fetchEvents();
+      window.setTimeout(() => fetchEvents(() => {
+        DOM.modal.style.display = 'none';
+      }), 200);
     } else {
       console.log('Error in PUT-Request');
     }
@@ -215,6 +233,7 @@ function printTable() {
   printWin.print();
   // close the "new page" after printing
   printWin.close();
+  window.onload();
 }
 
 function highlightTableCell(rowIndex, columnIndex) {
