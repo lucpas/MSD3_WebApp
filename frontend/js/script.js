@@ -1,36 +1,36 @@
 // Ordered definition of events
 const orderedEventDefinitions = [{
-    dataLabel: 'title',
-    presentationLabel: 'Titel',
-  },
-  {
-    dataLabel: 'description',
-    presentationLabel: 'Beschreibung',
-  },
-  {
-    dataLabel: 'date',
-    presentationLabel: 'Datum',
-  },
-  {
-    dataLabel: 'time',
-    presentationLabel: 'Uhrzeit',
-  },
-  {
-    dataLabel: 'place',
-    presentationLabel: 'Ort',
-  },
-  {
-    dataLabel: 'contact',
-    presentationLabel: 'Kontakt',
-  },
-  {
-    dataLabel: 'institute',
-    presentationLabel: 'Institut',
-  },
-  {
-    dataLabel: 'entry',
-    presentationLabel: 'Anmeldung/Eintritt',
-  },
+  dataLabel: 'title',
+  presentationLabel: 'Titel',
+},
+{
+  dataLabel: 'description',
+  presentationLabel: 'Beschreibung',
+},
+{
+  dataLabel: 'date',
+  presentationLabel: 'Datum',
+},
+{
+  dataLabel: 'time',
+  presentationLabel: 'Uhrzeit',
+},
+{
+  dataLabel: 'place',
+  presentationLabel: 'Ort',
+},
+{
+  dataLabel: 'contact',
+  presentationLabel: 'Kontakt',
+},
+{
+  dataLabel: 'institute',
+  presentationLabel: 'Institut',
+},
+{
+  dataLabel: 'entry',
+  presentationLabel: 'Anmeldung/Eintritt',
+},
 ];
 
 // URLs of backend api: production, development
@@ -62,25 +62,25 @@ window.onload = () => {
 
   DOM.addEventButton.onclick = () => {
     getCurrentDate();
-    document.getElementById('inpTitle').value = "";
-    document.getElementById('inpDescription').value ="";
+    document.getElementById('inpTitle').value = '';
+    document.getElementById('inpDescription').value = '';
     document.getElementById('inpDate').value = new Date().toISOString().substr(0, 10),
-    document.getElementById('inpTime').value = "";
-    document.getElementById('inpLocation').value = "";
-    document.getElementById('inpContact').value = "";
-    document.getElementById('inpInstitute').value = "";
-    document.getElementById('inpSignup').value = "";
-  // TODO: Set submit button text to 'Übernehmen'
+    document.getElementById('inpTime').value = '';
+    document.getElementById('inpLocation').value = '';
+    document.getElementById('inpContact').value = '';
+    document.getElementById('inpInstitute').value = '';
+    document.getElementById('inpSignup').value = '';
+    // TODO: Set submit button text to 'Übernehmen'
     DOM.saveEventButton.innerHTML = 'Anlegen';
     DOM.saveEventButton.onclick = () => {
       DOM.modal.style.display = 'none';
       const newEvent = createEvent();
       if (isValidEvent(newEvent)) {
-        console.log(newEvent)
+        console.log(newEvent);
         pushNewEvent(newEvent);
         fetchEvents();
       } else {
-        console.log("Error in POST-Request")
+        console.log('Error in POST-Request');
       }
     };
     DOM.modal.style.display = 'block';
@@ -105,10 +105,10 @@ function fetchEvents() {
   request.open('GET', url);
   request.send();
 
-  request.onreadystatechange = function() {
+  request.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
       const {
-        responseText
+        responseText,
       } = request;
       events = JSON.parse(responseText);
       drawTable(events);
@@ -160,14 +160,14 @@ function drawTable(selectedEvents) {
 
 function isValidEvent(event) {
   let isValid = false;
-  if (event.title !== "" && event.description !== "" && event.date !== null && event.time !== "" && event.place !== "" && event.contact !== "" && event.institute !== "" && event.entry !== "") {
+  if (event.title !== '' && event.description !== '' && event.date !== null && event.time !== '' && event.place !== '' && event.contact !== '' && event.institute !== '' && event.entry !== '') {
     isValid = true;
   }
   return isValid;
 }
 
 function createEvent() {
-  let event = {
+  const event = {
     title: document.getElementById('inpTitle').value,
     description: document.getElementById('inpDescription').value,
     date: document.getElementById('inpDate').value,
@@ -175,7 +175,7 @@ function createEvent() {
     place: document.getElementById('inpLocation').value,
     contact: document.getElementById('inpContact').value,
     institute: document.getElementById('inpInstitute').value,
-    entry: document.getElementById('inpSignup').value
+    entry: document.getElementById('inpSignup').value,
   };
   fetchEvents();
   // console.log(event)
@@ -186,15 +186,15 @@ function editEvent(event) {
   // TODO: Show modal and input form
   // TODO: Fill form with event data
   DOM.saveEventButton.innerHTML = 'Übernehmen';
-    document.getElementById('inpTitle').value = event.title,
-    document.getElementById('inpDescription').value = event.description,
-    // document.getElementById('inpDate').value = event.date
-    document.getElementById('inpDate').value = new Date().toISOString().substr(0, 10),
-    document.getElementById('inpTime').value = event.time,
-    document.getElementById('inpLocation').value = event.place,
-    document.getElementById('inpContact').value = event.contact,
-    document.getElementById('inpInstitute').value = event.institute,
-    document.getElementById('inpSignup').value = event.entry
+  document.getElementById('inpTitle').value = event.title,
+  document.getElementById('inpDescription').value = event.description,
+  // document.getElementById('inpDate').value = event.date
+  document.getElementById('inpDate').value = new Date().toISOString().substr(0, 10),
+  document.getElementById('inpTime').value = event.time,
+  document.getElementById('inpLocation').value = event.place,
+  document.getElementById('inpContact').value = event.contact,
+  document.getElementById('inpInstitute').value = event.institute,
+  document.getElementById('inpSignup').value = event.entry;
   // TODO: Set submit button text to 'Übernehmen'
   // TODO: Set submit button click event
   //       --> Call createEvent to receive new event out of form data
@@ -213,11 +213,10 @@ function editEvent(event) {
       pushUpdatedEvent(updateEvent);
       fetchEvents();
     } else {
-      console.log("Error in PUT-Request")
+      console.log('Error in PUT-Request');
     }
   };
   DOM.modal.style.display = 'block';
-
 }
 
 function printTable() {
@@ -257,7 +256,7 @@ function filterTable(filterText) {
       if (event[key].toLowerCase().includes(filterText.toLowerCase())) {
         matches.push({
           index: matchCount,
-          key
+          key,
         });
         isMatch = true;
       }

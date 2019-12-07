@@ -15,6 +15,5 @@ Skripte (siehe package.json):
 
 - `npm run dev`: Startet den Liveserver
 - `npm run check:html`: Validiert index.html gegen den W3C-Validator
-- `npm run check:css`: Stylecheck für style.css (weniger Fehler --> besser :-) )
-- `npm run check:js`: Führt eslint aus (Styleguide: AirBnB)
-- `npm run fix:js`: Führt die Autofix-Funktion von eslint aus
+- `npm run check:css`: Stylecheck und Autofix für style.css (Styleguide: [stylelint-config-standard](https://github.com/stylelint/stylelint-config-standard))
+- `npm run check:js`: Führt eslint mit Autofix aus (Styleguide: AirBnB)
