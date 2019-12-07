@@ -8,7 +8,7 @@
     "dev": "concurrently \"nodemon config/index_dev.js\" \"live-server --port=8081 ./frontend\"",
     "check:html": "node-w3c-validator -i ./frontend/index.html -f lint",
     "check:css": "stylelint ./frontend/css/style.css --fix --config config/stylelint-config.json",
-    "check:js": "eslint . --fix",
+    "check:js": "eslint . --fix"
   },
   "repository": {
     "type": "git",

@@ -54,29 +54,34 @@ window.onload = () => {
   DOM.addEventButton = document.getElementById('addEventButton');
   // eslint-disable-next-line prefer-destructuring
   DOM.modalCloseSpan = document.getElementsByClassName('close')[0];
-  DOM.inputDateElem = document.getElementById('inpDate');
+  DOM.inputTitle = document.getElementById('inpTitle');
+  DOM.inputDesc = document.getElementById('inpDescription');
+  DOM.inputDate = document.getElementById('inpDate');
+  DOM.inputTime = document.getElementById('inpTime');
+  DOM.inputLoc = document.getElementById('inpLocation');
+  DOM.inputContact = document.getElementById('inpContact');
+  DOM.inputInst = document.getElementById('inpInstitute');
+  DOM.inputSignup = document.getElementById('inpSignup');
   DOM.saveEventButton = document.getElementById('saveEventButton');
 
   DOM.printButton.addEventListener('click', printTable);
   DOM.searchField.addEventListener('input', (event) => filterTable(event.target.value));
 
   DOM.addEventButton.onclick = () => {
-    getCurrentDate();
-    document.getElementById('inpTitle').value = '';
-    document.getElementById('inpDescription').value = '';
-    document.getElementById('inpDate').value = new Date().toISOString().substr(0, 10),
-    document.getElementById('inpTime').value = '';
-    document.getElementById('inpLocation').value = '';
-    document.getElementById('inpContact').value = '';
-    document.getElementById('inpInstitute').value = '';
-    document.getElementById('inpSignup').value = '';
-    // TODO: Set submit button text to 'Übernehmen'
+    DOM.inputTitle.value = '';
+    DOM.inputDesc.value = '';
+    DOM.inputDate.value = new Date().toISOString().substr(0, 10);
+    DOM.inputTime.value = '';
+    DOM.inputLoc.value = '';
+    DOM.inputContact.value = '';
+    DOM.inputInst.value = '';
+    DOM.inputSignup.value = '';
     DOM.saveEventButton.innerHTML = 'Anlegen';
     DOM.saveEventButton.onclick = () => {
       DOM.modal.style.display = 'none';
       const newEvent = createEvent();
+
       if (isValidEvent(newEvent)) {
-        console.log(newEvent);
         pushNewEvent(newEvent);
         fetchEvents();
       } else {
@@ -101,16 +106,17 @@ window.onclick = (event) => {
 };
 
 function fetchEvents() {
+  // console.log('DEBUG: Starting fetch');
+
   const request = new XMLHttpRequest();
   request.open('GET', url);
   request.send();
 
+  // eslint-disable-next-line func-names
   request.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
-      const {
-        responseText,
-      } = request;
-      events = JSON.parse(responseText);
+      events = JSON.parse(request.responseText);
+      // console.log('DEBUG: Completing fetch');
       drawTable(events);
     }
   };
@@ -142,6 +148,7 @@ function drawTable(selectedEvents) {
     row = DOM.tBody.insertRow(-1);
 
     // Write event data to table
+    // eslint-disable-next-line no-restricted-syntax
     for (const column of orderedEventDefinitions) {
       cell = row.insertCell(-1);
       cell.innerText = event[column.dataLabel];
@@ -159,57 +166,37 @@ function drawTable(selectedEvents) {
 }
 
 function isValidEvent(event) {
-  let isValid = false;
-  if (event.title !== '' && event.description !== '' && event.date !== null && event.time !== '' && event.place !== '' && event.contact !== '' && event.institute !== '' && event.entry !== '') {
-    isValid = true;
-  }
-  return isValid;
+  return Object.values(event).every((prop) => prop !== '' && prop !== null);
 }
 
 function createEvent() {
-  const event = {
-    title: document.getElementById('inpTitle').value,
-    description: document.getElementById('inpDescription').value,
-    date: document.getElementById('inpDate').value,
-    time: document.getElementById('inpTime').value,
-    place: document.getElementById('inpLocation').value,
-    contact: document.getElementById('inpContact').value,
-    institute: document.getElementById('inpInstitute').value,
-    entry: document.getElementById('inpSignup').value,
+  return {
+    title: DOM.inputTitle.value,
+    description: DOM.inputDesc.value,
+    date: DOM.inputDate.value,
+    time: DOM.inputTime.value,
+    place: DOM.inputLoc.value,
+    contact: DOM.inputContact.value,
+    institute: DOM.inputInst.value,
+    entry: DOM.inputSignup.value,
   };
-  fetchEvents();
-  // console.log(event)
-  return event;
 }
 
 function editEvent(event) {
-  // TODO: Show modal and input form
-  // TODO: Fill form with event data
   DOM.saveEventButton.innerHTML = 'Übernehmen';
-  document.getElementById('inpTitle').value = event.title,
-  document.getElementById('inpDescription').value = event.description,
-  // document.getElementById('inpDate').value = event.date
-  document.getElementById('inpDate').value = new Date().toISOString().substr(0, 10),
-  document.getElementById('inpTime').value = event.time,
-  document.getElementById('inpLocation').value = event.place,
-  document.getElementById('inpContact').value = event.contact,
-  document.getElementById('inpInstitute').value = event.institute,
-  document.getElementById('inpSignup').value = event.entry;
-  // TODO: Set submit button text to 'Übernehmen'
-  // TODO: Set submit button click event
-  //       --> Call createEvent to receive new event out of form data
-  //       --> Call isValidEvent
-  //            --> if it returns true
-  //                --> Close modal
-  //                --> Call pushUpdatedElement with updated event
-  //                --> Call fetchEvents()
-  //            --> if not, show some error
+  DOM.inputTitle.value = event.title;
+  DOM.inputDesc.value = event.description;
+  DOM.inputDate.value = new Date().toISOString().substr(0, 10);
+  DOM.inputTime.value = event.time;
+  DOM.inputLoc.value = event.place;
+  DOM.inputContact.value = event.contact;
+  DOM.inputInst.value = event.institute;
+  DOM.inputSignup.value = event.entry;
   DOM.saveEventButton.onclick = () => {
     const updateEvent = createEvent();
     updateEvent.id = event.id;
     if (isValidEvent(updateEvent)) {
       DOM.modal.style.display = 'none';
-      console.log(updateEvent);
       pushUpdatedEvent(updateEvent);
       fetchEvents();
     } else {
@@ -230,10 +217,6 @@ function printTable() {
   printWin.close();
 }
 
-function getCurrentDate() {
-  DOM.inputDateElem.value = new Date().toISOString().substr(0, 10);
-}
-
 function highlightTableCell(rowIndex, columnIndex) {
   // increment row index to account for table header
   DOM.table.rows[rowIndex + 1].cells[columnIndex].classList.add('highlight');
@@ -252,8 +235,10 @@ function filterTable(filterText) {
   // filter events
   const filteredEvents = events.filter((event) => {
     let isMatch = false;
-    for (const key in event) {
-      if (event[key].toLowerCase().includes(filterText.toLowerCase())) {
+    // for (const key in event) {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [key, value] of Object.entries(event)) {
+      if (value.toLowerCase().includes(filterText.toLowerCase())) {
         matches.push({
           index: matchCount,
           key,
