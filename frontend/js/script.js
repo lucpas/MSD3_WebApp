@@ -217,7 +217,7 @@ function editEvent(event) {
   DOM.saveEventButton.innerHTML = 'Übernehmen';
   DOM.inputTitle.value = event.title;
   DOM.inputDesc.value = event.description;
-  DOM.inputDate.value = new Date().toISOString().substr(0, 10);
+  DOM.inputDate.value = event.date;
   DOM.inputTime.value = event.time;
   DOM.inputLoc.value = event.place;
   DOM.inputContact.value = event.contact;
