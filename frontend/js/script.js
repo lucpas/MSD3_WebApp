@@ -2,34 +2,74 @@
 const orderedEventDefinitions = [{
   dataLabel: 'title',
   presentationLabel: 'Titel',
+  validate: function() {
+    //TODO: 
+
+    return;
+  }
 },
 {
   dataLabel: 'description',
   presentationLabel: 'Beschreibung',
+  validate: function() {
+    //TODO: 
+
+    return;
+  }
 },
 {
   dataLabel: 'date',
   presentationLabel: 'Datum',
+  validate: function() {
+    //TODO: 
+
+    return;
+  }
 },
 {
   dataLabel: 'time',
   presentationLabel: 'Uhrzeit',
+  validate: function() {
+    //TODO: 
+
+    return;
+  }
 },
 {
   dataLabel: 'place',
   presentationLabel: 'Ort',
+  validate: function() {
+    //TODO: 
+
+    return;
+  }
 },
 {
   dataLabel: 'contact',
   presentationLabel: 'Kontakt',
+  validate: function() {
+    //TODO: 
+
+    return;
+  }
 },
 {
   dataLabel: 'institute',
   presentationLabel: 'Institut',
+  validate: function() {
+    //TODO: 
+
+    return;
+  }
 },
 {
   dataLabel: 'entry',
   presentationLabel: 'Anmeldung/Eintritt',
+  validate: function() {
+    //TODO: 
+
+    return;
+  }
 },
 ];
 
@@ -120,7 +160,7 @@ function fetchEvents(callback) {
     if (this.readyState === 4 && this.status === 200) {
       events = JSON.parse(request.responseText);
       // console.log('DEBUG: Completed fetch');
-      drawTable(events);
+      filterTable(DOM.searchField.value);
 
       if (typeof callback === 'function') {
         // console.log('DEBUG: Executing callback');
