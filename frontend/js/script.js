@@ -87,7 +87,8 @@ window.onload = () => {
         });
         fetchEvents();
       } else {
-        console.log('Error in POST-Request');
+        //Temp error message/ TODO: Sprint 3 validate -> errorMessage()
+        window.alert(errorMessage());
       }
     };
     DOM.modal.style.display = 'block';
@@ -234,10 +235,17 @@ function editEvent(event) {
         DOM.modal.style.display = 'none';
       });
     } else {
-      console.log('Error in PUT-Request');
+        //Temp error message/ TODO: Sprint 3 validate -> errorMessage()
+        window.alert(errorMessage());
     }
   };
   DOM.modal.style.display = 'block';
+}
+
+//Params: {status ('warning', error), message: String}
+function errorMessage(){
+  error = "Fehler bei der Eingabe";
+  return error;
 }
 
 function printTable() {
