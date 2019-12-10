@@ -1,0 +1,15 @@
+{
+  "name": "msd3_webapp_datagenerator",
+  "version": "1.0.0",
+  "description": "Generate testing data for MSD3_WebApp",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "lucpas",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "faker": "^4.1.0"
+  }
+}
