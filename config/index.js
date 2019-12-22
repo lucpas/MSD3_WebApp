@@ -13,7 +13,7 @@ app.use(express.json());
 
 // Routes
 // app.use('/api', jsonServer.router('./data/eventData.json'));
-app.use('/api', eventsRouter);
+app.use('/api/events', eventsRouter);
 app.use(express.static('frontend'));
 
 app.listen(process.env.PORT || 8080);
