@@ -1,4 +1,5 @@
 const eventsRouter = require('express').Router();
+
 const Event = require('../models/event');
 
 eventsRouter.get('/', (req, res) => {
