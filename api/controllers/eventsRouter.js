@@ -14,16 +14,16 @@ eventsRouter.get('/', (req, res) => {
 
 eventsRouter.post('/', (req, res) => {
   const event = new Event(req.body);
-  
+
   event
-  .save()
-  .then((result) => {
-    res.status(201).json(result);
-  })
-  .catch((error) => {
-    console.log(`Failed at POST: ${error}`);
-    res.status(500).send();
-  });
+    .save()
+    .then((result) => {
+      res.status(201).json(result);
+    })
+    .catch((error) => {
+      console.log(`Failed at POST: ${error}`);
+      res.status(500).send();
+    });
 });
 
 eventsRouter.put('/:id', (req, res) => {

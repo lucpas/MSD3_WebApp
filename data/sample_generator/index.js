@@ -1,14 +1,14 @@
 const axios = require('axios');
 const faker = require('faker');
 
-faker.locale = "de_AT";
+faker.locale = 'de_AT';
 
 const sampleSize = 100;
 
 let counter = 0;
 let event = {};
 
-const interval = setInterval(() => {  
+const interval = setInterval(() => {
   event = {
     title: faker.company.catchPhrase(),
     description: faker.lorem.sentence(),
@@ -17,15 +17,15 @@ const interval = setInterval(() => {
     place: faker.address.streetAddress(),
     contact: faker.random.boolean() ? faker.internet.email() : faker.internet.url(),
     institute: faker.company.companyName(),
-    entry: faker.random.boolean() ? faker.finance.amount() + "€" : "Keine Anmeldung erforderlich",
-  }
+    entry: faker.random.boolean() ? `${faker.finance.amount()}€` : 'Keine Anmeldung erforderlich',
+  };
 
-  //console.log(event);
-  
+  // console.log(event);
+
   if (sampleSize > counter) {
     axios.post('https://msd3-webapp.herokuapp.com/api/events', event)
       .then(() => console.log(`${++counter}/${sampleSize} users created`))
-      .catch(() => console.log("ERRRRRROR"));
+      .catch(() => console.log('ERRRRRROR'));
   } else {
     clearInterval(interval);
   }

@@ -1,20 +1,24 @@
-const mongoose = require('mongoose');
+const express = require('express');
+const cors = require('cors');
+const { connectToMongoDB } = require('./dbConnector');
 
 const eventsRouter = require('./controllers/eventsRouter');
+const fileImportRouter = require('./controllers/fileImportRouter');
+const fileExportRouter = require('./controllers/fileExportRouter');
 
-const { MONGODB_URI } = process.env;
+connectToMongoDB();
 
-const connectToDB = () => {
-  mongoose
-    .connect(MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
-    .then(() => console.log('Successfully connected to MongoDB'))
-    .catch((error) => {
-      console.log(`Error connecting to database: ${error}`);
-      mongoose.connection.close();
-    });
-};
+const app = express();
 
-module.exports = { connectToDB, eventsRouter };
+// Apply Middlewares
+app.use(cors());
+app.use(express.json());
+
+// Routes
+app.use('/api/events', eventsRouter);
+app.use('/api/upload', fileImportRouter);
+app.use('/api/download', fileExportRouter);
+app.use(express.static('frontend'));
+
+// Listen to incoming requests
+app.listen(process.env.PORT || 8080);

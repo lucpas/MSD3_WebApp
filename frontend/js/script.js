@@ -2,74 +2,74 @@
 const orderedEventDefinitions = [{
   dataLabel: 'title',
   presentationLabel: 'Titel',
-  validate: function() {
-    //TODO: 
+  validate() {
+    // TODO:
 
-    return;
-  }
+
+  },
 },
 {
   dataLabel: 'description',
   presentationLabel: 'Beschreibung',
-  validate: function() {
-    //TODO: 
+  validate() {
+    // TODO:
 
-    return;
-  }
+
+  },
 },
 {
   dataLabel: 'date',
   presentationLabel: 'Datum',
-  validate: function() {
-    //TODO: 
+  validate() {
+    // TODO:
 
-    return;
-  }
+
+  },
 },
 {
   dataLabel: 'time',
   presentationLabel: 'Uhrzeit',
-  validate: function() {
-    //TODO: 
+  validate() {
+    // TODO:
 
-    return;
-  }
+
+  },
 },
 {
   dataLabel: 'place',
   presentationLabel: 'Ort',
-  validate: function() {
-    //TODO: 
+  validate() {
+    // TODO:
 
-    return;
-  }
+
+  },
 },
 {
   dataLabel: 'contact',
   presentationLabel: 'Kontakt',
-  validate: function() {
-    //TODO: 
+  validate() {
+    // TODO:
 
-    return;
-  }
+
+  },
 },
 {
   dataLabel: 'institute',
   presentationLabel: 'Institut',
-  validate: function() {
-    //TODO: 
+  validate() {
+    // TODO:
 
-    return;
-  }
+
+  },
 },
 {
   dataLabel: 'entry',
   presentationLabel: 'Anmeldung/Eintritt',
-  validate: function() {
-    //TODO: 
+  validate() {
+    // TODO:
 
-    return;
-  }
+
+  },
 },
 ];
 
@@ -127,7 +127,7 @@ window.onload = () => {
         });
         fetchEvents();
       } else {
-        //Temp error message/ TODO: Sprint 3 validate -> errorMessage()
+        // Temp error message/ TODO: Sprint 3 validate -> errorMessage()
         window.alert(errorMessage());
       }
     };
@@ -275,16 +275,16 @@ function editEvent(event) {
         DOM.modal.style.display = 'none';
       });
     } else {
-        //Temp error message/ TODO: Sprint 3 validate -> errorMessage()
-        window.alert(errorMessage());
+      // Temp error message/ TODO: Sprint 3 validate -> errorMessage()
+      window.alert(errorMessage());
     }
   };
   DOM.modal.style.display = 'block';
 }
 
-//Params: {status ('warning', error), message: String}
-function errorMessage(){
-  error = "Fehler bei der Eingabe";
+// Params: {status ('warning', error), message: String}
+function errorMessage() {
+  error = 'Fehler bei der Eingabe';
   return error;
 }
 

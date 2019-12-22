@@ -4,10 +4,10 @@
   "description": "Diese Seite wurde im Rahmen der Lehrveranstaltungen \"Agiles Projektmanagement\" und \"Web Application Development\" am Studiengang \"Mobile Software Development\" entwickelt. Es handelt sich um keine offizielle Seite der FH JOANNEUM.",
   "main": "config/index.js",
   "scripts": {
-    "start": "node config/index.js",
-    "dev": "concurrently \"nodemon config/index_dev.js\" \"live-server --port=8081 ./frontend\"",
+    "start": "node api/index.js",
+    "dev": "concurrently \"nodemon api/index.js\" \"live-server --port=8081 ./frontend\"",
     "check:html": "node-w3c-validator -i ./frontend/index.html -f lint",
-    "check:css": "stylelint ./frontend/css/style.css --fix --config config/stylelint-config.json",
+    "check:css": "stylelint ./frontend/css/style.css --fix --config stylelint-config.json",
     "check:js": "eslint . --fix"
   },
   "repository": {
