@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const eventSchema = mongoose.Schema({
   title: {
     type: String,
-    maxlength: [30, 'Titel darf nicht länger als 30 Zeichen sein']
+    maxlength: [30, 'Titel darf nicht länger als 30 Zeichen sein'],
+    required: true
   },
   description: String,
   date: String,
