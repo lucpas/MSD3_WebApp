@@ -2,10 +2,9 @@
 const orderedEventDefinitions = [{
   dataLabel: 'title',
   presentationLabel: 'Titel',
-  validate() {
-    // TODO:
-
-
+  validate(input) {
+    // Rules: No more than 30 characters    
+    return (typeof input === string && input.length >= 30)
   },
 },
 {
