@@ -1,6 +1,6 @@
 // Convert an incoming array of JS event objects to a CSV string
 function convertEventsArrayToCSV(events) {
-  let csv = '';
+  const csv = '';
 
   // IMPLEMENT
   // ALL

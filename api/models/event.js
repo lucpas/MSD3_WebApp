@@ -4,7 +4,7 @@ const eventSchema = mongoose.Schema({
   title: {
     type: String,
     maxlength: [30, 'Titel darf nicht länger als 30 Zeichen sein'],
-    required: [true, 'Titel darf nicht leer sein']
+    required: [true, 'Titel darf nicht leer sein'],
   },
   description: String,
   date: String,

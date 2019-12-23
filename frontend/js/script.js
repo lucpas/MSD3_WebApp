@@ -2,73 +2,34 @@
 const orderedEventDefinitions = [{
   dataLabel: 'title',
   presentationLabel: 'Titel',
-  validate(input) {
-    // Rules: No more than 30 characters    
-    return (typeof input === string && input.length >= 30)
-  },
 },
 {
   dataLabel: 'description',
   presentationLabel: 'Beschreibung',
-  validate() {
-    // TODO:
-
-
-  },
 },
 {
   dataLabel: 'date',
   presentationLabel: 'Datum',
-  validate() {
-    // TODO:
-
-
-  },
 },
 {
   dataLabel: 'time',
   presentationLabel: 'Uhrzeit',
-  validate() {
-    // TODO:
-
-
-  },
 },
 {
   dataLabel: 'place',
   presentationLabel: 'Ort',
-  validate() {
-    // TODO:
-
-
-  },
 },
 {
   dataLabel: 'contact',
   presentationLabel: 'Kontakt',
-  validate() {
-    // TODO:
-
-
-  },
 },
 {
   dataLabel: 'institute',
   presentationLabel: 'Institut',
-  validate() {
-    // TODO:
-
-
-  },
 },
 {
   dataLabel: 'entry',
   presentationLabel: 'Anmeldung/Eintritt',
-  validate() {
-    // TODO:
-
-
-  },
 },
 ];
 

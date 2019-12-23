@@ -20,14 +20,14 @@ eventsRouter.post('/', (req, res) => {
 
   const validateOnly = req.query.validate === 'true';
   if (validateOnly) {
-    const errors = event.validateSync().errors;
+    const { errors } = event.validateSync();
 
     if (errors) {
       res.status(400).json(reformatValidationErrors(errors)).send();
     } else {
       res.status(200).send();
     }
-    
+
     return;
   }
 
