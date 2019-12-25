@@ -3,7 +3,7 @@ const faker = require('faker');
 
 faker.locale = 'de_AT';
 
-const sampleSize = 100;
+const sampleSize = 20;
 
 let counter = 0;
 let event = {};
@@ -25,7 +25,7 @@ const interval = setInterval(() => {
   if (sampleSize > counter) {
     axios.post('https://msd3-webapp.herokuapp.com/api/events', event)
       .then(() => console.log(`${++counter}/${sampleSize} users created`))
-      .catch(() => console.log('ERRRRRROR'));
+      .catch((error) => console.log(error));
   } else {
     clearInterval(interval);
   }

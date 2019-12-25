@@ -13,15 +13,16 @@
 
 <body>
 
-  <div id = "FH_Logo">
-    <img src = "img/fhlogo.jpg" alt="Logo FH JOANNEUM" class = "Logo"/>
-  </div>
   <h1 id="headline">Events der FH JOANNEUM</h1>
-
+  
   <div id="actions">
     <input type="text" id="searchfield" placeholder="Welches Event suchen Sie?">
-    <img src="img/new.svg" class="icon" id="addEventButton" alt="print icon" height="50" width="50">
+    <img src="img/new.svg" class="icon" id="addEventButton" alt="add icon" height="50" width="50">
     <img src="img/print.svg" class="icon" id="printButton" alt="print icon" height="50" width="50">
+          <div id = "logo-container">
+        
+          <img src = "img/fhlogo.svg" alt="Logo FH JOANNEUM" class = "logo"/>
+        </div>
   </div>
 
   <div id="addEventModal" class="modal">
@@ -39,25 +40,26 @@
    </div>
   </div>
 
+  <div id="table-container">
   <table id="tableEvents">
     <thead>
-    <tr id="tableHeader">
-      <th>Titel</th>
-      <th>Beschreibung</th>
-      <th>Datum</th>
-      <th>Uhrzeit</th>
-      <th>Ort</th>
-      <th>Kontakt</th>
-      <th>Institut</th>
-      <th>Anmeldung/Eintritt</th>
-      <th>Aktionen</th>
-    </tr>
-  </thead>
+      <tr id="tableHeader">
+        <th>Titel</th>
+        <th>Beschreibung</th>
+        <th>Datum</th>
+        <th>Uhrzeit</th>
+        <th>Ort</th>
+        <th>Kontakt</th>
+        <th>Institut</th>
+        <th>Eintritt</th>
+        <th>Aktionen</th>
+      </tr>
+    </thead>
   <tbody id="tableBody">
   </tbody>
   </table>
-
-  <p id="specification">Diese Seite wurde im Rahmen der Lehrveranstaltungen "Agiles Projektmanagement" und "Web Application Development" am Studiengang "Mobile Software Development" entwickelt. Es handelt sich um keine offizielle Seite der FH
+</div>
+  <p id="footer">Diese Seite wurde im Rahmen der Lehrveranstaltungen "Agiles Projektmanagement" und "Web Application Development" am Studiengang "Mobile Software Development" entwickelt. Es handelt sich um keine offizielle Seite der FH
     JOANNEUM.</p>
 
 </body>

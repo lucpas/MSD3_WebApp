@@ -29,13 +29,12 @@ const orderedEventDefinitions = [{
 },
 {
   dataLabel: 'entry',
-  presentationLabel: 'Anmeldung/Eintritt',
+  presentationLabel: 'Eintritt',
 },
 ];
 
-// URLs of backend api: production, development
+// URL of backend api
 const url = 'https://msd3-webapp.herokuapp.com/api/events';
-// const url = 'http://localhost:8080/api/events';
 
 // Collection of all loaded events --> filled during onload
 let events = [];
@@ -97,9 +96,32 @@ window.onload = () => {
   DOM.modalCloseSpan.onclick = () => {
     DOM.modal.style.display = 'none';
   };
+/* 
+  const actions = document.getElementById('actions');
+  const tableHeader = document.getElementsByName('thead');
 
+  const actionsOffset = actions.offsetTop - actions.offsetHeight; 
+  const tHeaderOffset = tableHeader.offsetTop - tableHeader.offsetHeight; 
+  window.onscroll = function() {
+    
+    if (window.pageYOffset > actionsOffset) {
+      actions.classList.add("sticky");
+    } else {
+      actions.classList.remove("sticky");
+    }
+
+    console.log(window.pageYOffset, DOM.tHeader.offsetTop, DOM.tHeader.offsetHeight);
+    
+    
+    if (window.pageYOffset > tHeaderOffset) {
+      DOM.tHeader.classList.add("sticky");
+    } else {
+      DOM.tHeader.classList.remove("sticky");
+    }
+}
+ */
   fetchEvents();
-  window.setInterval(() => fetchEvents(), 30000);
+  //window.setInterval(() => fetchEvents(), 30000);
 };
 
 window.onclick = (event) => {
@@ -177,7 +199,15 @@ function drawTable(selectedEvents) {
     // eslint-disable-next-line no-restricted-syntax
     for (const column of orderedEventDefinitions) {
       cell = row.insertCell(-1);
-      cell.innerText = event[column.dataLabel];
+      //cell.innerText = event[column.dataLabel];
+
+      const inputField = document.createElement('textarea')
+      inputField.classList.add('inactive', column.dataLabel)
+      inputField.value = event[column.dataLabel];
+      inputField.setAttribute('disabled', '');
+
+      cell.appendChild(inputField);
+      cell.classList.add(column.dataLabel)
       cell.setAttribute('data-title', column.presentationLabel);
     }
 
@@ -309,3 +339,4 @@ function filterTable(filterText) {
     );
   });
 }
+
