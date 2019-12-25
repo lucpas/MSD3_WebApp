@@ -2,7 +2,6 @@ body {
   background-size: 1000px;
   background-color: white;
   width: auto;
-  /* max-width: 1200px; */
   max-width: min-content;
   margin: 0 50px;
 }
@@ -15,13 +14,11 @@ h1 {
   font-size: 30px;
   margin-top: 30px;
   margin-bottom: 20px;
-
   display: none;
 }
 
 #footer {
   position: sticky;
-
   color: grey;
   background-color: #384046;
   font-size: medium;
@@ -47,18 +44,14 @@ h1 {
 
 th {
   position: sticky;
-  top: 0px;
-  background-color: #ffffff;
-  /* height: 20px; */
+  top: 0;
+  background-color: #fff;
   padding-top: 10px;
   padding-bottom: 5px;
-
   border-bottom: 2px solid #a8a8a8;
-
   font-family: helvetica, sans-serif;
   font-weight: bold;
   font-size: 15px;
-
   color: #c03;
   text-align: left;
 }
@@ -68,11 +61,7 @@ tbody {
   border-color: #a8a8a8;
   border-right-color: #d61637;
   background-color: #f8f8f8;
-/* 
-  overflow: scroll;
-  width: 100px;
-  height: 100px;
- */}
+}
 
 table {
   margin-top: 10px;
@@ -101,15 +90,10 @@ table {
 #actions {
   display: flex;
   position: sticky;
-  top: 0px;
+  top: 0;
   z-index: 100;
-  /* background-color: #a8a8a8; */
-  background-color: #ffffff;
-  /* border-radius: 10px; */
+  background-color: #fff;
   padding: 10px 0;
-  /* width: 100%; */
-  /* max-width: 1078px; */
-
 }
 
 button {
@@ -153,23 +137,6 @@ p {
 }
 
 @media only screen and (max-width: 1000px) {
-  /* #printButton {
-    visibility: hidden;
-    height: 0;
-    width: 0;
-    margin: 0;
-    padding: 0;
-  } */
-
-  #actions {
-    /* flex-wrap: wrap; */
-    /* flex-direction: row; */
-  }
-
-  #logo-container {
-    /* display: none; */
-    /* transform: translateY(-75px); */
-  }
 
 }
 
@@ -179,7 +146,6 @@ p {
   }
 
   h1 {
-    /* font-size: 40px; */
     margin-top: 40px;
   }
 
@@ -195,7 +161,6 @@ p {
     margin-top: 0;
   }
 
-
   /* Force table to not be like tables anymore */
   table,
   thead,
@@ -210,18 +175,19 @@ p {
     height: 10px;
   }
 
+  tr {
+    border: 1px solid #ccc;
+    border-right: 1px solid #d61637;
+    padding: 20px 5px;
+
+    /* height: 100vh; */
+  }
+
   /* Hide table headers (but not display: none;, for accessibility) */
   thead tr {
     position: absolute;
     top: -9999px;
     left: -9999px;
-  }
-
-  tr {
-    border: 1px solid #ccc;
-    border-right: 1px solid #d61637;
-    padding: 20px 5px;
-    /*height: 100vh;*/
   }
 
   td {
@@ -248,13 +214,15 @@ p {
     white-space: nowrap;
     text-align: right;
     font-weight: bold;
-  }
 
-  /*
+    /*
 	Label the data
 	*/
-  td::before {
     content: attr(data-title);
+  }
+
+  textarea {
+    width: 90% !important;
   }
 }
 
@@ -272,7 +240,8 @@ p {
     width: 100%;
   }
 }
-/* 
+
+/*
 @media print {
   th:last-of-type {
     display: none;
@@ -331,10 +300,11 @@ textarea.inactive {
   font-family: sans-serif;
 }
 
-textarea.date, textarea.time, textarea.entry {
+textarea.date,
+textarea.time,
+textarea.entry {
   width: 70px;
 }
-
 
 @media only screen and (max-width: 850px) {
   textarea {
@@ -342,7 +312,7 @@ textarea.date, textarea.time, textarea.entry {
     height: 25px;
     width: 90%;
   }
-  
+
   textarea.description {
     height: 50px;
   }
@@ -352,22 +322,18 @@ textarea.date, textarea.time, textarea.entry {
 ::-webkit-scrollbar {
   width: 12px;
   height: 12px;
-  }
-  
-  ::-webkit-scrollbar-track {
-  border: 1px solid #a8a8a8;
-  border-radius: 0px;
-  }
-  
-  ::-webkit-scrollbar-thumb {
-  background: #a8a8a8;  
-  border-radius: 0px;
-  /* border-top: 2px solid #d61637; */
-  /* border-bottom: 2px solid #d61637; */
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-  background: #d61637;  
+}
 
-  
-  }
+::-webkit-scrollbar-track {
+  border: 1px solid #a8a8a8;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #a8a8a8;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d61637;
+}
