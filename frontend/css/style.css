@@ -19,13 +19,14 @@ h1 {
 
 #footer {
   position: sticky;
-  color: grey;
-  background-color: #384046;
+  color: #515151;
+  background-color: #f8f8f8;
   font-size: medium;
   font-family: monospace;
   margin-top: 30px;
   text-align: center;
   max-width: 100%;
+  border: 1px dashed #515151;
 }
 
 #logo-container {
@@ -38,8 +39,9 @@ h1 {
 }
 
 #table-container {
-  overflow: scroll;
+  overflow: auto;
   height: 75vh;
+  box-shadow: -3px 6px 16px -8px rgba(0,0,0,0.75);
 }
 
 th {
@@ -56,6 +58,12 @@ th {
   text-align: left;
 }
 
+tr:hover {
+  background: transparent;
+
+  /* height: 20vh; */
+}
+
 tbody {
   border: solid;
   border-color: #a8a8a8;
@@ -64,11 +72,16 @@ tbody {
 }
 
 table {
-  margin-top: 10px;
+  /* margin-top: 10px; */
   color: Black;
   background-color: #a8a8a8;
   font-family: helvetica, sans-serif;
   font-size: 14px;
+  border-spacing: 0 1px;
+}
+
+textarea.title {
+  font-weight: bold;
 }
 
 #searchfield {
