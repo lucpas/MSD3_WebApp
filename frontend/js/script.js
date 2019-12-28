@@ -238,7 +238,10 @@ function drawTable(selectedEvents) {
     deleteButton.width = '20';
 
     deleteButton.addEventListener('click', () => deleteEvent(event,() => {
-      events.delete(event)}));
+      events.delete(event);
+      drawTable(events);
+      DOM.modal.style.display = 'none';
+    }));
     deleteButton.classList.add('icon');
 
     cell = row.insertCell(-1);
