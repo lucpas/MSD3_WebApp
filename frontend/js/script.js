@@ -237,14 +237,14 @@ function drawTable(selectedEvents) {
     deleteButton.height = '20';
     deleteButton.width = '20';
 
-    deleteButton.addEventListener('click', () => deleteEvent(event));
+    deleteButton.addEventListener('click', () => deleteEvent(event,() => {
+      events.delete(event)}));
     deleteButton.classList.add('icon');
 
     cell = row.insertCell(-1);
     cell.setAttribute('data-title', 'Aktionen');
     cell.appendChild(editButton);
     cell.appendChild(deleteButton);
-
 
   });
 }
@@ -294,8 +294,20 @@ function editEvent(event) {
   DOM.modal.style.display = 'block';
 }
 
-function deleteEvent(event) {
-  //ToDo Eva und Flo: Befüllen der Funktion zum löschen eines Events.
+function deleteEvent(selectedEvent, callback) {
+  const request = new XMLHttpRequest();
+  request.open('DELETE', `${url}/${selectedEvent.id}`, true);
+  request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+  request.send(JSON.stringify(selectedEvent));
+
+  // eslint-disable-next-line func-names
+  request.onreadystatechange = function () {
+    if (this.readyState === 4 && this.status === 200) {
+      if (typeof callback === 'function') {
+        callback();
+      }
+    }
+  };
 }
 
 // Params: {status ('warning', error), message: String}
@@ -308,7 +320,9 @@ function printTable() {
   // new empty window
   const printWin = window.open('');
   // fill tabledata in new window
-  printWin.document.write(DOM.table.outerHTML);
+  const table = DOM.table.outerHTML;
+  printWin.document.write(table);
+  //table.column[1].style.display="none";
   // function to open printdialog
   printWin.print();
   // close the "new page" after printing
