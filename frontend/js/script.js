@@ -230,9 +230,22 @@ function drawTable(selectedEvents) {
     editButton.addEventListener('click', () => editEvent(event));
     editButton.classList.add('icon');
 
+    // Add delete button
+    const deleteButton = document.createElement('img');
+    deleteButton.src = 'img/delete.svg';
+    deleteButton.alt = 'delete icon';
+    deleteButton.height = '20';
+    deleteButton.width = '20';
+
+    deleteButton.addEventListener('click', () => deleteEvent(event));
+    deleteButton.classList.add('icon');
+
     cell = row.insertCell(-1);
     cell.setAttribute('data-title', 'Aktionen');
     cell.appendChild(editButton);
+    cell.appendChild(deleteButton);
+
+
   });
 }
 
@@ -279,6 +292,10 @@ function editEvent(event) {
     }
   };
   DOM.modal.style.display = 'block';
+}
+
+function deleteEvent(event) {
+  //ToDo Eva und Flo: Befüllen der Funktion zum löschen eines Events.
 }
 
 // Params: {status ('warning', error), message: String}
