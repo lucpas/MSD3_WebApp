@@ -237,12 +237,11 @@ function drawTable(selectedEvents) {
     deleteButton.height = '20';
     deleteButton.width = '20';
 
-    // deleteButton.addEventListener('click', () => deleteEvent(event,() => {
-    //     events.delete(event);
-    //     drawTable(events);
-    //     DOM.modal.style.display = 'none';
-    // }));
-    // fetchEvents();
+    deleteButton.addEventListener('click', () => deleteEvent(event,() => {
+      events.delete(event);
+      fetchEvents(() => drawTable(events));
+      DOM.modal.style.display = 'none';
+    }));
     deleteButton.classList.add('icon');
 
     cell = row.insertCell(-1);
@@ -298,22 +297,22 @@ function editEvent(event) {
   DOM.modal.style.display = 'block';
 }
 
-// function deleteEvent(selectedEvent, callback) {
-//   const request = new XMLHttpRequest();
-//   request.open('DELETE', `${url}/${selectedEvent.id}`, true);
-//   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-//   request.send(JSON.stringify(selectedEvent));
-//
-//   // eslint-disable-next-line func-names
-//   request.onreadystatechange = function () {
-//     if (this.readyState === 4 && this.status === 200) {
-//       if (typeof callback === 'function') {
-//
-//         callback();
-//       }
-//     }
-//   };
-// }
+function deleteEvent(selectedEvent, callback) {
+  const request = new XMLHttpRequest();
+  request.open('DELETE', `${url}/${selectedEvent.id}`, true);
+  request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+  request.send(JSON.stringify(selectedEvent));
+
+  // eslint-disable-next-line func-names
+  request.onreadystatechange = function () {
+    if (this.readyState === 4 && this.status === 200) {
+      if (typeof callback === 'function') {
+
+        callback();
+      }
+    }
+  };
+}
 
 // Params: {status ('warning', error), message: String}
 function errorMessage() {
