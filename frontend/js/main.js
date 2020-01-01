@@ -1,41 +1,26 @@
-import { State, Observer } from './state.js';
-import { CONSTANTS, DOM, Mode } from './constants.js';
+import { Observer } from './state.js';
+import {
+  CONSTANTS, DOM, Mode, state,
+} from './constants.js';
 import {
   fetchEvents,
-  pushNewEvent,
-  pushUpdatedEvent,
   onSelectRowHandler,
   onKeyDownHandler,
   renderTable,
   filterEvents,
   highlightFilterMatches,
-  toggleRowSelection,
-  createEventOutOfRow,
   unlockTableRow,
-  lockTableRow,
   createEmptyRow,
-  validateEvent,
-  printTable,
+  setFocusOnRow,
   setActionBarAppearance,
   setActionBarHandlers,
 } from './functions.js';
-
-// Object containing all application state
-export const state = {
-  allEvents: new State([], true, 'list of all events'),
-  filteredEvents: new State([], true, 'filtered events'),
-  filter: new State('', true, 'filter text'),
-  highlights: new State([], true, 'cells of filtered rows to be highlighted'),
-  selectedEvents: new State([], true, 'selected events'),
-  activeEvent: new State(null, true, 'event that is currently being edited'),
-  mode: new State(Mode.CLEAN, true, 'application mode'),
-};
 
 document.addEventListener('keydown', onKeyDownHandler);
 
 // Initialization and first render
 window.addEventListener('DOMContentLoaded', () => {
-  if (CONSTANTS.enableLogging) 'FUNCTION_window.onload';
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_window.onload');
 
   // --- UNIQUE DOM ELEMENTS
   // Table and structural elements
@@ -53,22 +38,22 @@ window.addEventListener('DOMContentLoaded', () => {
   DOM.cancelButton = document.getElementById('cancelButton');
   DOM.printButton = document.getElementById('printButton');
   // Static Event handlers
-  DOM.searchField.addEventListener('input', event => {
+  DOM.searchField.addEventListener('input', (event) => {
     state.filter.set(event.target.value);
   });
 
   state.mode.set(Mode.CLEAN);
 
-  fetchEvents(events => state.allEvents.set(events));
+  fetchEvents((events) => state.allEvents.set(events));
   // window.setInterval(() => fetchEvents((events) => state.allEvents.set(events));
 });
 
-const setActionBarObserver = new Observer(mode => {
+const setActionBarObserver = new Observer((mode) => {
   setActionBarAppearance(mode);
   setActionBarHandlers(mode);
 });
 
-const changeModeOnSelectionChangeObserver = new Observer(selectedEvents => {
+const changeModeOnSelectionChangeObserver = new Observer((selectedEvents) => {
   // If the last row was just deselected
   if (selectedEvents.length === 0 && state.mode.get() === Mode.SELECTING) {
     state.mode.set(Mode.CLEAN);
@@ -79,8 +64,8 @@ const changeModeOnSelectionChangeObserver = new Observer(selectedEvents => {
   }
 });
 
-const addClickHandlerToRowObserver = new Observer(filteredEvents => {
-  filteredEvents.forEach(event => {
+const addClickHandlerToRowObserver = new Observer((filteredEvents) => {
+  filteredEvents.forEach((event) => {
     document.getElementById(event.id).onclick = onSelectRowHandler;
   });
 });
@@ -95,9 +80,7 @@ const filterEventsObserver = new Observer(() => {
   state.filteredEvents.set(events);
 });
 
-const renderTableObserver = new Observer(events =>
-  renderTable(events, DOM.tBody),
-);
+const renderTableObserver = new Observer((events) => renderTable(events));
 
 const highlightRowObserver = new Observer(() => {
   highlightFilterMatches(state.highlights.get());
@@ -107,7 +90,7 @@ const logStateChangeObserver = new Observer((data, descriptor) => {
   if (CONSTANTS.enableLogging) console.log(`STATE CHANGE IN ${descriptor}`);
 });
 
-const activateEventObserver = new Observer(activeEventID => {
+const activateEventObserver = new Observer((activeEventID) => {
   // Abort is no rowID is given ==> no activation
   if (!activeEventID) {
     if (state.selectedEvents.get().length === 0) {
@@ -127,6 +110,8 @@ const activateEventObserver = new Observer(activeEventID => {
   state.mode.set(Mode.EDITING);
 });
 
+const focusOnActiveEventObserver = new Observer(setFocusOnRow);
+
 // Attaching Observers
 state.allEvents.attachObserver(logStateChangeObserver, filterEventsObserver);
 
@@ -144,6 +129,10 @@ state.selectedEvents.attachObserver(
   changeModeOnSelectionChangeObserver,
 );
 
-state.activeEvent.attachObserver(logStateChangeObserver, activateEventObserver);
+state.activeEvent.attachObserver(
+  logStateChangeObserver,
+  activateEventObserver,
+  focusOnActiveEventObserver,
+);
 
 state.mode.attachObserver(logStateChangeObserver, setActionBarObserver);

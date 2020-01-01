@@ -4,16 +4,16 @@ class Subject {
   }
 
   attachObserver(...observers) {
-    observers.forEach(obs => this.observers.push(obs));
+    observers.forEach((obs) => this.observers.push(obs));
   }
 
   detachObserver(...observer) {
-    this.observers = this.observers.filter(obs => !observer.includes(obs));
+    this.observers = this.observers.filter((obs) => !observer.includes(obs));
   }
 
   notify(data, stateName) {
     if (this.observers.length > 0) {
-      this.observers.forEach(obs => obs.update(data, stateName));
+      this.observers.forEach((obs) => obs.update(data, stateName));
     }
   }
 }

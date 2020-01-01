@@ -413,6 +413,11 @@ tr:hover {
   background-color: #ffffff;
 }
 
+tr:focus {
+  /* background-color: #ffffff !important; */
+  outline: 1px solid #d61637;
+}
+
 textarea:disabled {
   cursor: pointer;
 }

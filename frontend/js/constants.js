@@ -1,3 +1,5 @@
+import { State } from './state.js';
+
 // Ordered definition of events
 const orderedEventDefinitions = [
   {
@@ -59,4 +61,15 @@ export const Mode = {
   CLEAN: 1, // no rows being edited, selected or created
   SELECTING: 2, // one or more rows are selected but none is edited or created
   EDITING: 3, // a existing row is being edited
+};
+
+// Object containing all application state
+export const state = {
+  allEvents: new State([], true, 'list of all events'),
+  filteredEvents: new State([], true, 'filtered events'),
+  filter: new State('', true, 'filter text'),
+  highlights: new State([], true, 'cells of filtered rows to be highlighted'),
+  selectedEvents: new State([], true, 'selected events'),
+  activeEvent: new State(null, true, 'event that is currently being edited'),
+  mode: new State(Mode.CLEAN, true, 'application mode'),
 };
