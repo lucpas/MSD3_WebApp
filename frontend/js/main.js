@@ -91,11 +91,10 @@ window.onload = () => {
     );
 
   state.mode.set(Mode.CLEAN);
-
+  
+  fetchEvents(events => state.allEvents.set(events));
+  // window.setInterval(() => fetchEvents((events) => state.allEvents.set(events));
 };
-
-fetchEvents(events => state.allEvents.set(events));
-// window.setInterval(() => fetchEvents((events) => state.allEvents.set(events));
 
 const setActionBarObserver = new Observer((mode) => {
   setActionBarAppearance(mode);
