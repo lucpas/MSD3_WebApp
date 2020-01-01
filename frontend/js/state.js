@@ -4,7 +4,7 @@ class Subject {
   }
 
   attachObserver(...observers) {
-    observers.forEach((obs) => this.observers.push(obs));
+    observers.forEach(obs => this.observers.push(obs));
   }
 
   detachObserver(...observer) {
@@ -29,12 +29,15 @@ class State extends Subject {
   constructor(state = {}, autoNotify = false, descriptor = 'anonymous') {
     super();
     this.state = state;
+    this.previousState = state;
     this.descriptor = descriptor;
     this.autoNotify = autoNotify;
   }
 
   set(data = {}) {
-    // this.state = Object.assign(this.state, data);
+    this.previousState = Array.isArray(this.state)
+      ? [...this.state]
+      : this.state;
     this.state = data;
 
     if (this.autoNotify) {
@@ -43,11 +46,13 @@ class State extends Subject {
   }
 
   get() {
-    return this.state;
+    // If state is an array, make a one level deep clone instead of just
+    // copying the reference
+    return Array.isArray(this.state) ? [...this.state] : this.state;
   }
 
   dumpToConsole() {
-    console.log('DUMPING STATE - ' + this.descriptor);
+    console.log(`DUMPING STATE - ${this.descriptor}`);
     console.log('- Observers:', this.observers);
     console.log('- State:', this.state);
   }

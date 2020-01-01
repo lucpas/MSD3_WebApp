@@ -44,13 +44,13 @@ const enableLogging = true;
 // Temporary ID of rows that have not been given a backend ID yet
 const newRowID = 'NEW';
 
-export const CONSTANTS = { 
+export const CONSTANTS = {
   backendURL,
   orderedEventDefinitions,
   enableLogging,
   newRowID,
- }
- 
+};
+
 // Collection of all unique DOM elements required to run script --> filled during onload
 export const DOM = {};
 
@@ -60,4 +60,3 @@ export const Mode = {
   SELECTING: 2, // one or more rows are selected but none is edited or created
   EDITING: 3, // a existing row is being edited
 };
-

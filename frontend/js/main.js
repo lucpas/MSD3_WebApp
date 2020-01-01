@@ -4,9 +4,12 @@ import {
   fetchEvents,
   pushNewEvent,
   pushUpdatedEvent,
+  onSelectRowHandler,
+  onKeyDownHandler,
   renderTable,
   filterEvents,
   highlightFilterMatches,
+  toggleRowSelection,
   createEventOutOfRow,
   unlockTableRow,
   lockTableRow,
@@ -14,10 +17,11 @@ import {
   validateEvent,
   printTable,
   setActionBarAppearance,
+  setActionBarHandlers,
 } from './functions.js';
 
 // Object containing all application state
-const state = {
+export const state = {
   allEvents: new State([], true, 'list of all events'),
   filteredEvents: new State([], true, 'filtered events'),
   filter: new State('', true, 'filter text'),
@@ -26,6 +30,8 @@ const state = {
   activeEvent: new State(null, true, 'event that is currently being edited'),
   mode: new State(Mode.CLEAN, true, 'application mode'),
 };
+
+document.addEventListener('keydown', onKeyDownHandler);
 
 // Initialization and first render
 window.addEventListener('DOMContentLoaded', () => {
@@ -46,56 +52,21 @@ window.addEventListener('DOMContentLoaded', () => {
   DOM.saveButton = document.getElementById('saveButton');
   DOM.cancelButton = document.getElementById('cancelButton');
   DOM.printButton = document.getElementById('printButton');
-  // Button click handlers
+  // Static Event handlers
   DOM.searchField.addEventListener('input', event => {
     state.filter.set(event.target.value);
   });
-  DOM.addButton.onclick = addButtonClickHandler;
-  DOM.editButton.onclick = editButtonClickHandler;
-  DOM.saveButton.onclick = saveButtonClickHandler;
-  DOM.cancelButton.onclick = cancelButtonClickHandler;
-  DOM.printButton.onclick = printTable;
 
   state.mode.set(Mode.CLEAN);
-  
+
   fetchEvents(events => state.allEvents.set(events));
   // window.setInterval(() => fetchEvents((events) => state.allEvents.set(events));
 });
 
-const setActionBarObserver = new Observer((mode) => {
+const setActionBarObserver = new Observer(mode => {
   setActionBarAppearance(mode);
   setActionBarHandlers(mode);
 });
-
-function setActionBarHandlers(mode) {
-  if (CONSTANTS.enableLogging) console.log('FUNCTION_setActionBarHandlers');
-
-  switch (mode) {
-    case Mode.CLEAN:
-      DOM.addButton.onclick = addButtonClickHandler;
-      DOM.editButton.onclick = null;
-      DOM.saveButton.onclick = null;
-      DOM.cancelButton.onclick = null;
-      DOM.printButton.onclick = printTable;    
-      break;
-    case Mode.SELECTING:
-      DOM.addButton.onclick = addButtonClickHandler;
-      DOM.editButton.onclick = null;
-      DOM.saveButton.onclick = saveButtonClickHandler;
-      DOM.cancelButton.onclick = cancelButtonClickHandler;
-      DOM.printButton.onclick = printTable;    
-      break;
-    case Mode.EDITING:
-      DOM.addButton.onclick = null;
-      DOM.editButton.onclick = null;
-      DOM.saveButton.onclick = saveButtonClickHandler;
-      DOM.cancelButton.onclick = cancelButtonClickHandler;
-      DOM.printButton.onclick = printTable;    
-      break;
-    default:
-      break;
-  }
-};
 
 const changeModeOnSelectionChangeObserver = new Observer(selectedEvents => {
   // If the last row was just deselected
@@ -110,32 +81,7 @@ const changeModeOnSelectionChangeObserver = new Observer(selectedEvents => {
 
 const addClickHandlerToRowObserver = new Observer(filteredEvents => {
   filteredEvents.forEach(event => {
-    document.getElementById(event.id).onclick = mouseEvent => {
-      const mode = state.mode.get();
-      if (mode !== Mode.CLEAN && mode !== Mode.SELECTING) {
-        return;
-      }
-
-      const rowId = mouseEvent.path[2].id;
-      if (rowId === 'tableBody' || rowId === 'tableEvents') {
-        return;
-      }
-
-      const tRow = document.getElementById(rowId);
-
-      let events = state.selectedEvents.get();
-
-      if (events.includes(rowId)) {
-        tRow.style.background = '';
-        events = events.filter(id => id !== rowId);
-      } else {
-        tRow.style.background = 'antiquewhite';
-        events.push(rowId);
-        events.sort();
-      }
-
-      state.selectedEvents.set(events);
-    };
+    document.getElementById(event.id).onclick = onSelectRowHandler;
   });
 });
 
@@ -161,142 +107,43 @@ const logStateChangeObserver = new Observer((data, descriptor) => {
   if (CONSTANTS.enableLogging) console.log(`STATE CHANGE IN ${descriptor}`);
 });
 
-const activateEventObserver = new Observer(rowID => {
+const activateEventObserver = new Observer(activeEventID => {
   // Abort is no rowID is given ==> no activation
-  if (!rowID) {
-    state.mode.set(Mode.CLEAN);
+  if (!activeEventID) {
+    if (state.selectedEvents.get().length === 0) {
+      state.mode.set(Mode.CLEAN);
+    } else {
+      state.mode.set(Mode.SELECTING);
+    }
     return;
   }
-  
-  if (rowID === CONSTANTS.newRowID) {
+
+  if (activeEventID === CONSTANTS.newRowID) {
     createEmptyRow();
   } else {
-    unlockTableRow(rowID);
+    unlockTableRow(activeEventID);
   }
 
   state.mode.set(Mode.EDITING);
 });
 
-function addButtonClickHandler() {
-  if (CONSTANTS.enableLogging) console.log('FUNCTION_addButtonClickHandler');
-
-  state.activeEvent.set(CONSTANTS.newRowID);
-}
-
-function editButtonClickHandler() {
-  if (CONSTANTS.enableLogging) console.log('FUNCTION_editButtonClickHandler');
-
-  if (state.mode.get() !== Mode.SELECTING) {
-    return;
-  }
-  
-  let selectedEvents = state.selectedEvents.get();
-  const activeEvent = selectedEvents.pop();
-  state.activeEvent.set(activeEvent);
-  state.selectedEvents.set(selectEvents);
-}
-
-function saveButtonClickHandler() {
-  if (CONSTANTS.enableLogging) console.log('FUNCTION_saveButtonClickHandler');
-
-  const activeEventID = state.activeEvent.get();
-  // Abort if no event is active
-  if (!activeEventID) {
-    return;
-  }
-
-  const event = createEventOutOfRow(activeEventID);
-
-  const isValidEvent = validateEvent(event);
-
-  const saveEventCallback = () => {
-    const untouchedEvents = state.allEvents
-      .get()
-      .filter(e => e.id !== event.id);
-    state.allEvents.set([event, ...untouchedEvents]);
-
-    state.mode.set(Mode.SELECTING);
-  };
-
-  if (isValidEvent) {
-    if (event.id === CONSTANTS.newRowID) {
-      pushNewEvent(saveEventCallback, event);
-    } else {
-      pushUpdatedEvent(saveEventCallback, event);
-    }
-  } else {
-    // TODO: SPRINT 3 --> React to bad validation
-  }
-}
-
-function cancelButtonClickHandler() {
-  if (CONSTANTS.enableLogging) console.log('FUNCTION_cancelButtonClickHandler');
-
-  switch (state.mode.get()) {
-    case Mode.SELECTING:
-      // Reset marked EDITING
-      state.selectedEvents.get().forEach(rowId => {
-        document.getElementById(rowId).style.background = '';
-      });
-      state.selectedEvents.set([]);
-      break;
-    case Mode.EDITING:
-      // TODO: Styled prompt
-      if (!confirm('Ungespeicherte Änderung werden verworfen. Fortfahren?')) {
-        break;
-      }
-
-      const activeEventID = state.activeEvent.get();
-
-      if (activeEventID === CONSTANTS.newRowID)
-        // Delete new table row, if exists
-        if (DOM.tBody.rows[0].id === 'NEW') {
-          DOM.tBody.deleteRow(0);
-        } else {
-          console.log('Wait what?'); 
-          break;
-        }
-      else {
-        lockTableRow(activeEventID);
-      }
-      
-      state.activeEvent.set(null)
-      break;
-    default:
-      break;
-  }
-}
-
-
 // Attaching Observers
-state.allEvents.attachObserver(
-  logStateChangeObserver,
-  filterEventsObserver
-  );
+state.allEvents.attachObserver(logStateChangeObserver, filterEventsObserver);
 
-state.filter.attachObserver(
-  logStateChangeObserver,
-  filterEventsObserver
-  );
+state.filter.attachObserver(logStateChangeObserver, filterEventsObserver);
 
 state.filteredEvents.attachObserver(
   logStateChangeObserver,
   renderTableObserver,
   highlightRowObserver,
-  addClickHandlerToRowObserver
-  );
+  addClickHandlerToRowObserver,
+);
 
 state.selectedEvents.attachObserver(
   logStateChangeObserver,
-  changeModeOnSelectionChangeObserver
-  );
+  changeModeOnSelectionChangeObserver,
+);
 
-state.activeEvent.attachObserver(
-  logStateChangeObserver,
-  activateEventObserver
-  );
+state.activeEvent.attachObserver(logStateChangeObserver, activateEventObserver);
 
-state.mode.attachObserver(
-  logStateChangeObserver,
-  setActionBarObserver,
-  );
+state.mode.attachObserver(logStateChangeObserver, setActionBarObserver);
