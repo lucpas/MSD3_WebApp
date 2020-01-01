@@ -28,7 +28,7 @@ const state = {
 };
 
 // Initialization and first render
-window.onload = () => {
+window.addEventListener('DOMContentLoaded', () => {
   if (CONSTANTS.enableLogging) 'FUNCTION_window.onload';
 
   // --- UNIQUE DOM ELEMENTS
@@ -56,45 +56,11 @@ window.onload = () => {
   DOM.cancelButton.onclick = cancelButtonClickHandler;
   DOM.printButton.onclick = printTable;
 
-  // setActionBarAppearance(state.mode.get());
-
-  state.allEvents.attachObserver(
-    logStateChangeObserver,
-    filterEventsObserver
-    );
-  
-  state.filter.attachObserver(
-    logStateChangeObserver,
-    filterEventsObserver
-    );
-  
-  state.filteredEvents.attachObserver(
-    logStateChangeObserver,
-    renderTableObserver,
-    highlightRowObserver,
-    addClickHandlerToRowObserver
-    );
-  
-  state.selectedEvents.attachObserver(
-    logStateChangeObserver,
-    changeModeOnSelectionChangeObserver
-    );
-  
-  state.activeEvent.attachObserver(
-    logStateChangeObserver,
-    activateEventObserver
-    );
-  
-  state.mode.attachObserver(
-    logStateChangeObserver,
-    setActionBarObserver,
-    );
-
   state.mode.set(Mode.CLEAN);
   
   fetchEvents(events => state.allEvents.set(events));
   // window.setInterval(() => fetchEvents((events) => state.allEvents.set(events));
-};
+});
 
 const setActionBarObserver = new Observer((mode) => {
   setActionBarAppearance(mode);
@@ -300,3 +266,37 @@ function cancelButtonClickHandler() {
       break;
   }
 }
+
+
+// Attaching Observers
+state.allEvents.attachObserver(
+  logStateChangeObserver,
+  filterEventsObserver
+  );
+
+state.filter.attachObserver(
+  logStateChangeObserver,
+  filterEventsObserver
+  );
+
+state.filteredEvents.attachObserver(
+  logStateChangeObserver,
+  renderTableObserver,
+  highlightRowObserver,
+  addClickHandlerToRowObserver
+  );
+
+state.selectedEvents.attachObserver(
+  logStateChangeObserver,
+  changeModeOnSelectionChangeObserver
+  );
+
+state.activeEvent.attachObserver(
+  logStateChangeObserver,
+  activateEventObserver
+  );
+
+state.mode.attachObserver(
+  logStateChangeObserver,
+  setActionBarObserver,
+  );
