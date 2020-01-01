@@ -3,17 +3,17 @@ class Subject {
     this.observers = [];
   }
 
-  attachObserver(observer) {
-    this.observers.push(observer);
+  attachObserver(...observers) {
+    observers.forEach((obs) => this.observers.push(obs));
   }
 
-  detachObserver(observer) {
-    this.observers = this.observers.filter(obs => obs !== observer);
+  detachObserver(...observer) {
+    this.observers = this.observers.filter(obs => !observer.includes(obs));
   }
 
-  notify(data) {
+  notify(data, stateName) {
     if (this.observers.length > 0) {
-      this.observers.forEach(obs => obs.update(data));
+      this.observers.forEach(obs => obs.update(data, stateName));
     }
   }
 }
@@ -26,9 +26,9 @@ class Observer {
 }
 
 class State extends Subject {
-  constructor(descriptor = 'anonymous', autoNotify = false) {
+  constructor(state = {}, autoNotify = false, descriptor = 'anonymous') {
     super();
-    this.state = {};
+    this.state = state;
     this.descriptor = descriptor;
     this.autoNotify = autoNotify;
   }
@@ -38,7 +38,7 @@ class State extends Subject {
     this.state = data;
 
     if (this.autoNotify) {
-      super.notify(this.state);
+      super.notify(this.state, this.descriptor);
     }
   }
 
@@ -47,7 +47,7 @@ class State extends Subject {
   }
 
   dumpToConsole() {
-    console.log('DUMPING STATE - ' + this.descriptor)
+    console.log('DUMPING STATE - ' + this.descriptor);
     console.log('- Observers:', this.observers);
     console.log('- State:', this.state);
   }

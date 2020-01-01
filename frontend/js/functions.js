@@ -1,9 +1,11 @@
+import { CONSTANTS, DOM, Mode } from './constants.js';
+
 // ----------- IO
-function fetchEvents(url, callback) {
-  console.log('DEBUG_fetchEvents:', url, callback);
+function fetchEvents(callback) {
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_fetchEvents:', callback);
 
   const request = new XMLHttpRequest();
-  request.open('GET', url);
+  request.open('GET', CONSTANTS.backendURL);
   request.send();
 
   // eslint-disable-next-line func-names
@@ -19,11 +21,11 @@ function fetchEvents(url, callback) {
   };
 }
 
-function pushNewEvent(url, callback, selectedEvent) {
-  console.log('DEBUG_pushNewEvent:', url, callback, selectedEvent);
+function pushNewEvent(callback, selectedEvent) {
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_pushNewEvent:', callback, selectedEvent);
 
   const request = new XMLHttpRequest();
-  request.open('POST', url);
+  request.open('POST', CONSTANTS.backendURL);
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   request.send(JSON.stringify(selectedEvent));
 
@@ -37,11 +39,11 @@ function pushNewEvent(url, callback, selectedEvent) {
   };
 }
 
-function pushUpdatedEvent(url, callback, selectedEvent) {
-  console.log('DEBUG_pushNewEvent:', url, callback, selectedEvent);
+function pushUpdatedEvent(callback, selectedEvent) {
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_pushNewEvent:', callback, selectedEvent);
   
   const request = new XMLHttpRequest();
-  request.open('PUT', `${url}/${selectedEvent.id}`, true);
+  request.open('PUT', `${CONSTANTS.backendURL}/${selectedEvent.id}`, true);
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   request.send(JSON.stringify(selectedEvent));
 
@@ -57,8 +59,8 @@ function pushUpdatedEvent(url, callback, selectedEvent) {
 
 // ----------- UTILS
 
-function renderTable(events, tableBody, orderedEventDefinitions) {
-  console.log('DEBUG_renderTable:params:', events, tableBody);
+function renderTable(events, tableBody) {
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_renderTable:', events, tableBody);
 
   tableBody.innerHTML = '';
 
@@ -68,7 +70,7 @@ function renderTable(events, tableBody, orderedEventDefinitions) {
 
     // Write event data to table
     // eslint-disable-next-line no-restricted-syntax
-    for (const column of orderedEventDefinitions) {
+    for (const column of CONSTANTS.orderedEventDefinitions) {
       let cell = tRow.insertCell(-1);
 
       const inputField = document.createElement('textarea');
@@ -83,8 +85,9 @@ function renderTable(events, tableBody, orderedEventDefinitions) {
   });
 }
 
-function filterEvents(filterText, events) {
-  console.log('DEBUG_filterEvents:', filterText, events);
+function filterEvents(events, filterText) {
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_filterEvents:', filterText, events);
+
   const matches = [];
 
   // do not filter if less than 3 characters were entered
@@ -106,12 +109,11 @@ function filterEvents(filterText, events) {
     return isMatch;
   });
 
-  // console.log('DEBUG_filterEvents:results:', filteredEvents, matches);
   return { events: filteredEvents, matches };
 }
 
 function highlightFilterMatches(matches) {
-  console.log('DEBUG_highlightFilterMatches:', matches);
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_highlightFilterMatches:', matches);
 
   matches.forEach(match => {
     document.getElementById(match).classList.add('highlight');
@@ -119,7 +121,7 @@ function highlightFilterMatches(matches) {
 }
 
 function createEventOutOfRow(rowId) {
-  console.log('DEBUG_createEventOutOfRow:', rowId);
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_createEventOutOfRow:', rowId);
 
   const { cells } = document.getElementById(rowId);
 
@@ -136,30 +138,30 @@ function createEventOutOfRow(rowId) {
 }
 
 function unlockTableRow(rowId) {
-  const tableRow = document.getElementById(rowId);
+  const tRow = document.getElementById(rowId);
 
-  for (const cell of tableRow.cells) {
+  for (const cell of tRow.cells) {
     cell.firstChild.removeAttribute('disabled');
   }
 }
 
 function lockTableRow(rowId) {
-  const tableRow = document.getElementById(rowId);
+  const tRow = document.getElementById(rowId);
 
-  for (const cell of tableRow.cells) {
+  for (const cell of tRow.cells) {
     cell.firstChild.setAttribute('disabled', '');
   }
 }
 
-function createEmptyRow(tableBody, orderedEventDefinitions) {
-  console.log('DEBUG_createEmptyRow:', tableBody);
+function createEmptyRow() {
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_createEmptyRow:');
 
-  const tRow = tableBody.insertRow(0);
-  tRow.setAttribute('id', 'NEW');
+  const tRow = DOM.tBody.insertRow(0);
+  tRow.setAttribute('id', CONSTANTS.newRowID);
 
   let cell;
   // eslint-disable-next-line no-restricted-syntax
-  for (const column of orderedEventDefinitions) {
+  for (const column of CONSTANTS.orderedEventDefinitions) {
     cell = tRow.insertCell(-1);
     const inputField = document.createElement('textarea');
     inputField.value = '';
@@ -168,7 +170,67 @@ function createEmptyRow(tableBody, orderedEventDefinitions) {
     cell.setAttribute('data-title', column.presentationLabel);
     cell.appendChild(inputField);
   }
+
+  return tRow;
 }
+
+function validateEvent(event) {
+  // TODO: FRONTEND VALIDATION LOGIC
+
+  return Object.values(event).every(prop => prop !== '' && prop !== null);
+}
+
+function printTable() {
+  // new empty window
+  const printWin = window.open('');
+  // fill tabledata in new window
+  printWin.document.write(DOM.table.outerHTML);
+  // function to open printdialog
+  printWin.print();
+  // close the "new page" after printing
+  printWin.close();
+  window.onload();
+}
+
+function setActionBarAppearance(mode) {
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_setActionBarAppearance');
+
+  switch (mode) {
+    case Mode.CLEAN:
+      DOM.addButton.classList.add('big');
+      DOM.addButton.classList.remove('disabled');
+      DOM.editButton.classList.remove('big');
+      DOM.editButton.classList.add('disabled');
+      DOM.saveButton.classList.remove('big');
+      DOM.saveButton.classList.add('disabled');
+      DOM.cancelButton.classList.remove('big');
+      DOM.cancelButton.classList.add('disabled');
+      break;
+    case Mode.SELECTING:
+      DOM.addButton.classList.add('big');
+      DOM.addButton.classList.remove('disabled');
+      DOM.editButton.classList.add('big');
+      DOM.editButton.classList.remove('disabled');
+      DOM.saveButton.classList.remove('big');
+      DOM.saveButton.classList.add('disabled');
+      DOM.cancelButton.classList.remove('big');
+      DOM.cancelButton.classList.remove('disabled');
+      break;
+    case Mode.EDITING:
+      DOM.addButton.classList.remove('big');
+      DOM.addButton.classList.add('disabled');
+      DOM.editButton.classList.remove('big');
+      DOM.editButton.classList.add('disabled');
+      DOM.saveButton.classList.add('big');
+      DOM.saveButton.classList.remove('disabled');
+      DOM.cancelButton.classList.remove('big');
+      DOM.cancelButton.classList.remove('disabled');
+      break;
+    default:
+      break;
+  }
+}
+
 
 
 export {
@@ -181,5 +243,8 @@ export {
   createEventOutOfRow,
   unlockTableRow,
   lockTableRow,
-  createEmptyRow
+  createEmptyRow,
+  validateEvent,
+  printTable,
+  setActionBarAppearance,
 };

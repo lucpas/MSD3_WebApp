@@ -8,8 +8,10 @@
       content="Hier finden Sie alle Veranstaltungen der FH JOANNEUM."
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preload" href="https://msd3-webapp.herokuapp.com/api/events" as="fetch" crossorigin="anonymous">
     <link rel="icon" type="image/png" href="favicon.png" sizes="96x96" />
     <link rel="stylesheet" type="text/css" href="./css/style.css" />
+    <script type="module" src="./js/constants.js"></script>
     <script type="module" src="./js/state.js"></script>
     <script type="module" src="./js/functions.js"></script>
     <script type="module" src="./js/main.js"></script>
@@ -47,7 +49,7 @@
         />
         <img
           src="img/floppy.svg"
-          class="icon disabled"
+          class="icon"
           id="saveButton"
           alt="save icon"
           height="50"

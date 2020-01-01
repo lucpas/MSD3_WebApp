@@ -1,4 +1,5 @@
 import { State, Observer } from './state.js';
+import { CONSTANTS, DOM, Mode } from './constants.js';
 import {
   fetchEvents,
   pushNewEvent,
@@ -10,83 +11,26 @@ import {
   unlockTableRow,
   lockTableRow,
   createEmptyRow,
+  validateEvent,
+  printTable,
+  setActionBarAppearance,
 } from './functions.js';
-
-// Ordered definition of events
-const orderedEventDefinitions = [
-  {
-    dataLabel: 'title',
-    presentationLabel: 'Titel',
-  },
-  {
-    dataLabel: 'description',
-    presentationLabel: 'Beschreibung',
-  },
-  {
-    dataLabel: 'date',
-    presentationLabel: 'Datum',
-  },
-  {
-    dataLabel: 'time',
-    presentationLabel: 'Uhrzeit',
-  },
-  {
-    dataLabel: 'place',
-    presentationLabel: 'Ort',
-  },
-  {
-    dataLabel: 'contact',
-    presentationLabel: 'Kontakt',
-  },
-  {
-    dataLabel: 'institute',
-    presentationLabel: 'Institut',
-  },
-  {
-    dataLabel: 'entry',
-    presentationLabel: 'Eintritt',
-  },
-];
-
-// URL of backend api (prod and dev)
-// const url = 'https://msd3-webapp.herokuapp.com/api/events';
-const url = 'http://localhost:8080/api/events';
-
-// Collection of all unique DOM elements required to run script --> filled during onload
-const DOM = {};
-
-const Modes = {
-  CLEAN: 1,
-  SELECTING: 2,
-  EDITING: 3,
-  CREATING: 4,
-};
 
 // Object containing all application state
 const state = {
-  allEvents: new State('all events', true),
-  filteredEvents: new State('filtered events', true),
-  filter: new State('filter text', true),
-  highlights: new State('cells of filtered rows to be highlighted', true),
-  selectedEvents: new State(
-    'events that have selectedEvents by clicking',
-    true,
-  ),
-  rowInEditing: new State('row that is currently being edited', true),
-  mode: new State('Initial state, event selection, editing or creation'),
+  allEvents: new State([], true, 'list of all events'),
+  filteredEvents: new State([], true, 'filtered events'),
+  filter: new State('', true, 'filter text'),
+  highlights: new State([], true, 'cells of filtered rows to be highlighted'),
+  selectedEvents: new State([], true, 'selected events'),
+  activeEvent: new State(null, true, 'event that is currently being edited'),
+  mode: new State(Mode.CLEAN, true, 'application mode'),
 };
-
-// Initialize state
-state.allEvents.set([]);
-state.filteredEvents.set([]);
-state.filter.set('');
-state.highlights.set([]);
-state.selectedEvents.set([]);
-state.mode.set(Modes.CLEAN);
 
 // Initialization and first render
 window.onload = () => {
-  console.log('DEBUG_window.onload');
+  if (CONSTANTS.enableLogging) 'FUNCTION_window.onload';
+
   // --- UNIQUE DOM ELEMENTS
   // Table and structural elements
   DOM.tContainer = document.getElementById('table-container');
@@ -102,193 +46,100 @@ window.onload = () => {
   DOM.saveButton = document.getElementById('saveButton');
   DOM.cancelButton = document.getElementById('cancelButton');
   DOM.printButton = document.getElementById('printButton');
-
+  // Button click handlers
   DOM.searchField.addEventListener('input', event => {
-    console.log('DEBUG_window.onload');
     state.filter.set(event.target.value);
   });
-
-  DOM.addButton.onclick = () => {
-    console.log('DEBUG_addEventButton.onclick');
-
-    if (state.mode.get() !== Modes.SELECTING) {
-      return;
-    }
-
-    state.mode.set(Modes.CREATING);
-
-    createEmptyRow(DOM.tBody, orderedEventDefinitions);
-
-    DOM.saveButton.onclick = () => {
-      const newEvent = createEventOutOfRow('NEW');
-      const isValidEvent = validateEvent(newEvent);
-      if (isValidEvent) {
-        pushNewEvent(newEvent, () => {
-          state.allEvents.set([newEvent, ...state.allEvents.get()]);
-
-          state.mode.set(Modes.SELECTING);
-        });
-      } else {
-        // TODO: Sprint 3 validate -> errorMessage()
-        window.alert('OOOPS');
-      }
-    };
-  };
-
-  DOM.editButton.onclick = () => {
-    console.log('DEBUG_editButton.onclick');
-
-    let selectedEvents = state.selectedEvents.get();
-
-    if (mode !== Modes.SELECTING || selectedEvents.length === 0) {
-      return;
-    }
-
-    state.mode.set(Modes.EDITING);
-
-    const rowInEditing = selectedEvents.pop();
-    state.rowInEditing.set(rowInEditing);
-    state.selectedEvents.set(selectEvents);
-
-    unlockTableRow(rowInEditing);
-
-    DOM.saveButton.onclick = () => {
-      const updatedEvent = createEventOutOfRow(rowInEditing);
-      updatedEvent.id = rowInEditing;
-      const isValidEvent = validateEvent(updatedEvent);
-
-      if (isValidEvent) {
-        pushUpdatedEvent(updatedEvent, () => {
-          const untouchedEvents = state.allEvents
-            .get()
-            .filter(e => e.id !== updatedEvent.id);
-          state.allEvents.set([updatedEvent, ...untouchedEvents]);
-
-          state.mode.set(Modes.SELECTING);
-        });
-      } else {
-        // TODO: Sprint 3 validate -> errorMessage()
-        window.alert(errorMessage());
-      }
-    };
-  };
-
-  DOM.cancelButton.onclick = () => {
-    console.log('DEBUG_cancelButton.onclick');
-
-    switch (mode) {
-      case Modes.SELECTING:
-        // Reset marked EDITING
-        state.selectedEvents.get().forEach(rowId => {
-          document.getElementById(rowId).style.background = '';
-        });
-        state.selectedEvents.set([]);
-        break;
-      case Modes.CREATING:
-        // TODO: Styled prompt
-        // if (!confirm('Witty confirmation message?')) {
-        //   break;
-        // }
-
-        // Delete new table row, if exists
-        if (DOM.tBody.rows[0].id === 'NEW') {
-          DOM.tBody.deleteRow(0);
-        }
-        break;
-      case Modes.EDITING:
-        // if (!confirm('Witty confirmation message?')) {
-        //   break;
-        // }
-
-        lockTableRow(rowInEditing);
-        rowInEditing = '';
-        break;
-      default:
-        break;
-    }
-
-    // Reset view to table mode
-    state.mode.set(Modes.SELECTING);
-  };
-
-  setActionBar(state.mode.get());
-
+  DOM.addButton.onclick = addButtonClickHandler;
+  DOM.editButton.onclick = editButtonClickHandler;
+  DOM.saveButton.onclick = saveButtonClickHandler;
+  DOM.cancelButton.onclick = cancelButtonClickHandler;
   DOM.printButton.onclick = printTable;
 
-  fetchEvents(url, events => state.allEvents.set(events));
-  // window.setInterval(() => fetchEvents(url, (events) => state.allEvents.set(events));
+  // setActionBarAppearance(state.mode.get());
+
+  state.allEvents.attachObserver(
+    logStateChangeObserver,
+    filterEventsObserver
+    );
+  
+  state.filter.attachObserver(
+    logStateChangeObserver,
+    filterEventsObserver
+    );
+  
+  state.filteredEvents.attachObserver(
+    logStateChangeObserver,
+    renderTableObserver,
+    highlightRowObserver,
+    addClickHandlerToRowObserver
+    );
+  
+  state.selectedEvents.attachObserver(
+    logStateChangeObserver,
+    changeModeOnSelectionChangeObserver
+    );
+  
+  state.activeEvent.attachObserver(
+    logStateChangeObserver,
+    activateEventObserver
+    );
+  
+  state.mode.attachObserver(
+    logStateChangeObserver,
+    setActionBarObserver,
+    );
+
+  state.mode.set(Mode.CLEAN);
+
 };
 
-function setActionBar(mode) {
-  console.log(mode);
+fetchEvents(events => state.allEvents.set(events));
+// window.setInterval(() => fetchEvents((events) => state.allEvents.set(events));
+
+const setActionBarObserver = new Observer((mode) => {
+  setActionBarAppearance(mode);
+  setActionBarHandlers(mode);
+});
+
+function setActionBarHandlers(mode) {
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_setActionBarHandlers');
 
   switch (mode) {
-    case Modes.CLEAN:
-      DOM.addButton.classList.add('big');
-      DOM.addButton.classList.remove('disabled');
-      DOM.editButton.classList.remove('big');
-      DOM.editButton.classList.add('disabled');
-      DOM.saveButton.classList.remove('big');
-      DOM.saveButton.classList.add('disabled');
-      DOM.cancelButton.classList.remove('big');
-      DOM.cancelButton.classList.add('disabled');
+    case Mode.CLEAN:
+      DOM.addButton.onclick = addButtonClickHandler;
+      DOM.editButton.onclick = null;
       DOM.saveButton.onclick = null;
+      DOM.cancelButton.onclick = null;
+      DOM.printButton.onclick = printTable;    
       break;
-    case Modes.SELECTING:
-      DOM.addButton.classList.add('big');
-      DOM.addButton.classList.remove('disabled');
-      DOM.editButton.classList.add('big');
-      DOM.editButton.classList.remove('disabled');
-      DOM.saveButton.classList.remove('big');
-      DOM.saveButton.classList.add('disabled');
-      DOM.cancelButton.classList.remove('big');
-      DOM.cancelButton.classList.add('disabled');
-      DOM.saveButton.onclick = null;
+    case Mode.SELECTING:
+      DOM.addButton.onclick = addButtonClickHandler;
+      DOM.editButton.onclick = null;
+      DOM.saveButton.onclick = saveButtonClickHandler;
+      DOM.cancelButton.onclick = cancelButtonClickHandler;
+      DOM.printButton.onclick = printTable;    
       break;
-    case Modes.CREATING:
-    case Modes.EDITING:
-      DOM.addButton.classList.remove('big');
-      DOM.addButton.classList.add('disabled');
-      DOM.editButton.classList.remove('big');
-      DOM.editButton.classList.add('disabled');
-      DOM.saveButton.classList.add('big');
-      DOM.saveButton.classList.remove('disabled');
-      DOM.cancelButton.classList.remove('big');
-      DOM.cancelButton.classList.remove('disabled');
+    case Mode.EDITING:
+      DOM.addButton.onclick = null;
+      DOM.editButton.onclick = null;
+      DOM.saveButton.onclick = saveButtonClickHandler;
+      DOM.cancelButton.onclick = cancelButtonClickHandler;
+      DOM.printButton.onclick = printTable;    
       break;
     default:
       break;
   }
-}
-
-function validateEvent(event) {
-  // TODO: FRONTEND VALIDATION LOGIC
-
-  return Object.values(event).every(prop => prop !== '' && prop !== null);
-}
-
-function printTable() {
-  // new empty window
-  const printWin = window.open('');
-  // fill tabledata in new window
-  printWin.document.write(DOM.table.outerHTML);
-  // function to open printdialog
-  printWin.print();
-  // close the "new page" after printing
-  printWin.close();
-  window.onload();
-}
-
-const updateActionBarOnModeChangeObserver = new Observer(setActionBar);
+};
 
 const changeModeOnSelectionChangeObserver = new Observer(selectedEvents => {
   // If the last row was just deselected
-  if (selectedEvents.length === 0 && state.mode.get() === Modes.SELECTING) {
-    state.mode.set(Modes.CLEAN);
+  if (selectedEvents.length === 0 && state.mode.get() === Mode.SELECTING) {
+    state.mode.set(Mode.CLEAN);
   }
   // If the first row was just selected
-  if (selectedEvents.length !== 0 && state.mode.get() === Modes.CLEAN) {
-    state.mode.set(Modes.SELECTING);
+  if (selectedEvents.length !== 0 && state.mode.get() === Mode.CLEAN) {
+    state.mode.set(Mode.SELECTING);
   }
 });
 
@@ -296,7 +147,7 @@ const addClickHandlerToRowObserver = new Observer(filteredEvents => {
   filteredEvents.forEach(event => {
     document.getElementById(event.id).onclick = mouseEvent => {
       const mode = state.mode.get();
-      if (mode !== Modes.CLEAN && mode !== Modes.SELECTING) {
+      if (mode !== Mode.CLEAN && mode !== Mode.SELECTING) {
         return;
       }
 
@@ -325,8 +176,8 @@ const addClickHandlerToRowObserver = new Observer(filteredEvents => {
 
 const filterEventsObserver = new Observer(() => {
   const { events, matches } = filterEvents(
-    state.filter.get(),
     state.allEvents.get(),
+    state.filter.get(),
   );
 
   state.highlights.set(matches);
@@ -334,20 +185,119 @@ const filterEventsObserver = new Observer(() => {
 });
 
 const renderTableObserver = new Observer(events =>
-  renderTable(events, DOM.tBody, orderedEventDefinitions),
+  renderTable(events, DOM.tBody),
 );
 
 const highlightRowObserver = new Observer(() => {
   highlightFilterMatches(state.highlights.get());
 });
 
-state.filter.attachObserver(filterEventsObserver);
-state.allEvents.attachObserver(filterEventsObserver);
-state.filteredEvents.attachObserver(renderTableObserver);
-state.filteredEvents.attachObserver(highlightRowObserver);
-state.filteredEvents.attachObserver(addClickHandlerToRowObserver);
-state.selectedEvents.attachObserver(changeModeOnSelectionChangeObserver);
-state.mode.attachObserver(updateActionBarOnModeChangeObserver);
+const logStateChangeObserver = new Observer((data, descriptor) => {
+  if (CONSTANTS.enableLogging) console.log(`STATE CHANGE IN ${descriptor}`);
+});
 
-// Necessary so browsers will recognize file as module
-export {};
+const activateEventObserver = new Observer(rowID => {
+  // Abort is no rowID is given ==> no activation
+  if (!rowID) {
+    state.mode.set(Mode.CLEAN);
+    return;
+  }
+  
+  if (rowID === CONSTANTS.newRowID) {
+    createEmptyRow();
+  } else {
+    unlockTableRow(rowID);
+  }
+
+  state.mode.set(Mode.EDITING);
+});
+
+function addButtonClickHandler() {
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_addButtonClickHandler');
+
+  state.activeEvent.set(CONSTANTS.newRowID);
+}
+
+function editButtonClickHandler() {
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_editButtonClickHandler');
+
+  if (state.mode.get() !== Mode.SELECTING) {
+    return;
+  }
+  
+  let selectedEvents = state.selectedEvents.get();
+  const activeEvent = selectedEvents.pop();
+  state.activeEvent.set(activeEvent);
+  state.selectedEvents.set(selectEvents);
+}
+
+function saveButtonClickHandler() {
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_saveButtonClickHandler');
+
+  const activeEventID = state.activeEvent.get();
+  // Abort if no event is active
+  if (!activeEventID) {
+    return;
+  }
+
+  const event = createEventOutOfRow(activeEventID);
+
+  const isValidEvent = validateEvent(event);
+
+  const saveEventCallback = () => {
+    const untouchedEvents = state.allEvents
+      .get()
+      .filter(e => e.id !== event.id);
+    state.allEvents.set([event, ...untouchedEvents]);
+
+    state.mode.set(Mode.SELECTING);
+  };
+
+  if (isValidEvent) {
+    if (event.id === CONSTANTS.newRowID) {
+      pushNewEvent(saveEventCallback, event);
+    } else {
+      pushUpdatedEvent(saveEventCallback, event);
+    }
+  } else {
+    // TODO: SPRINT 3 --> React to bad validation
+  }
+}
+
+function cancelButtonClickHandler() {
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_cancelButtonClickHandler');
+
+  switch (state.mode.get()) {
+    case Mode.SELECTING:
+      // Reset marked EDITING
+      state.selectedEvents.get().forEach(rowId => {
+        document.getElementById(rowId).style.background = '';
+      });
+      state.selectedEvents.set([]);
+      break;
+    case Mode.EDITING:
+      // TODO: Styled prompt
+      if (!confirm('Ungespeicherte Änderung werden verworfen. Fortfahren?')) {
+        break;
+      }
+
+      const activeEventID = state.activeEvent.get();
+
+      if (activeEventID === CONSTANTS.newRowID)
+        // Delete new table row, if exists
+        if (DOM.tBody.rows[0].id === 'NEW') {
+          DOM.tBody.deleteRow(0);
+        } else {
+          console.log('Wait what?'); 
+          break;
+        }
+      else {
+        lockTableRow(activeEventID);
+      }
+      
+      state.activeEvent.set(null)
+      break;
+    default:
+      break;
+  }
+}

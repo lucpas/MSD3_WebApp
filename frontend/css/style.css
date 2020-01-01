@@ -84,6 +84,7 @@ table {
   font-family: helvetica, sans-serif;
   font-size: 14px;
   border-spacing: 0 1px;
+  width: 100%;
 }
 
 td.title > textarea {
