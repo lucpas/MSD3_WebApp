@@ -238,11 +238,10 @@ function drawTable(selectedEvents) {
     deleteButton.width = '20';
 
     deleteButton.addEventListener('click', () => deleteEvent(event,() => {
-        events.delete(event);
-        drawTable(events);
-        DOM.modal.style.display = 'none';
+      events.delete(event);
+      fetchEvents(() => drawTable(events));
+      DOM.modal.style.display = 'none';
     }));
-    fetchEvents();
     deleteButton.classList.add('icon');
 
     cell = row.insertCell(-1);
@@ -306,7 +305,7 @@ function deleteEvent(selectedEvent, callback) {
 
   // eslint-disable-next-line func-names
   request.onreadystatechange = function () {
-    if (this.readyState === 4 && this.status === 200) {
+    if (this.readyState === 4 && this.status === 204) {
       if (typeof callback === 'function') {
 
         callback();
