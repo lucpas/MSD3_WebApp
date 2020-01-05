@@ -24,7 +24,7 @@ export function fetchEvents(callback) {
 }
 
 export function pushNewEvent(callback, selectedEvent) {
-  if (CONSTANTS.enableLogging) console.log('FUNCTION_pushNewEvent:', selectedEvent);
+  if (CONSTANTS.enableLogging) { console.log('FUNCTION_pushNewEvent:', selectedEvent); }
 
   const request = new XMLHttpRequest();
   request.open('POST', CONSTANTS.backendURL);
@@ -42,7 +42,7 @@ export function pushNewEvent(callback, selectedEvent) {
 }
 
 export function pushUpdatedEvent(callback, selectedEvent) {
-  if (CONSTANTS.enableLogging) console.log('FUNCTION_pushNewEvent:', selectedEvent);
+  if (CONSTANTS.enableLogging) { console.log('FUNCTION_pushNewEvent:', selectedEvent); }
 
   const request = new XMLHttpRequest();
   request.open('PUT', `${CONSTANTS.backendURL}/${selectedEvent.id}`, true);
@@ -92,7 +92,7 @@ export function saveButtonClickHandler() {
   const isValidEvent = validateEvent(editedEvent);
 
   const saveEventCallback = () => {
-    const events = state.allEvents.get(); 
+    const events = state.allEvents.get();
     const index = events.findIndex((e) => e.id === editedEvent.id);
 
     if (index === -1) {
@@ -177,9 +177,9 @@ export function onKeyDownHandler(event) {
   if (event.target === DOM.searchField) {
     return;
   }
-  
+
   const isInputField = event.target.tagName === 'TEXTAREA' || event.target.tagName === 'INPUT';
-  let activeRow; 
+  let activeRow;
   let nextElementID;
 
   switch (event.key) {
@@ -254,7 +254,7 @@ export function onKeyDownHandler(event) {
 // ----------- UTILS
 
 export function getNthNextEventID(eventID, n) {
-  const events = state.filteredEvents.get();
+  const events = state.displayedEvents.get();
   const nextIndex = events.findIndex((event) => event.id === eventID) + n;
 
   if (nextIndex >= 0 && nextIndex < events.length) {
@@ -264,7 +264,7 @@ export function getNthNextEventID(eventID, n) {
 }
 
 export function renderTable(events) {
-  if (CONSTANTS.enableLogging) console.log('FUNCTION_renderTable:', events, tableBody);
+  if (CONSTANTS.enableLogging) { console.log('FUNCTION_renderTable'); }
 
   while (DOM.tBody.firstChild) {
     DOM.tBody.firstChild.remove();
@@ -278,15 +278,12 @@ export function renderTable(events) {
     // Write event data to table
     // eslint-disable-next-line no-restricted-syntax
     for (const column of CONSTANTS.orderedEventDefinitions) {
-      
       const cell = tRow.insertCell(-1);
 
       // const inputField = document.createElement('textarea');
       const inputField = column.inputField.cloneNode();
       inputField.value = event[column.dataLabel];
       inputField.setAttribute('disabled', '');
-      // inputField.setAttribute('readonly', '');
-      // inputField.classList.add('disabled');
 
       cell.classList.add(column.dataLabel);
       cell.setAttribute('id', `${event.id}_${column.dataLabel}`);
@@ -297,7 +294,7 @@ export function renderTable(events) {
 }
 
 export function filterEvents(events, filterText) {
-  if (CONSTANTS.enableLogging) console.log('FUNCTION_filterEvents:', filterText, events);
+  if (CONSTANTS.enableLogging) { console.log('FUNCTION_filterEvents:', filterText); }
 
   const matches = [];
 
@@ -307,7 +304,7 @@ export function filterEvents(events, filterText) {
   }
 
   // filter events
-  const filteredEvents = events.filter((event) => {
+  const displayedEvents = events.filter((event) => {
     let isMatch = false;
     // eslint-disable-next-line no-restricted-syntax
     for (const [key, value] of Object.entries(event)) {
@@ -320,11 +317,11 @@ export function filterEvents(events, filterText) {
     return isMatch;
   });
 
-  return { events: filteredEvents, matches };
+  return { events: displayedEvents, matches };
 }
 
 export function highlightFilterMatches(matches) {
-  if (CONSTANTS.enableLogging) console.log('FUNCTION_highlightFilterMatches:', matches);
+  if (CONSTANTS.enableLogging) { console.log('FUNCTION_highlightFilterMatches:', matches); }
 
   matches.forEach((match) => {
     document.getElementById(match).classList.add('highlight');
@@ -350,7 +347,7 @@ export function toggleRowSelection(selectedRowID) {
 }
 
 export function createEventOutOfRow(rowID) {
-  if (CONSTANTS.enableLogging) console.log('FUNCTION_createEventOutOfRow:', rowID);
+  if (CONSTANTS.enableLogging) { console.log('FUNCTION_createEventOutOfRow:', rowID); }
 
   const { cells } = document.getElementById(rowID);
 
@@ -371,9 +368,7 @@ export function unlockTableRow(rowId) {
   const tRow = document.getElementById(rowId);
 
   for (const cell of tRow.cells) {
-    // cell.firstChild.removeAttribute('disabled');
-    cell.firstChild.removeAttribute('readonly', '');
-    // cell.firstChild.classList.remove('disabled');
+    cell.firstChild.removeAttribute('disabled');
   }
 }
 
@@ -381,14 +376,12 @@ export function lockTableRow(rowId) {
   const tRow = document.getElementById(rowId);
 
   for (const cell of tRow.cells) {
-    // cell.firstChild.setAttribute('disabled', '');
-    cell.firstChild.setAttribute('readonly', '');
-    // cell.firstChild.classList.add('disabled');
+    cell.firstChild.setAttribute('disabled', '');
   }
 }
 
 export function createEmptyRow() {
-  if (CONSTANTS.enableLogging) console.log('FUNCTION_createEmptyRow:');
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_createEmptyRow');
 
   const tRow = DOM.tBody.insertRow(0);
   tRow.setAttribute('id', CONSTANTS.newRowID);
@@ -422,15 +415,49 @@ export function validateEvent(event) {
 }
 
 export function printTable() {
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_printTable');
+
+  const selectedEvents = state.selectedEvents.get();
+  const displayedEvents = state.displayedEvents.get();
+  const mode = state.mode.get();
+
+  let printableEvents;
+
+  if (mode === Mode.CLEAN) {
+    printableEvents = displayedEvents;
+  } else {
+    printableEvents = displayedEvents.filter((event) => selectedEvents.includes(event.id));
+  }
+
+  const table = document.createElement('table');
+
+  const tHeader = document.createElement('thead');
+  for (const column of CONSTANTS.orderedEventDefinitions) {
+    const headerCell = document.createElement('th');
+    headerCell.textContent = column.presentationLabel;
+    tHeader.appendChild(headerCell);
+  }
+  table.appendChild(tHeader);
+
+  const tBody = document.createElement('tbody');
+  printableEvents.forEach((event) => {
+    const tRow = tBody.insertRow(0);
+    // eslint-disable-next-line no-restricted-syntax
+    for (const column of CONSTANTS.orderedEventDefinitions) {
+      const tCell = tRow.insertCell(-1);
+      tCell.textContent = event[column.dataLabel];
+    }
+  });
+  table.appendChild(tBody);
+
   // new empty window
   const printWin = window.open('');
   // fill tabledata in new window
-  printWin.document.write(DOM.table.outerHTML);
+  printWin.document.write(table.outerHTML);
   // function to open printdialog
   printWin.print();
   // close the "new page" after printing
   printWin.close();
-  window.onload();
 }
 
 export function setActionBarAppearance(mode) {

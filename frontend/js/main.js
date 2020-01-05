@@ -59,23 +59,23 @@ const setActionBarObserver = new Observer((mode) => {
 });
 
 /*
-  State required: mode, filteredEvents
+  State required: mode, displayedEvents
   State modified: none
  */
 const setRowCursorObserver = new Observer(() => {
   const mode = state.mode.get();
-  const filteredEvents = state.filteredEvents.get();
+  const displayedEvents = state.displayedEvents.get();
 
-  filteredEvents.forEach((event) => {
+  displayedEvents.forEach((event) => {
     const tRow = document.getElementById(event.id);
-    
+
     if (mode === Mode.EDITING) {
-      tRow.classList.remove('pointer')
+      tRow.classList.remove('pointer');
     } else {
       tRow.classList.add('pointer');
     }
-  })
-})
+  });
+});
 
 /*
   State required: selectedEvents
@@ -93,16 +93,16 @@ const setModeOnSelectionChangeObserver = new Observer((selectedEvents) => {
 });
 
 /*
-  State required: filteredEvents
+  State required: displayedEvents
   State modified: none
  */
-const addClickHandlerToRowObserver = new Observer((filteredEvents) => {
-  filteredEvents.forEach((event) => document.getElementById(event.id).onclick = onSelectRowHandler);
+const addClickHandlerToRowObserver = new Observer((displayedEvents) => {
+  displayedEvents.forEach((event) => document.getElementById(event.id).onclick = onSelectRowHandler);
 });
 
 /*
   State required: allEvents, filter
-  State modified: filteredEvents, matches
+  State modified: displayedEvents, matches
  */
 const filterEventsObserver = new Observer(() => {
   const { events, matches } = filterEvents(
@@ -110,7 +110,7 @@ const filterEventsObserver = new Observer(() => {
     state.filter.get(),
   );
 
-  state.filteredEvents.set(events);
+  state.displayedEvents.set(events);
   state.matches.set(matches);
 });
 
@@ -174,22 +174,22 @@ const focusOnActiveEventObserver = new Observer(setFocusOnRow);
 // Attaching Observers
 state.allEvents.attachObserver(
   logStateChangeObserver,
-  filterEventsObserver
+  filterEventsObserver,
 );
 
 state.filter.attachObserver(
   logStateChangeObserver,
-  filterEventsObserver
+  filterEventsObserver,
 );
 
-state.filteredEvents.attachObserver(
+state.displayedEvents.attachObserver(
   logStateChangeObserver,
   renderTableObserver,
   addClickHandlerToRowObserver,
-  setRowCursorObserver
+  setRowCursorObserver,
 );
 
-state.matches.attachObserver(highlightRowObserver)
+state.matches.attachObserver(highlightRowObserver);
 
 state.selectedEvents.attachObserver(
   logStateChangeObserver,
@@ -204,6 +204,7 @@ state.activeEvent.attachObserver(
 );
 
 state.mode.attachObserver(
-  logStateChangeObserver, 
+  logStateChangeObserver,
   setRowCursorObserver,
-  setActionBarObserver);
+  setActionBarObserver,
+);

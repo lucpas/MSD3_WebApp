@@ -80,7 +80,7 @@ export const Mode = {
 // Object containing all application state
 export const state = {
   allEvents: new State([], true, 'list of all events'),
-  filteredEvents: new State([], true, 'filtered events'),
+  displayedEvents: new State([], true, 'filtered events'),
   filter: new State('', true, 'filter text'),
   matches: new State([], true, 'cells of filtered rows to be highlighted'),
   selectedEvents: new State([], true, 'selected events'),

@@ -27,7 +27,7 @@ const interval = setInterval(() => {
 
   if (sampleSize > counter) {
     axios.post(url, event)
-      .then(() => console.log(`${++counter}/${sampleSize} users created`))
+      .then(() => console.log(`${++counter}/${sampleSize} events pushed`))
       .catch((error) => console.log(error));
   } else {
     clearInterval(interval);
