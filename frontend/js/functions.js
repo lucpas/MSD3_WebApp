@@ -4,7 +4,7 @@ import {
 
 // ----------- IO
 export function fetchEvents(callback) {
-  if (CONSTANTS.enableLogging) console.log('FUNCTION_fetchEvents:', callback);
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_fetchEvents');
 
   const request = new XMLHttpRequest();
   request.open('GET', CONSTANTS.backendURL);
@@ -24,7 +24,7 @@ export function fetchEvents(callback) {
 }
 
 export function pushNewEvent(callback, selectedEvent) {
-  if (CONSTANTS.enableLogging) console.log('FUNCTION_pushNewEvent:', callback, selectedEvent);
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_pushNewEvent:', selectedEvent);
 
   const request = new XMLHttpRequest();
   request.open('POST', CONSTANTS.backendURL);
@@ -42,7 +42,7 @@ export function pushNewEvent(callback, selectedEvent) {
 }
 
 export function pushUpdatedEvent(callback, selectedEvent) {
-  if (CONSTANTS.enableLogging) console.log('FUNCTION_pushNewEvent:', callback, selectedEvent);
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_pushNewEvent:', selectedEvent);
 
   const request = new XMLHttpRequest();
   request.open('PUT', `${CONSTANTS.backendURL}/${selectedEvent.id}`, true);
@@ -69,10 +69,6 @@ export function addButtonClickHandler() {
 export function editButtonClickHandler() {
   if (CONSTANTS.enableLogging) console.log('FUNCTION_editButtonClickHandler');
 
-  if (state.mode.get() !== Mode.SELECTING) {
-    return;
-  }
-
   const events = state.selectedEvents.get();
   const activeEvent = events.pop();
 
@@ -91,17 +87,22 @@ export function saveButtonClickHandler() {
     return;
   }
 
-  const event = createEventOutOfRow(activeEventID);
+  const editedEvent = createEventOutOfRow(activeEventID);
 
-  const isValidEvent = validateEvent(event);
+  const isValidEvent = validateEvent(editedEvent);
 
   const saveEventCallback = () => {
-    const untouchedEvents = state.allEvents
-      .get()
-      .filter((e) => e.id !== event.id);
-    state.allEvents.set([event, ...untouchedEvents]);
+    const events = state.allEvents.get(); 
+    const index = events.findIndex((e) => e.id === editedEvent.id);
 
-    state.mode.set(Mode.SELECTING);
+    if (index === -1) {
+      state.allEvents.set([...events, editedEvent]);
+    } else {
+      events[index] = editedEvent;
+      state.allEvents.set(events);
+    }
+
+    state.activeEvent.set(null);
   };
 
   if (isValidEvent) {
@@ -139,7 +140,6 @@ export function cancelButtonClickHandler() {
         if (DOM.tBody.rows[0].id === 'NEW') {
           DOM.tBody.deleteRow(0);
         } else {
-          console.log('Wait what?');
           break;
         }
       } else {
@@ -160,8 +160,12 @@ export function onSelectRowHandler(mouseEvent) {
     return;
   }
 
+  const row = mouseEvent.composedPath().find((node) => node.tagName === 'TR');
+  console.log('ROW', row);
+
   // Prevent selecting borders
-  const rowID = mouseEvent.path[2].id;
+  // const rowID = mouseEvent.path[2].id;
+  const rowID = row.id;
   if (rowID === 'tableBody' || rowID === 'tableEvents') {
     return;
   }
@@ -170,48 +174,53 @@ export function onSelectRowHandler(mouseEvent) {
 }
 
 export function onKeyDownHandler(event) {
-  let activeRow; let
-    nextElementID;
+  if (event.target === DOM.searchField) {
+    return;
+  }
+  
+  const isInputField = event.target.tagName === 'TEXTAREA' || event.target.tagName === 'INPUT';
+  let activeRow; 
+  let nextElementID;
 
   switch (event.key) {
     case 'n':
       if (typeof DOM.addButton.onclick === 'function') {
         DOM.addButton.click();
+        event.preventDefault();
       }
-      event.preventDefault();
       break;
     case 'e':
       if (typeof DOM.editButton.onclick === 'function') {
         DOM.editButton.click();
+        event.preventDefault();
       }
-      event.preventDefault();
       break;
     case 's':
-      if (typeof DOM.saveButton.onclick === 'function') {
+      if (typeof DOM.saveButton.onclick === 'function' && !isInputField) {
         DOM.saveButton.click();
+        // event.preventDefault();
       }
-      event.preventDefault();
       break;
     case 'c':
     case 'Escape':
-      if (typeof DOM.cancelButton.onclick === 'function') {
+      if (typeof DOM.cancelButton.onclick === 'function' && !isInputField) {
         DOM.cancelButton.click();
+        event.preventDefault();
       }
-      event.preventDefault();
       break;
     case 'p':
       if (typeof DOM.printButton.onclick === 'function') {
         DOM.printButton.click();
+        event.preventDefault();
       }
-      event.preventDefault();
       break;
     case 'Enter':
       if (state.mode.get() === Mode.EDITING) {
         DOM.saveButton.click();
       } else if (event.target.tagName === 'TR') {
         toggleRowSelection(event.target.id);
+        // event.preventDefault();
       }
-      event.preventDefault();
       break;
     case 'ArrowDown':
       activeRow = document.activeElement;
@@ -222,8 +231,8 @@ export function onKeyDownHandler(event) {
       nextElementID = getNthNextEventID(activeRow.id, -1);
       if (nextElementID) {
         document.getElementById(nextElementID).focus();
+        // event.preventDefault();
       }
-      event.preventDefault();
       break;
     case 'ArrowUp':
       activeRow = document.activeElement;
@@ -234,8 +243,8 @@ export function onKeyDownHandler(event) {
       nextElementID = getNthNextEventID(activeRow.id, 1);
       if (nextElementID) {
         document.getElementById(nextElementID).focus();
+        // event.preventDefault();
       }
-      event.preventDefault();
       break;
     default:
       break;
@@ -269,11 +278,15 @@ export function renderTable(events) {
     // Write event data to table
     // eslint-disable-next-line no-restricted-syntax
     for (const column of CONSTANTS.orderedEventDefinitions) {
+      
       const cell = tRow.insertCell(-1);
 
-      const inputField = document.createElement('textarea');
+      // const inputField = document.createElement('textarea');
+      const inputField = column.inputField.cloneNode();
       inputField.value = event[column.dataLabel];
       inputField.setAttribute('disabled', '');
+      // inputField.setAttribute('readonly', '');
+      // inputField.classList.add('disabled');
 
       cell.classList.add(column.dataLabel);
       cell.setAttribute('id', `${event.id}_${column.dataLabel}`);
@@ -336,12 +349,13 @@ export function toggleRowSelection(selectedRowID) {
   state.selectedEvents.set(events);
 }
 
-export function createEventOutOfRow(rowId) {
-  if (CONSTANTS.enableLogging) console.log('FUNCTION_createEventOutOfRow:', rowId);
+export function createEventOutOfRow(rowID) {
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_createEventOutOfRow:', rowID);
 
-  const { cells } = document.getElementById(rowId);
+  const { cells } = document.getElementById(rowID);
 
   return {
+    id: rowID,
     title: cells[0].firstChild.value,
     description: cells[1].firstChild.value,
     date: cells[2].firstChild.value,
@@ -357,7 +371,9 @@ export function unlockTableRow(rowId) {
   const tRow = document.getElementById(rowId);
 
   for (const cell of tRow.cells) {
-    cell.firstChild.removeAttribute('disabled');
+    // cell.firstChild.removeAttribute('disabled');
+    cell.firstChild.removeAttribute('readonly', '');
+    // cell.firstChild.classList.remove('disabled');
   }
 }
 
@@ -365,7 +381,9 @@ export function lockTableRow(rowId) {
   const tRow = document.getElementById(rowId);
 
   for (const cell of tRow.cells) {
-    cell.firstChild.setAttribute('disabled', '');
+    // cell.firstChild.setAttribute('disabled', '');
+    cell.firstChild.setAttribute('readonly', '');
+    // cell.firstChild.classList.add('disabled');
   }
 }
 

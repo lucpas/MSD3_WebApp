@@ -1,38 +1,52 @@
 import { State } from './state.js';
 
+const textArea = document.createElement('textarea');
+const inputDate = document.createElement('input');
+inputDate.setAttribute('type', 'date');
+const inputTime = document.createElement('input');
+inputTime.setAttribute('type', 'time');
+
 // Ordered definition of events
 const orderedEventDefinitions = [
   {
     dataLabel: 'title',
     presentationLabel: 'Titel',
+    inputField: textArea,
   },
   {
     dataLabel: 'description',
     presentationLabel: 'Beschreibung',
+    inputField: textArea,
   },
   {
     dataLabel: 'date',
     presentationLabel: 'Datum',
+    inputField: inputDate,
   },
   {
     dataLabel: 'time',
     presentationLabel: 'Uhrzeit',
+    inputField: inputTime,
   },
   {
     dataLabel: 'place',
     presentationLabel: 'Ort',
+    inputField: textArea,
   },
   {
     dataLabel: 'contact',
     presentationLabel: 'Kontakt',
+    inputField: textArea,
   },
   {
     dataLabel: 'institute',
     presentationLabel: 'Institut',
+    inputField: textArea,
   },
   {
     dataLabel: 'entry',
     presentationLabel: 'Eintritt',
+    inputField: textArea,
   },
 ];
 
@@ -68,7 +82,7 @@ export const state = {
   allEvents: new State([], true, 'list of all events'),
   filteredEvents: new State([], true, 'filtered events'),
   filter: new State('', true, 'filter text'),
-  highlights: new State([], true, 'cells of filtered rows to be highlighted'),
+  matches: new State([], true, 'cells of filtered rows to be highlighted'),
   selectedEvents: new State([], true, 'selected events'),
   activeEvent: new State(null, true, 'event that is currently being edited'),
   mode: new State(Mode.CLEAN, true, 'application mode'),

@@ -66,7 +66,6 @@ th {
 
 tr:hover {
   background: transparent;
-
   /* height: 20vh; */
 }
 
@@ -325,13 +324,20 @@ textarea {
   resize: none;
 }
 
-textarea:disabled {
+input {
+  font-family: sans-serif;
+  padding-bottom: 36px;
+  height: auto;
+  font-size: inherit;
+}
+
+textarea:disabled, input:disabled {
   background-color: transparent;
   border: 1px solid transparent;
 }
 
-textarea.date,
-textarea.time,
+input.date,
+input.time,
 textarea.entry {
   width: 70px;
 }
@@ -418,8 +424,8 @@ tr:focus {
   outline: 1px solid #d61637;
 }
 
-textarea:disabled {
-  cursor: pointer;
+textarea:disabled, input:disabled {
+  pointer-events: none;
 }
 
 @media only screen and (max-width: 850px) {
@@ -447,4 +453,8 @@ textarea:disabled {
 
 .hide {
   display: none;
+}
+
+.pointer {
+  cursor: pointer;
 }
