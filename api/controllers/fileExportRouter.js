@@ -24,6 +24,7 @@ fileExportRouter.get('/csv', (req, res) => {
       pdfData = convertEventsArrayToCSV(events);
       res.contentType('text/csv');
       res.status(200).send(pdfData);
+      console.log('Successfully got CSV');
     })
     .catch((error) => {
       console.log(`Failed at GET:/csv -  ${error}`);

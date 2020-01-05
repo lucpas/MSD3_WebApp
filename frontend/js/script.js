@@ -73,7 +73,7 @@ const orderedEventDefinitions = [{
 ];
 
 // URLs of backend api: production, development
-const url = 'https://msd3-webapp.herokuapp.com/api/events';
+ const url = 'https://msd3-webapp.herokuapp.com/api/events';
 // const url = 'http://localhost:8080/api/events';
 
 // Collection of all loaded events --> filled during onload
@@ -91,6 +91,8 @@ window.onload = () => {
   DOM.searchField = document.getElementById('searchfield');
   DOM.modal = document.getElementById('addEventModal');
   DOM.addEventButton = document.getElementById('addEventButton');
+  DOM.inputButton = document.getElementById('importButton');
+  DOM.exportButton = document.getElementById('exportButton');
   // eslint-disable-next-line prefer-destructuring
   DOM.modalCloseSpan = document.getElementsByClassName('close')[0];
   DOM.inputTitle = document.getElementById('inpTitle');
@@ -105,6 +107,8 @@ window.onload = () => {
 
   DOM.printButton.addEventListener('click', printTable);
   DOM.searchField.addEventListener('input', (event) => filterTable(event.target.value));
+  DOM.inputButton.addEventListener('click', importEvents);
+  DOM.exportButton.addEventListener('click', exportEvents);
 
   DOM.addEventButton.onclick = () => {
     DOM.inputTitle.value = '';
@@ -376,10 +380,21 @@ function filterTable(filterText) {
   // highlight matching cells
   matches.forEach((match) => {
     highlightTableCell(
-      match.index,
-      orderedEventDefinitions.findIndex(
-        (eventDef) => eventDef.dataLabel === match.key,
-      ),
+        match.index,
+        orderedEventDefinitions.findIndex(
+            (eventDef) => eventDef.dataLabel === match.key,
+        ),
     );
   });
 }
+
+function importEvents() {
+
+}
+
+function exportEvents() {
+  const request = new XMLHttpRequest();
+  request.open('GET', url+'/csv');
+  request.send();
+}
+
