@@ -1,10 +1,56 @@
 import { State } from './state.js';
 
+// URL of backend api (prod and dev)
+const backendURL = 'https://msd3-webapp.herokuapp.com/api/events';
+// const backendURL = 'http://localhost:8080/api/events';
+
+// Console logs are only allowed when this is on!
+const enableLogging = true;
+
+// Temporary ID of rows that have not been given a backend ID yet
+const newRowID = 'NEW';
+
+// List of all FH Joanneum Institutes
+const institutes = [
+  'Angewandte Produktionswissenschaften',
+  'Architektur & Management',
+  'Bank- und Versicherungswirtschaft',
+  'Bauplanung und Bauwirtschaft',
+  'Biomedizinische Analytik',
+  'Design & Kommunikation',
+  'Diaetologie',
+  'eHealth',
+  'Electronic Engineering',
+  'Energie-, Verkehrs- und Umweltmanagement',
+  'Ergotherapie',
+  'FH Allgemein',
+  'Fahrzeugtechnik / Automotive Engineering',
+  'Gesundheits- und Krankenpflege',
+  'Gesundheits- und Tourismusmanagement',
+  'Hebammenwesen',
+  'Industriewirtschaft',
+  'Informationsmanagement',
+  'International Management',
+  'Internet-Technologien & -Anwendungen',
+  'Journalismus und Public Relations',
+  'Logopaedie',
+  'Luftfahrt / Aviation',
+  'Physiotherapie',
+  'Product & Transportation Design',
+  'Radiologietechnologie',
+  'Soziale Arbeit',
+];
+
+
+// Types of input fields used
 const textArea = document.createElement('textarea');
 const inputDate = document.createElement('input');
 inputDate.setAttribute('type', 'date');
 const inputTime = document.createElement('input');
 inputTime.setAttribute('type', 'time');
+const instituteDataListID = 'institutes';
+const instituteDropdown = document.createElement('input');
+instituteDropdown.setAttribute('list', instituteDataListID)
 
 // Ordered definition of events
 const orderedEventDefinitions = [
@@ -41,7 +87,7 @@ const orderedEventDefinitions = [
   {
     dataLabel: 'institute',
     presentationLabel: 'Institut',
-    inputField: textArea,
+    inputField: instituteDropdown,
   },
   {
     dataLabel: 'entry',
@@ -50,21 +96,16 @@ const orderedEventDefinitions = [
   },
 ];
 
-// URL of backend api (prod and dev)
-const backendURL = 'https://msd3-webapp.herokuapp.com/api/events';
-// const backendURL = 'http://localhost:8080/api/events';
-
-// Console logs are only allowed when this is on!
-const enableLogging = true;
-
-// Temporary ID of rows that have not been given a backend ID yet
-const newRowID = 'NEW';
+const instituteDefaultValue = 'FH Allgemein';
 
 export const CONSTANTS = {
   backendURL,
   orderedEventDefinitions,
   enableLogging,
   newRowID,
+  institutes,
+  instituteDefaultValue,
+  instituteDataListID
 };
 
 // Collection of all unique DOM elements required to run script --> filled during onload

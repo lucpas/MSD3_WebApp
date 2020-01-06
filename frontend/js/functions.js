@@ -107,10 +107,10 @@ export function saveButtonClickHandler() {
 
   if (isValidEvent) {
     // Check edited event is new by its ID
-    if (event.id === CONSTANTS.newRowID) {
-      pushNewEvent(saveEventCallback, event);
+    if (editedEvent.id === CONSTANTS.newRowID) {
+      pushNewEvent(saveEventCallback, editedEvent);
     } else {
-      pushUpdatedEvent(saveEventCallback, event);
+      pushUpdatedEvent(saveEventCallback, editedEvent);
     }
   } else {
     // TODO: SPRINT 3 --> React to bad validation
@@ -281,7 +281,7 @@ export function renderTable(events) {
       const cell = tRow.insertCell(-1);
 
       // const inputField = document.createElement('textarea');
-      const inputField = column.inputField.cloneNode();
+      const inputField = column.inputField.cloneNode(true);
       inputField.value = event[column.dataLabel];
       inputField.setAttribute('disabled', '');
 
@@ -385,15 +385,18 @@ export function createEmptyRow() {
 
   const tRow = DOM.tBody.insertRow(0);
   tRow.setAttribute('id', CONSTANTS.newRowID);
+  tRow.setAttribute('tabIndex', '0');
 
   let cell;
   // eslint-disable-next-line no-restricted-syntax
   for (const column of CONSTANTS.orderedEventDefinitions) {
     cell = tRow.insertCell(-1);
-    const inputField = document.createElement('textarea');
+    const inputField = column.inputField.cloneNode(true);
+
     inputField.value = '';
 
     cell.classList.add(column.dataLabel);
+    cell.setAttribute('id', `${event.id}_${column.dataLabel}`);
     cell.setAttribute('data-title', column.presentationLabel);
     cell.appendChild(inputField);
   }

@@ -6,6 +6,37 @@ faker.locale = 'de_AT';
 // const url = 'https://msd3-webapp.herokuapp.com/api/events';
 const url = 'http://localhost:8080/api/events';
 
+// List of all FH Joanneum Institutes
+const institutes = [
+  'Angewandte Produktionswissenschaften',
+  'Architektur & Management',
+  'Bank- und Versicherungswirtschaft',
+  'Bauplanung und Bauwirtschaft',
+  'Biomedizinische Analytik',
+  'Design & Kommunikation',
+  'Diaetologie',
+  'eHealth',
+  'Electronic Engineering',
+  'Energie-, Verkehrs- und Umweltmanagement',
+  'Ergotherapie',
+  'FH Allgemein',
+  'Fahrzeugtechnik / Automotive Engineering',
+  'Gesundheits- und Krankenpflege',
+  'Gesundheits- und Tourismusmanagement',
+  'Hebammenwesen',
+  'Industriewirtschaft',
+  'Informationsmanagement',
+  'International Management',
+  'Internet-Technologien & -Anwendungen',
+  'Journalismus und Public Relations',
+  'Logopaedie',
+  'Luftfahrt / Aviation',
+  'Physiotherapie',
+  'Product & Transportation Design',
+  'Radiologietechnologie',
+  'Soziale Arbeit',
+];
+
 const sampleSize = 20;
 
 let counter = 0;
@@ -19,7 +50,7 @@ const interval = setInterval(() => {
     time: faker.date.future().toISOString().substring(11, 16),
     place: faker.address.streetAddress(),
     contact: faker.random.boolean() ? faker.internet.email() : faker.internet.url(),
-    institute: faker.company.companyName(),
+    institute: faker.random.boolean() ? faker.random.arrayElement(institutes) : faker.company.companyName(),
     entry: faker.random.boolean() ? `${faker.finance.amount()}€` : 'Keine Anmeldung erforderlich',
   };
 

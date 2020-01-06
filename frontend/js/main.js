@@ -24,12 +24,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // --- UNIQUE DOM ELEMENTS
   // Table and structural elements
+  DOM.body = document.getElementsByTagName('body')[0];
   DOM.tContainer = document.getElementById('table-container');
   DOM.table = document.getElementById('tableEvents');
   DOM.tBody = document.getElementById('tableBody');
   DOM.tHeader = document.getElementById('tableHeader');
   DOM.modal = document.getElementById('addEventModal');
-  DOM.editForm = document.getElementById('editEventForm');
   // Interaction elements
   DOM.searchField = document.getElementById('searchfield');
   DOM.addButton = document.getElementById('addButton');
@@ -46,6 +46,19 @@ window.addEventListener('DOMContentLoaded', () => {
 
   fetchEvents((events) => state.allEvents.set(events));
   // window.setInterval(() => fetchEvents((events) => state.allEvents.set(events));
+
+  // Add institue options list
+  const instituteList = document.createElement('datalist');
+  instituteList.setAttribute('id', CONSTANTS.instituteDataListID);
+  console.log(instituteList);
+  
+  CONSTANTS.institutes.forEach(inst => {
+    const option = document.createElement('option');
+    option.value = inst;
+    instituteList.appendChild(option);
+  });
+  
+  DOM.body.appendChild(instituteList);
 });
 
 
