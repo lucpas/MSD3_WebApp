@@ -37,7 +37,7 @@ const institutes = [
   'Soziale Arbeit',
 ];
 
-const sampleSize = 20;
+const sampleSize = 50;
 
 let counter = 0;
 let event = {};

@@ -85,20 +85,26 @@ tr:focus {
   outline: 1px solid #d61637;
 }
 
+td {
+  color: inherit;
+}
+
 td.title > textarea {
   font-weight: bold;
 }
 
-textarea {
+textarea, input {
   font-family: sans-serif;
   font-size: inherit;
+  color: inherit;
+}
+
+textarea {
   height: 50px;
   resize: none;
 }
 
 input {
-  font-family: sans-serif;
-  font-size: inherit;
   padding-bottom: 36px;
   height: auto;
   text-overflow: ellipsis;
@@ -144,6 +150,19 @@ input:disabled {
 
 .pointer {
   cursor: pointer;
+}
+
+@keyframes fade-out {
+  from { }
+  to {
+    background-color: #fff;
+    background: #fff;
+    color: #fff;
+  }
+}
+
+.fade-out {
+  animation: fade-out 0.75s cubic-bezier(.35,1.12,1,.94) forwards;
 }
 
 #logo-container {

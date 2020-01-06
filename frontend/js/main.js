@@ -12,8 +12,7 @@ import {
   unlockTableRow,
   createEmptyRow,
   setFocusOnRow,
-  setActionBarAppearance,
-  setActionBarHandlers,
+  setActionBarToMode,
 } from './functions.js';
 
 document.addEventListener('keydown', onKeyDownHandler);
@@ -36,6 +35,7 @@ window.addEventListener('DOMContentLoaded', () => {
   DOM.editButton = document.getElementById('editButton');
   DOM.saveButton = document.getElementById('saveButton');
   DOM.cancelButton = document.getElementById('cancelButton');
+  DOM.deleteButton = document.getElementById('deleteButton');
   DOM.printButton = document.getElementById('printButton');
   // Static Event handlers
   DOM.searchField.addEventListener('input', (event) => {
@@ -47,17 +47,16 @@ window.addEventListener('DOMContentLoaded', () => {
   fetchEvents((events) => state.allEvents.set(events));
   // window.setInterval(() => fetchEvents((events) => state.allEvents.set(events));
 
-  // Add institue options list
+  // Add and populate institute options list
   const instituteList = document.createElement('datalist');
   instituteList.setAttribute('id', CONSTANTS.instituteDataListID);
-  console.log(instituteList);
-  
-  CONSTANTS.institutes.forEach(inst => {
+
+  CONSTANTS.institutes.forEach((inst) => {
     const option = document.createElement('option');
     option.value = inst;
     instituteList.appendChild(option);
   });
-  
+
   DOM.body.appendChild(instituteList);
 });
 
@@ -66,10 +65,7 @@ window.addEventListener('DOMContentLoaded', () => {
   State required: mode
   State modified: none
  */
-const setActionBarObserver = new Observer((mode) => {
-  setActionBarAppearance(mode);
-  setActionBarHandlers(mode);
-});
+const setActionBarObserver = new Observer(setActionBarToMode);
 
 /*
   State required: mode, displayedEvents
@@ -110,7 +106,9 @@ const setModeOnSelectionChangeObserver = new Observer((selectedEvents) => {
   State modified: none
  */
 const addClickHandlerToRowObserver = new Observer((displayedEvents) => {
-  displayedEvents.forEach((event) => document.getElementById(event.id).onclick = onSelectRowHandler);
+  displayedEvents.forEach((event) => {
+    document.getElementById(event.id).onclick = onSelectRowHandler;
+  });
 });
 
 /*

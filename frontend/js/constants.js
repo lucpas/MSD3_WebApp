@@ -50,7 +50,7 @@ const inputTime = document.createElement('input');
 inputTime.setAttribute('type', 'time');
 const instituteDataListID = 'institutes';
 const instituteDropdown = document.createElement('input');
-instituteDropdown.setAttribute('list', instituteDataListID)
+instituteDropdown.setAttribute('list', instituteDataListID);
 
 // Ordered definition of events
 const orderedEventDefinitions = [
@@ -105,7 +105,7 @@ export const CONSTANTS = {
   newRowID,
   institutes,
   instituteDefaultValue,
-  instituteDataListID
+  instituteDataListID,
 };
 
 // Collection of all unique DOM elements required to run script --> filled during onload
