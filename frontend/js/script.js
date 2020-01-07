@@ -328,8 +328,6 @@ function errorMessage(message, title) {
 
     $('<div></div>').html( message ).dialog({
         title: title,
-		minWidth: 400,
-        minHeight: 'auto',
         resizable: false,
         modal: true,
         buttons: {
