@@ -295,6 +295,7 @@ export function onKeyDownHandler(event) {
         event.preventDefault();
       }
       break;
+    case 'Delete':
     case 'd':
       if (typeof DOM.deleteButton.onclick === 'function' && !isInputField) {
         DOM.deleteButton.click();
@@ -366,7 +367,8 @@ export function renderTable(events) {
   }
 
   events.forEach(event => {
-    const tRow = DOM.tBody.insertRow(0);
+    const tRow = document.createElement('tr');
+
     tRow.setAttribute('id', event.id);
     tRow.setAttribute('tabIndex', '0');
 
@@ -375,16 +377,17 @@ export function renderTable(events) {
     for (const column of CONSTANTS.orderedEventDefinitions) {
       const cell = tRow.insertCell(-1);
 
-      // const inputField = document.createElement('textarea');
-      const inputField = column.inputField.cloneNode(true);
-      inputField.value = event[column.dataLabel];
+      const inputField = column.inputField.cloneNode(false);
+      
       inputField.setAttribute('disabled', '');
+      inputField.value = event[column.dataLabel];
 
       cell.classList.add(column.dataLabel);
       cell.setAttribute('id', `${event.id}_${column.dataLabel}`);
       cell.setAttribute('data-title', column.presentationLabel);
       cell.appendChild(inputField);
     }
+    DOM.tBody.prepend(tRow);
   });
 }
 
