@@ -131,7 +131,7 @@ window.onload = () => {
         fetchEvents();
       } else {
         // Temp error message/ TODO: Sprint 3 validate -> errorMessage()
-        window.alert(errorMessage());
+        errorMessage();
       }
     };
     DOM.modal.style.display = 'block';
@@ -295,7 +295,7 @@ function editEvent(event) {
       });
     } else {
       // Temp error message/ TODO: Sprint 3 validate -> errorMessage()
-      window.alert(errorMessage());
+      errorMessage();
     }
   };
   DOM.modal.style.display = 'block';
@@ -319,9 +319,25 @@ function deleteEvent(selectedEvent, callback) {
 }
 
 // Params: {status ('warning', error), message: String}
-function errorMessage() {
-  error = 'Fehler bei der Eingabe';
-  return error;
+function errorMessage(message, title) {
+    if ( !title )
+        title = 'Fehler';
+
+    if ( !message )
+        message = 'Fehler bei der Eingabe.';
+
+    $('<div></div>').html( message ).dialog({
+        title: title,
+		minWidth: 400,
+        minHeight: 'auto',
+        resizable: false,
+        modal: true,
+        buttons: {
+            'Ok': function()  {
+                $( this ).dialog( 'close' );
+            }
+        }
+    });
 }
 
 function printTable() {
