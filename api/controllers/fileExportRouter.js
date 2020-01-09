@@ -21,10 +21,10 @@ fileExportRouter.get('/pdf', (req, res) => {
 fileExportRouter.get('/csv', (req, res) => {
   Event.find({})
     .then((events) => {
+      console.log('Successfully got CSV');
       pdfData = convertEventsArrayToCSV(events);
       res.contentType('text/csv');
       res.status(200).send(pdfData);
-      console.log('Successfully got CSV');
     })
     .catch((error) => {
       console.log(`Failed at GET:/csv -  ${error}`);

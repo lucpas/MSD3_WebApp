@@ -3,7 +3,7 @@ const orderedEventDefinitions = [{
   dataLabel: 'title',
   presentationLabel: 'Titel',
   validate(input) {
-    // Rules: No more than 30 characters    
+    // Rules: No more than 30 characters
     return (typeof input === string && input.length >= 30)
   },
 },
@@ -408,7 +408,6 @@ function importEvents() {
 
 function exportEvents() {
   const request = new XMLHttpRequest();
-  request.open('GET', url+'/csv');
+  request.open('GET', 'https://msd3-webapp.herokuapp.com/api/download/csv/');
   request.send();
 }
-
