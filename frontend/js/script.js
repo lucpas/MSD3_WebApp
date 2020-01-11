@@ -4,7 +4,7 @@ const orderedEventDefinitions = [{
   presentationLabel: 'Titel',
   validate(input) {
     // Rules: No more than 30 characters
-    return (typeof input === string && input.length >= 30)
+    return (typeof input === string && input.length >= 30);
   },
 },
 {
@@ -73,7 +73,7 @@ const orderedEventDefinitions = [{
 ];
 
 // URLs of backend api: production, development
- const url = 'https://msd3-webapp.herokuapp.com/api/events';
+const url = 'https://msd3-webapp.herokuapp.com/api/events';
 // const url = 'http://localhost:8080/api/events';
 
 // Collection of all loaded events --> filled during onload
@@ -92,7 +92,8 @@ window.onload = () => {
   DOM.modal = document.getElementById('addEventModal');
   DOM.addEventButton = document.getElementById('addEventButton');
   DOM.inputButton = document.getElementById('importButton');
-  DOM.exportButton = document.getElementById('exportButton');
+  DOM.exportCSVButton = document.getElementById('exportCSVButton');
+  DOM.exportPDFButton = document.getElementById('exportPDFButton');
   // eslint-disable-next-line prefer-destructuring
   DOM.modalCloseSpan = document.getElementsByClassName('close')[0];
   DOM.inputTitle = document.getElementById('inpTitle');
@@ -108,7 +109,8 @@ window.onload = () => {
   DOM.printButton.addEventListener('click', printTable);
   DOM.searchField.addEventListener('input', (event) => filterTable(event.target.value));
   DOM.inputButton.addEventListener('click', importEvents);
-  DOM.exportButton.addEventListener('click', exportEvents);
+  DOM.exportCSVButton.addEventListener('click', exportCSVEvents);
+  DOM.exportPDFButton.addEventListener('click', exportPDFEvents);
 
   DOM.addEventButton.onclick = () => {
     DOM.inputTitle.value = '';
@@ -241,7 +243,7 @@ function drawTable(selectedEvents) {
     deleteButton.height = '20';
     deleteButton.width = '20';
 
-    deleteButton.addEventListener('click', () => deleteEvent(event,() => {
+    deleteButton.addEventListener('click', () => deleteEvent(event, () => {
       events.delete(event);
       fetchEvents(() => drawTable(events));
       DOM.modal.style.display = 'none';
@@ -252,7 +254,6 @@ function drawTable(selectedEvents) {
     cell.setAttribute('data-title', 'Aktionen');
     cell.appendChild(editButton);
     cell.appendChild(deleteButton);
-
   });
 }
 
@@ -311,7 +312,6 @@ function deleteEvent(selectedEvent, callback) {
   request.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 204) {
       if (typeof callback === 'function') {
-
         callback();
       }
     }
@@ -320,22 +320,20 @@ function deleteEvent(selectedEvent, callback) {
 
 // Params: {status ('warning', error), message: String}
 function errorMessage(message, title) {
-    if ( !title )
-        title = 'Fehler';
+  if (!title) title = 'Fehler';
 
-    if ( !message )
-        message = 'Fehler bei der Eingabe.';
+  if (!message) message = 'Fehler bei der Eingabe.';
 
-    $('<div></div>').html( message ).dialog({
-        title: title,
-        resizable: false,
-        modal: true,
-        buttons: {
-            'Ok': function()  {
-                $( this ).dialog( 'close' );
-            }
-        }
-    });
+  $('<div></div>').html(message).dialog({
+    title,
+    resizable: false,
+    modal: true,
+    buttons: {
+      Ok() {
+        $(this).dialog('close');
+      },
+    },
+  });
 }
 
 function printTable() {
@@ -344,7 +342,7 @@ function printTable() {
   // fill tabledata in new window
   const table = DOM.table.outerHTML;
   printWin.document.write(table);
-  //table.column[1].style.display="none";
+  // table.column[1].style.display="none";
   // function to open printdialog
   printWin.print();
   // close the "new page" after printing
@@ -394,10 +392,10 @@ function filterTable(filterText) {
   // highlight matching cells
   matches.forEach((match) => {
     highlightTableCell(
-        match.index,
-        orderedEventDefinitions.findIndex(
-            (eventDef) => eventDef.dataLabel === match.key,
-        ),
+      match.index,
+      orderedEventDefinitions.findIndex(
+        (eventDef) => eventDef.dataLabel === match.key,
+      ),
     );
   });
 }
@@ -406,22 +404,39 @@ function importEvents() {
 
 }
 
-function exportEvents() {
+function exportCSVEvents() {
   const request = new XMLHttpRequest();
 
-  request.onreadystatechange = function() {
+  request.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
-      var downloadUrl = URL.createObjectURL(request.response);
-      var a = document.createElement("a");
+      const downloadUrl = URL.createObjectURL(request.response);
+      const a = document.createElement('a');
       document.body.appendChild(a);
-      a.style = "display: none";
+      a.style = 'display: none';
       a.href = downloadUrl;
-      a.download = "";
+      a.download = '';
       a.click();
     }
   };
-  request.open("GET", "https://msd3-webapp.herokuapp.com/api/download/csv", true);
-  request.responseType = "blob";
+  request.open('GET', `https://msd3-webapp.herokuapp.com/api/download/csv`, true);
+  request.responseType = 'blob';
   request.send();
 }
+function exportPDFEvents() {
+  const request = new XMLHttpRequest();
 
+  request.onreadystatechange = function () {
+    if (this.readyState === 4 && this.status === 200) {
+      const downloadUrl = URL.createObjectURL(request.response);
+      const a = document.createElement('a');
+      document.body.appendChild(a);
+      a.style = 'display: none';
+      a.href = downloadUrl;
+      a.download = '';
+      a.click();
+    }
+  };
+  request.open('GET', `https://msd3-webapp.herokuapp.com/api/download/pdf`, true);
+  request.responseType = 'blob';
+  request.send();
+}
