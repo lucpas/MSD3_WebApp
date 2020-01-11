@@ -29,7 +29,7 @@ Coding workflow:
 Scripts (see package.json):
 - `npm run dev`: starts the live server
 - `npm run check: html`: Validates index.html against the W3C validator
-- `npm run check: css`: Stylecheck and Autofix for style.css (Styleguide: [stylelint-config-standard] (https://github.com/stylelint/stylelint-config-standard))
+- `npm run check: css`: Stylecheck and Autofix for style.css (Styleguide: [stylelint-config-standard](https://github.com/stylelint/stylelint-config-standard))
 - `npm run check: js`: runs eslint with autofix (style guide: AirBnB)
 
 
