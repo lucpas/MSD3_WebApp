@@ -408,6 +408,20 @@ function importEvents() {
 
 function exportEvents() {
   const request = new XMLHttpRequest();
-  request.open('GET', 'https://msd3-webapp.herokuapp.com/api/download/csv/');
+
+  request.onreadystatechange = function() {
+    if (this.readyState === 4 && this.status === 200) {
+      var downloadUrl = URL.createObjectURL(request.response);
+      var a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style = "display: none";
+      a.href = downloadUrl;
+      a.download = "";
+      a.click();
+    }
+  };
+  request.open("GET", "https://msd3-webapp.herokuapp.com/api/download/csv", true);
+  request.responseType = "blob";
   request.send();
 }
+
