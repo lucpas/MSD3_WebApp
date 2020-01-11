@@ -12,6 +12,27 @@ This page was developed as part of the courses "Agile Project Management" and "W
 - Wurm Leopold
 
 
+### HowToCode
+Coding workflow:
+
+1. Make sure npm is installed: `npm --v`
+2. Install / update dependencies: `npm install`
+3. Download .env from the Trello-Card "Resources" and copy it to the project directory
+4. Execute `source .env` in the terminal
+5. Execute check scripts
+6. Start the live server: `npm run dev`
+7. (coding)
+8. Run check scripts
+9. If more errors / warnings than before -> fix!!!
+10. Otherwise git add, commit, push
+
+Scripts (see package.json):
+- `npm run dev`: starts the live server
+- `npm run check: html`: Validates index.html against the W3C validator
+- `npm run check: css`: Stylecheck and Autofix for style.css (Styleguide: [stylelint-config-standard] (https://github.com/stylelint/stylelint-config-standard))
+- `npm run check: js`: runs eslint with autofix (style guide: AirBnB)
+
+
 ### Sprint1
 
 #### Userstory 1: List overview
