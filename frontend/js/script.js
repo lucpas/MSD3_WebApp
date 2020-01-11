@@ -401,7 +401,19 @@ function filterTable(filterText) {
 }
 
 function importEvents() {
+    var input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept","text/csv");
+    input.addEventListener("change", handleFiles, false);
 
+
+    function handleFiles() {
+      var file = this.files[0];
+
+    }
+    input.click();
+
+    return false; // avoiding navigation
 }
 
 function exportCSVEvents() {
