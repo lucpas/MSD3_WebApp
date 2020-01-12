@@ -401,19 +401,33 @@ function filterTable(filterText) {
 }
 
 function importEvents() {
-    var input = document.createElement("input");
-    input.setAttribute("type", "file");
-    input.setAttribute("accept","text/csv");
-    input.addEventListener("change", handleFiles, false);
+  const input = document.createElement('input');
+  input.setAttribute('type', 'file');
+  input.setAttribute('accept', 'text/csv');
+  input.addEventListener('change', handleFiles, false);
+  let file;
 
+  function handleFiles() {
+    // eslint-disable-next-line prefer-destructuring
+    file = this.files[0];
+    const formData = new FormData();
+    formData.append('uploadCsv', file);
+    const request = new XMLHttpRequest();
+    request.open('POST', 'https://msd3-webapp.herokuapp.com/api/upload/csv', true);
+    request.setRequestHeader('Content-type', 'multipart/form-data');
+    // eslint-disable-next-line func-names
+    request.onreadystatechange = function () {
+      if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+        console.log('Successfully sent CSV');
+      } else {
+        console.log('failed to sent csv');
+      }
+    };
+    request.send(file);
+  }
+  input.click();
 
-    function handleFiles() {
-      var file = this.files[0];
-
-    }
-    input.click();
-
-    return false; // avoiding navigation
+  return false; // avoiding navigation
 }
 
 function exportCSVEvents() {
@@ -430,7 +444,7 @@ function exportCSVEvents() {
       a.click();
     }
   };
-  request.open('GET', `https://msd3-webapp.herokuapp.com/api/download/csv`, true);
+  request.open('GET', 'https://msd3-webapp.herokuapp.com/api/download/csv', true);
   request.responseType = 'blob';
   request.send();
 }
@@ -448,7 +462,7 @@ function exportPDFEvents() {
       a.click();
     }
   };
-  request.open('GET', `https://msd3-webapp.herokuapp.com/api/download/pdf`, true);
+  request.open('GET', 'https://msd3-webapp.herokuapp.com/api/download/pdf', true);
   request.responseType = 'blob';
   request.send();
 }
