@@ -23,7 +23,7 @@ main {
 }
 
 img.icon {
-  margin-top: 5vh;
+  margin-top: 4vh;
   margin-right: 10vw;
 }
 
@@ -34,7 +34,7 @@ img.icon.big {
 img.icon:hover,
 img.icon.big:hover {
   cursor: pointer;
-  transform: scale(1.4);
+  transform: scale(1.6);
 }
 
 img.icon.disabled {
@@ -286,6 +286,7 @@ input:disabled {
     white-space: normal;
     text-align: left;
     height: 50px;
+    margin-bottom: 10px;
   }
 
   td.description {
@@ -293,7 +294,19 @@ input:disabled {
   }
 
   td.description > textarea {
-    height: 80px;
+    /* height: 80px; */
+  }
+
+  td.date,
+  td.time,
+  td.institute {
+    height: auto;
+    margin-top: 15px;
+    margin-bottom: 4px;
+  }
+
+  td.time {
+    margin-top: 9px;
   }
 
   td::before {
@@ -322,9 +335,13 @@ input:disabled {
     padding-bottom: 0;
 
     margin-top: 0;
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
     min-height: 25px;
     width: 90% !important;
+  }
+  
+  textarea {
+    height: inherit;
   }
 
   input {
@@ -341,7 +358,7 @@ input:disabled {
   }
 
   #actions > img.icon {
-    margin: 2vh 0;
+    margin: 3vh 0;
   }
 
   #footer {
