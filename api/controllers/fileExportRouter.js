@@ -8,8 +8,8 @@ const convertEventsArrayToPDF = require('../filehandlers/eventsToPDF');
 fileExportRouter.get('/pdf', (req, res) => {
   Event.find({})
     .then((events) => {
-      pdfData = convertEventsArrayToPDF(events)
-      res.contentType("application/pdf");      
+      pdfData = convertEventsArrayToPDF(events);
+      res.contentType('application/pdf');
       res.status(200).send(pdfData);
     })
     .catch((error) => {
@@ -21,8 +21,8 @@ fileExportRouter.get('/pdf', (req, res) => {
 fileExportRouter.get('/csv', (req, res) => {
   Event.find({})
     .then((events) => {
-      pdfData = convertEventsArrayToCSV(events)
-      res.contentType("text/csv");      
+      pdfData = convertEventsArrayToCSV(events);
+      res.contentType('text/csv');
       res.status(200).send(pdfData);
     })
     .catch((error) => {

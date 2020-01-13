@@ -56,6 +56,9 @@ window.onload = () => {
   DOM.searchField = document.getElementById('searchfield');
   DOM.modal = document.getElementById('addEventModal');
   DOM.addEventButton = document.getElementById('addEventButton');
+  DOM.inputButton = document.getElementById('importButton');
+  DOM.exportCSVButton = document.getElementById('exportCSVButton');
+  DOM.exportPDFButton = document.getElementById('exportPDFButton');
   // eslint-disable-next-line prefer-destructuring
   DOM.modalCloseSpan = document.getElementsByClassName('close')[0];
   DOM.inputTitle = document.getElementById('inpTitle');
@@ -70,6 +73,9 @@ window.onload = () => {
 
   DOM.printButton.addEventListener('click', printTable);
   DOM.searchField.addEventListener('input', (event) => filterTable(event.target.value));
+  DOM.inputButton.addEventListener('click', importEvents);
+  DOM.exportCSVButton.addEventListener('click', exportCSVEvents);
+  DOM.exportPDFButton.addEventListener('click', exportPDFEvents);
 
   DOM.inputTitle.addEventListener('focusout', () => checkInp(DOM.inputTitle));
   DOM.inputDesc.addEventListener('focusout', () => checkInp(DOM.inputDesc));
@@ -101,7 +107,7 @@ window.onload = () => {
         fetchEvents();
       } else {
         // Temp error message/ TODO: Sprint 3 validate -> errorMessage()
-        window.alert(errorMessage());
+        errorMessage();
       }
     };
     DOM.modal.style.display = 'block';
@@ -257,7 +263,6 @@ function drawTable(selectedEvents) {
     cell.setAttribute('data-title', 'Aktionen');
     cell.appendChild(editButton);
     cell.appendChild(deleteButton);
-
   });
 }
 
@@ -300,7 +305,7 @@ function editEvent(event) {
       });
     } else {
       // Temp error message/ TODO: Sprint 3 validate -> errorMessage()
-      window.alert(errorMessage());
+      errorMessage();
     }
   };
   DOM.modal.style.display = 'block';
@@ -316,7 +321,6 @@ function deleteEvent(selectedEvent, callback) {
   request.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 204) {
       if (typeof callback === 'function') {
-
         callback();
       }
     }
@@ -324,9 +328,21 @@ function deleteEvent(selectedEvent, callback) {
 }
 
 // Params: {status ('warning', error), message: String}
-function errorMessage() {
-  error = 'Fehler bei der Eingabe';
-  return error;
+function errorMessage(message, title) {
+  if (!title) title = 'Fehler';
+
+  if (!message) message = 'Fehler bei der Eingabe.';
+
+  $('<div></div>').html(message).dialog({
+    title,
+    resizable: false,
+    modal: true,
+    buttons: {
+      Ok() {
+        $(this).dialog('close');
+      },
+    },
+  });
 }
 
 function printTable() {
@@ -335,7 +351,7 @@ function printTable() {
   // fill tabledata in new window
   const table = DOM.table.outerHTML;
   printWin.document.write(table);
-  //table.column[1].style.display="none";
+  // table.column[1].style.display="none";
   // function to open printdialog
   printWin.print();
   // close the "new page" after printing
@@ -391,4 +407,71 @@ function filterTable(filterText) {
       ),
     );
   });
+}
+
+function importEvents() {
+  const input = document.createElement('input');
+  input.setAttribute('type', 'file');
+  input.setAttribute('accept', 'text/csv');
+  input.addEventListener('change', handleFiles, false);
+  let file;
+
+  function handleFiles() {
+    // eslint-disable-next-line prefer-destructuring
+    file = this.files[0];
+    const formData = new FormData();
+    formData.append('uploadCsv', file);
+    const request = new XMLHttpRequest();
+    request.open('POST', 'https://msd3-webapp.herokuapp.com/api/upload/csv', true);
+    request.setRequestHeader('Content-type', 'multipart/form-data');
+    // eslint-disable-next-line func-names
+    request.onreadystatechange = function () {
+      if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+        console.log('Successfully sent CSV');
+      } else {
+        console.log('failed to sent csv');
+      }
+    };
+    request.send(file);
+  }
+  input.click();
+
+  return false; // avoiding navigation
+}
+
+function exportCSVEvents() {
+  const request = new XMLHttpRequest();
+
+  request.onreadystatechange = function () {
+    if (this.readyState === 4 && this.status === 200) {
+      const downloadUrl = URL.createObjectURL(request.response);
+      const a = document.createElement('a');
+      document.body.appendChild(a);
+      a.style = 'display: none';
+      a.href = downloadUrl;
+      a.download = '';
+      a.click();
+    }
+  };
+  request.open('GET', 'https://msd3-webapp.herokuapp.com/api/download/csv', true);
+  request.responseType = 'blob';
+  request.send();
+}
+function exportPDFEvents() {
+  const request = new XMLHttpRequest();
+
+  request.onreadystatechange = function () {
+    if (this.readyState === 4 && this.status === 200) {
+      const downloadUrl = URL.createObjectURL(request.response);
+      const a = document.createElement('a');
+      document.body.appendChild(a);
+      a.style = 'display: none';
+      a.href = downloadUrl;
+      a.download = '';
+      a.click();
+    }
+  };
+  request.open('GET', 'https://msd3-webapp.herokuapp.com/api/download/pdf', true);
+  request.responseType = 'blob';
+  request.send();
 }
