@@ -15,7 +15,7 @@ const eventSchema = mongoose.Schema({
     type: String,
     validate: {
       validator: function(date){
-        return /^\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})\s*$/.test(date)
+        return /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/.test(date)
       },
       message: props => `${props.value} ist kein passendes Datumformat (dd.mm.yyyy)`
     },
@@ -25,7 +25,7 @@ const eventSchema = mongoose.Schema({
     type: String,
     validate: {
       validator: function(time){
-        return /^[0-2][0-3]:[0-5][0-9]$/.test(time)
+        return /^(0[0-9]|1[0-9]|2[0-3]|[0-9]):[0-5][0-9]$/.test(time)
       },
       message: props => `${props.value} ist kein passendes Zeitformat (24h, HH:MM)`
     },

@@ -2,10 +2,6 @@
 const orderedEventDefinitions = [{
     dataLabel: 'title',
     presentationLabel: 'Titel',
-    // validate(input) {
-    //   // Rules: No more than 30 characters
-    //   return (typeof input === string && input.length >= 30)
-    // },
   },
   {
     dataLabel: 'description',
@@ -38,8 +34,8 @@ const orderedEventDefinitions = [{
 ];
 
 // URLs of backend api: production, development
-const url = 'https://msd3-webapp.herokuapp.com/api/events';
-// const url = 'http://localhost:8080/api/events';
+// const url = 'https://msd3-webapp.herokuapp.com/api/events';
+const url = 'http://localhost:8080/api/events';
 
 // Collection of all loaded events --> filled during onload
 let events = [];
@@ -77,14 +73,14 @@ window.onload = () => {
   DOM.exportCSVButton.addEventListener('click', exportCSVEvents);
   DOM.exportPDFButton.addEventListener('click', exportPDFEvents);
 
-  DOM.inputTitle.addEventListener('focusout', () => checkInp(DOM.inputTitle));
-  DOM.inputDesc.addEventListener('focusout', () => checkInp(DOM.inputDesc));
-  DOM.inputDate.addEventListener('focusout', () => checkInp(DOM.inputDate));
-  DOM.inputTime.addEventListener('focusout', () => checkInp(DOM.inputTime));
-  DOM.inputLoc.addEventListener('focusout', () => checkInp(DOM.inputLoc));
-  DOM.inputContact.addEventListener('focusout', () => checkInp(DOM.inputContact));
-  DOM.inputInst.addEventListener('focusout', () => checkInp(DOM.inputInst));
-  DOM.inputSignup.addEventListener('focusout', () => checkInp(DOM.inputSignup));
+  DOM.inputTitle.addEventListener('blur', () => checkInp(DOM.inputTitle));
+  DOM.inputDesc.addEventListener('blur', () => checkInp(DOM.inputDesc));
+  DOM.inputDate.addEventListener('blur', () => checkInp(DOM.inputDate));
+  DOM.inputTime.addEventListener('blur', () => checkInp(DOM.inputTime));
+  DOM.inputLoc.addEventListener('blur', () => checkInp(DOM.inputLoc));
+  DOM.inputContact.addEventListener('blur', () => checkInp(DOM.inputContact));
+  DOM.inputInst.addEventListener('blur', () => checkInp(DOM.inputInst));
+  DOM.inputSignup.addEventListener('blur', () => checkInp(DOM.inputSignup));
 
   DOM.addEventButton.onclick = () => {
     DOM.inputTitle.value = '';
