@@ -34,8 +34,8 @@ const orderedEventDefinitions = [{
 ];
 
 // URLs of backend api: production, development
-const url = 'https://msd3-webapp.herokuapp.com/api/events';
-// const url = 'http://localhost:8080/api/events';
+// const url = 'https://msd3-webapp.herokuapp.com/api/events';
+const url = 'http://localhost:8080/api/events';
 
 // Collection of all loaded events --> filled during onload
 let events = [];
@@ -83,6 +83,7 @@ window.onload = () => {
   DOM.inputSignup.addEventListener('blur', () => checkInp(DOM.inputSignup));
 
   DOM.addEventButton.onclick = () => {
+    DOM.saveEventButton.style = 'initial';
     DOM.inputTitle.value = '';
     DOM.inputDesc.value = '';
     DOM.inputDate.value = new Date().toISOString().substr(0, 10);
@@ -121,7 +122,7 @@ function checkInp(inpField) {
   const checkEvent = createEvent();
   const currInpField = inpField;
   validateEvent(checkEvent, currInpField, () => {
-    currInpField.style.borderColor = 'initial';
+    // currInpField.style.borderColor = 'initial';
     DOM.saveEventButton.disabled = false;
     DOM.saveEventButton.style = 'initial';
 
@@ -130,18 +131,18 @@ function checkInp(inpField) {
 
 function validateEvent(checkEvent, inpField, callback) {
   const request = new XMLHttpRequest();
-  request.open('POST', url);
+  request.open('POST', url+"?validate=true");
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   request.send(JSON.stringify(checkEvent));
 
   request.onreadystatechange = function() {
     if (this.readyState === 4) {
-      if (this.status === 201) {
+      if (this.status === 200) {
         if (typeof callback === 'function') {
           callback();
         }
       } else if (this.status === 400) {
-        inpField.style.borderColor = 'red';
+        // inpField.style.borderColor = 'red';
         DOM.saveEventButton.disabled = true;
         DOM.saveEventButton.style.background = 'grey';
         DOM.saveEventButton.style.border = 'grey';
@@ -280,6 +281,7 @@ function createEvent() {
 }
 
 function editEvent(event) {
+  DOM.saveEventButton.style = 'initial';
   DOM.saveEventButton.innerHTML = 'Übernehmen';
   DOM.inputTitle.value = event.title;
   DOM.inputDesc.value = event.description;
