@@ -73,8 +73,8 @@ const orderedEventDefinitions = [{
 ];
 
 // URLs of backend api: production, development
-const url = 'https://msd3-webapp.herokuapp.com/api/events';
-// const url = 'http://localhost:8080/api/events';
+// const url = 'https://msd3-webapp.herokuapp.com/api/events';
+const url = 'http://localhost:8080/api';
 
 // Collection of all loaded events --> filled during onload
 let events = [];
@@ -157,7 +157,7 @@ function fetchEvents(callback) {
   // console.log('DEBUG: Starting fetch');
 
   const request = new XMLHttpRequest();
-  request.open('GET', url);
+  request.open('GET', `${url}/events`);
   request.send();
 
   // eslint-disable-next-line func-names
@@ -193,7 +193,7 @@ function pushNewEvent(selectedEvent, callback) {
 
 function pushUpdatedEvent(selectedEvent, callback) {
   const request = new XMLHttpRequest();
-  request.open('PUT', `${url}/${selectedEvent.id}`, true);
+  request.open('PUT', `${url}/events/${selectedEvent.id}`, true);
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   request.send(JSON.stringify(selectedEvent));
 
@@ -304,7 +304,7 @@ function editEvent(event) {
 
 function deleteEvent(selectedEvent, callback) {
   const request = new XMLHttpRequest();
-  request.open('DELETE', `${url}/${selectedEvent.id}`, true);
+  request.open('DELETE', `${url}/events/${selectedEvent.id}`, true);
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   request.send(JSON.stringify(selectedEvent));
 
@@ -408,19 +408,24 @@ function importEvents() {
   let file;
 
   function handleFiles() {
-    // eslint-disable-next-line prefer-destructuring
+    // const boundary = '----'
+
     file = this.files[0];
     const formData = new FormData();
-    formData.append('uploadCsv', file);
+    // formData.append('boundary', boundary);
+    formData.append('readme.me', file, 'readme.me');
+    // formData.append('boundary', boundary);
     const request = new XMLHttpRequest();
-    request.open('POST', 'https://msd3-webapp.herokuapp.com/api/upload/csv', true);
-    request.setRequestHeader('Content-type', 'multipart/form-data');
+    request.open('POST', `${url}/upload/csv`, true);
+    // request.setRequestHeader('Content-type', 'multipart/form-data');
     // eslint-disable-next-line func-names
     request.onreadystatechange = function () {
-      if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-        console.log('Successfully sent CSV');
-      } else {
-        console.log('failed to sent csv');
+      if (request.readyState === XMLHttpRequest.DONE) {
+        if (request.status === 200) {
+          console.log('Successfully sent CSV');
+        } else {
+          console.log('failed to sent csv');
+        }
       }
     };
     request.send(file);
@@ -444,7 +449,7 @@ function exportCSVEvents() {
       a.click();
     }
   };
-  request.open('GET', 'https://msd3-webapp.herokuapp.com/api/download/csv', true);
+  request.open('GET', `${url}/download/csv`, true);
   request.responseType = 'blob';
   request.send();
 }
@@ -462,7 +467,7 @@ function exportPDFEvents() {
       a.click();
     }
   };
-  request.open('GET', 'https://msd3-webapp.herokuapp.com/api/download/pdf', true);
+  request.open('GET', `${url}/download/pdf`, true);
   request.responseType = 'blob';
   request.send();
 }
