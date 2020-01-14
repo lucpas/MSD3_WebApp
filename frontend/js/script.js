@@ -1,75 +1,36 @@
 // Ordered definition of events
 const orderedEventDefinitions = [{
-  dataLabel: 'title',
-  presentationLabel: 'Titel',
-  validate(input) {
-    // Rules: No more than 30 characters
-    return (typeof input === string && input.length >= 30);
+    dataLabel: 'title',
+    presentationLabel: 'Titel',
   },
-},
-{
-  dataLabel: 'description',
-  presentationLabel: 'Beschreibung',
-  validate() {
-    // TODO:
-
-
+  {
+    dataLabel: 'description',
+    presentationLabel: 'Beschreibung',
   },
-},
-{
-  dataLabel: 'date',
-  presentationLabel: 'Datum',
-  validate() {
-    // TODO:
-
-
+  {
+    dataLabel: 'date',
+    presentationLabel: 'Datum',
   },
-},
-{
-  dataLabel: 'time',
-  presentationLabel: 'Uhrzeit',
-  validate() {
-    // TODO:
-
-
+  {
+    dataLabel: 'time',
+    presentationLabel: 'Uhrzeit',
   },
-},
-{
-  dataLabel: 'place',
-  presentationLabel: 'Ort',
-  validate() {
-    // TODO:
-
-
+  {
+    dataLabel: 'place',
+    presentationLabel: 'Ort',
   },
-},
-{
-  dataLabel: 'contact',
-  presentationLabel: 'Kontakt',
-  validate() {
-    // TODO:
-
-
+  {
+    dataLabel: 'contact',
+    presentationLabel: 'Kontakt',
   },
-},
-{
-  dataLabel: 'institute',
-  presentationLabel: 'Institut',
-  validate() {
-    // TODO:
-
-
+  {
+    dataLabel: 'institute',
+    presentationLabel: 'Institut',
   },
-},
-{
-  dataLabel: 'entry',
-  presentationLabel: 'Anmeldung/Eintritt',
-  validate() {
-    // TODO:
-
-
+  {
+    dataLabel: 'entry',
+    presentationLabel: 'Anmeldung/Eintritt',
   },
-},
 ];
 
 // URLs of backend api: production, development
@@ -112,7 +73,17 @@ window.onload = () => {
   DOM.exportCSVButton.addEventListener('click', exportCSVEvents);
   DOM.exportPDFButton.addEventListener('click', exportPDFEvents);
 
+  DOM.inputTitle.addEventListener('blur', () => parseForSemicolon(DOM.inputTitle));
+  DOM.inputDesc.addEventListener('blur', () => parseForSemicolon(DOM.inputDesc));
+  DOM.inputDate.addEventListener('blur', () => parseForSemicolon(DOM.inputDate));
+  DOM.inputTime.addEventListener('blur', () => parseForSemicolon(DOM.inputTime));
+  DOM.inputLoc.addEventListener('blur', () => parseForSemicolon(DOM.inputLoc));
+  DOM.inputContact.addEventListener('blur', () => parseForSemicolon(DOM.inputContact));
+  DOM.inputInst.addEventListener('blur', () => parseForSemicolon(DOM.inputInst));
+  DOM.inputSignup.addEventListener('blur', () => parseForSemicolon(DOM.inputSignup));
+
   DOM.addEventButton.onclick = () => {
+    DOM.saveEventButton.style = 'initial';
     DOM.inputTitle.value = '';
     DOM.inputDesc.value = '';
     DOM.inputDate.value = new Date().toISOString().substr(0, 10);
@@ -147,6 +118,57 @@ window.onload = () => {
   window.setInterval(() => fetchEvents(), 30000);
 };
 
+function parseForSemicolon(inpField){
+  const currInpField = inpField;
+  if (currInpField.value.indexOf(';') === -1) {
+    // currInpField.style.borderColor = 'initial';
+    DOM.saveEventButton.disabled = false;
+    DOM.saveEventButton.style = 'initial';
+    checkInp(currInpField)
+  } else {
+    console.log("Semicolons not allowed");
+    // inpField.style.borderColor = 'red';
+    DOM.saveEventButton.disabled = true;
+    DOM.saveEventButton.style.background = 'grey';
+    DOM.saveEventButton.style.border = 'grey';
+  }
+};
+
+function checkInp(inpField) {
+  const checkEvent = createEvent();
+  const currInpField = inpField;
+  validateEvent(checkEvent, currInpField, () => {
+    // currInpField.style.borderColor = 'initial';
+    DOM.saveEventButton.disabled = false;
+    DOM.saveEventButton.style = 'initial';
+
+  });
+};
+
+function validateEvent(checkEvent, inpField, callback) {
+  const request = new XMLHttpRequest();
+  request.open('POST', url+"?validate=true");
+  request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+  request.send(JSON.stringify(checkEvent));
+
+  request.onreadystatechange = function() {
+    if (this.readyState === 4) {
+      if (this.status === 200) {
+        if (typeof callback === 'function') {
+          callback();
+        }
+      } else if (this.status === 400) {
+        // inpField.style.borderColor = 'red';
+        DOM.saveEventButton.disabled = true;
+        DOM.saveEventButton.style.background = 'grey';
+        DOM.saveEventButton.style.border = 'grey';
+      }
+    }
+  }
+
+};
+
+
 window.onclick = (event) => {
   if (event.target === DOM.modal) {
     DOM.modal.style.display = 'none';
@@ -161,7 +183,7 @@ function fetchEvents(callback) {
   request.send();
 
   // eslint-disable-next-line func-names
-  request.onreadystatechange = function () {
+  request.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 200) {
       events = JSON.parse(request.responseText);
       // console.log('DEBUG: Completed fetch');
@@ -182,7 +204,7 @@ function pushNewEvent(selectedEvent, callback) {
   request.send(JSON.stringify(selectedEvent));
 
   // eslint-disable-next-line func-names
-  request.onreadystatechange = function () {
+  request.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 201) {
       if (typeof callback === 'function') {
         callback();
@@ -198,7 +220,7 @@ function pushUpdatedEvent(selectedEvent, callback) {
   request.send(JSON.stringify(selectedEvent));
 
   // eslint-disable-next-line func-names
-  request.onreadystatechange = function () {
+  request.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 200) {
       if (typeof callback === 'function') {
         callback();
@@ -275,6 +297,7 @@ function createEvent() {
 }
 
 function editEvent(event) {
+  DOM.saveEventButton.style = 'initial';
   DOM.saveEventButton.innerHTML = 'Übernehmen';
   DOM.inputTitle.value = event.title;
   DOM.inputDesc.value = event.description;
@@ -309,7 +332,7 @@ function deleteEvent(selectedEvent, callback) {
   request.send(JSON.stringify(selectedEvent));
 
   // eslint-disable-next-line func-names
-  request.onreadystatechange = function () {
+  request.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 204) {
       if (typeof callback === 'function') {
         callback();
