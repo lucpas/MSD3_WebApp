@@ -34,8 +34,8 @@ const orderedEventDefinitions = [{
 ];
 
 // URLs of backend api: production, development
-const url = 'https://msd3-webapp.herokuapp.com/api/events';
-// const url = 'http://localhost:8080/api';
+// const url = 'https://msd3-webapp.herokuapp.com/api/events';
+const url = 'http://localhost:8080/api';
 
 // Collection of all loaded events --> filled during onload
 let events = [];
@@ -131,7 +131,7 @@ function checkInp(inpField) {
 
 function validateEvent(checkEvent, inpField, callback) {
   const request = new XMLHttpRequest();
-  request.open('POST', url + "?validate=true");
+  request.open('POST', "http://localhost:8080/api/events?validate=true");
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   const stringCheckEvent = JSON.stringify(checkEvent)
   request.send(stringCheckEvent);

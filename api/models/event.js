@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 var parseForSemicolon = function(inpField) {
   const currInpField = inpField;
-  if (currInpField.value.indexOf(';') === -1) {
+  if (currInpField.indexOf(';') === -1) {
     return true;
   } else {
     //console.log("Semicolons not allowed");
