@@ -8,7 +8,7 @@ const convertEventsArrayToPDF = require('../filehandlers/eventsToPDF');
 fileExportRouter.get('/pdf', (req, res) => {
   Event.find({})
     .then((events) => {
-      pdfData = convertEventsArrayToPDF(events);
+      const pdfData = convertEventsArrayToPDF(events);
       res.contentType('application/pdf');
       res.status(200).send(pdfData);
     })
@@ -21,9 +21,9 @@ fileExportRouter.get('/pdf', (req, res) => {
 fileExportRouter.get('/csv', (req, res) => {
   Event.find({})
     .then((events) => {
-      pdfData = convertEventsArrayToCSV(events);
+      const csvData = convertEventsArrayToCSV(events);
       res.contentType('text/csv');
-      res.status(200).send(pdfData);
+      res.status(200).send(csvData);
     })
     .catch((error) => {
       console.log(`Failed at GET:/csv -  ${error}`);
