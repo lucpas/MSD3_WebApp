@@ -34,8 +34,8 @@ const orderedEventDefinitions = [{
 ];
 
 // URLs of backend api: production, development
-// const url = 'https://msd3-webapp.herokuapp.com/api/events';
-const url = 'http://localhost:8080/api';
+const url = 'https://msd3-webapp.herokuapp.com/api';
+// const url = 'http://localhost:8080/api';
 
 // Collection of all loaded events --> filled during onload
 let events = [];
@@ -57,14 +57,14 @@ window.onload = () => {
   DOM.exportPDFButton = document.getElementById('exportPDFButton');
   // eslint-disable-next-line prefer-destructuring
   DOM.modalCloseSpan = document.getElementsByClassName('close')[0];
-  DOM.inputTitle = document.getElementById('inpTitle');
-  DOM.inputDesc = document.getElementById('inpDescription');
-  DOM.inputDate = document.getElementById('inpDate');
-  DOM.inputTime = document.getElementById('inpTime');
-  DOM.inputLoc = document.getElementById('inpLocation');
-  DOM.inputContact = document.getElementById('inpContact');
-  DOM.inputInst = document.getElementById('inpInstitute');
-  DOM.inputSignup = document.getElementById('inpSignup');
+  DOM.inputTitle = document.getElementById('title');
+  DOM.inputDesc = document.getElementById('description');
+  DOM.inputDate = document.getElementById('date');
+  DOM.inputTime = document.getElementById('time');
+  DOM.inputLoc = document.getElementById('place');
+  DOM.inputContact = document.getElementById('contact');
+  DOM.inputInst = document.getElementById('institute');
+  DOM.inputSignup = document.getElementById('entry');
   DOM.saveEventButton = document.getElementById('saveEventButton');
 
   DOM.printButton.addEventListener('click', printTable);
@@ -122,7 +122,7 @@ function checkInp(inpField) {
   const checkEvent = createEvent();
   const currInpField = inpField;
   validateEvent(checkEvent, currInpField, () => {
-    currInpField.style.borderColor = 'initial';
+    // currInpField.style.borderColor = 'initial';
     DOM.saveEventButton.disabled = false;
     DOM.saveEventButton.style = 'initial';
 
@@ -131,11 +131,12 @@ function checkInp(inpField) {
 
 function validateEvent(checkEvent, inpField, callback) {
   const request = new XMLHttpRequest();
-  request.open('POST', "http://localhost:8080/api/events?validate=true");
+  // request.open('POST', "http://localhost:8080/api/events?validate=true");
+  request.open('POST', url+"/events?validate=true");
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   const stringCheckEvent = JSON.stringify(checkEvent)
   request.send(stringCheckEvent);
-  //console.log(JSON.stringify(checkEvent))
+  // console.log(checkEvent)
   request.onreadystatechange = function() {
     if (this.readyState === 4) {
       if (this.status === 200) {
@@ -143,13 +144,14 @@ function validateEvent(checkEvent, inpField, callback) {
           callback();
         }
       } else if (this.status === 400) {
-        console.log(stringCheckEvent.indexOf(inpField.id) )
-        if (stringCheckEvent.indexOf(inpField.id) === -1) {
-          inpField.style.borderColor = 'red';
+        // console.log(stringCheckEvent.indexOf(inpField.id))
+        // console.log(inpField.id)
+        // if (stringCheckEvent.indexOf(inpField.id) === -1) {
+          // inpField.style.borderColor = 'red';
           DOM.saveEventButton.disabled = true;
           DOM.saveEventButton.style.background = 'grey';
           DOM.saveEventButton.style.border = 'grey';
-        }
+        // }
       }
     }
   }
