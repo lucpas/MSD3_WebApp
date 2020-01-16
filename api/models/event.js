@@ -108,7 +108,7 @@ var validateTitle = [{
     msg: 'Kein Semikolons [;] erlaubt'
   },
   {
-    validator: parseTitle
+    validator: parseTitle,
     msg: 'Titel darf nicht leer sein/maximal 30 Zeichen erlaubt'
   }
 ];
@@ -124,7 +124,7 @@ var validateDesc = [{
 ];
 
 var validateDate = [{
-    validator: parseForSemicolon
+    validator: parseForSemicolon,
     msg: 'Kein Semikolons [;] erlaubt'
   },
   {
