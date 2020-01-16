@@ -73,14 +73,14 @@ window.onload = () => {
   DOM.exportCSVButton.addEventListener('click', exportCSVEvents);
   DOM.exportPDFButton.addEventListener('click', exportPDFEvents);
 
-  DOM.inputTitle.addEventListener('blur', () => parseForSemicolon(DOM.inputTitle));
-  DOM.inputDesc.addEventListener('blur', () => parseForSemicolon(DOM.inputDesc));
-  DOM.inputDate.addEventListener('blur', () => parseForSemicolon(DOM.inputDate));
-  DOM.inputTime.addEventListener('blur', () => parseForSemicolon(DOM.inputTime));
-  DOM.inputLoc.addEventListener('blur', () => parseForSemicolon(DOM.inputLoc));
-  DOM.inputContact.addEventListener('blur', () => parseForSemicolon(DOM.inputContact));
-  DOM.inputInst.addEventListener('blur', () => parseForSemicolon(DOM.inputInst));
-  DOM.inputSignup.addEventListener('blur', () => parseForSemicolon(DOM.inputSignup));
+  DOM.inputTitle.addEventListener('blur', () => checkInp(DOM.inputTitle));
+  DOM.inputDesc.addEventListener('blur', () => checkInp(DOM.inputDesc));
+  DOM.inputDate.addEventListener('blur', () => checkInp(DOM.inputDate));
+  DOM.inputTime.addEventListener('blur', () => checkInp(DOM.inputTime));
+  DOM.inputLoc.addEventListener('blur', () => checkInp(DOM.inputLoc));
+  DOM.inputContact.addEventListener('blur', () => checkInp(DOM.inputContact));
+  DOM.inputInst.addEventListener('blur', () => checkInp(DOM.inputInst));
+  DOM.inputSignup.addEventListener('blur', () => checkInp(DOM.inputSignup));
 
   DOM.addEventButton.onclick = () => {
     DOM.saveEventButton.style = 'initial';
@@ -118,27 +118,11 @@ window.onload = () => {
   window.setInterval(() => fetchEvents(), 30000);
 };
 
-function parseForSemicolon(inpField){
-  const currInpField = inpField;
-  if (currInpField.value.indexOf(';') === -1) {
-    // currInpField.style.borderColor = 'initial';
-    DOM.saveEventButton.disabled = false;
-    DOM.saveEventButton.style = 'initial';
-    checkInp(currInpField)
-  } else {
-    console.log("Semicolons not allowed");
-    // inpField.style.borderColor = 'red';
-    DOM.saveEventButton.disabled = true;
-    DOM.saveEventButton.style.background = 'grey';
-    DOM.saveEventButton.style.border = 'grey';
-  }
-};
-
 function checkInp(inpField) {
   const checkEvent = createEvent();
   const currInpField = inpField;
   validateEvent(checkEvent, currInpField, () => {
-    // currInpField.style.borderColor = 'initial';
+    currInpField.style.borderColor = 'initial';
     DOM.saveEventButton.disabled = false;
     DOM.saveEventButton.style = 'initial';
 
@@ -147,10 +131,11 @@ function checkInp(inpField) {
 
 function validateEvent(checkEvent, inpField, callback) {
   const request = new XMLHttpRequest();
-  request.open('POST', url+"?validate=true");
+  request.open('POST', url + "?validate=true");
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-  request.send(JSON.stringify(checkEvent));
-
+  const stringCheckEvent = JSON.stringify(checkEvent)
+  request.send(stringCheckEvent);
+  //console.log(JSON.stringify(checkEvent))
   request.onreadystatechange = function() {
     if (this.readyState === 4) {
       if (this.status === 200) {
@@ -158,10 +143,13 @@ function validateEvent(checkEvent, inpField, callback) {
           callback();
         }
       } else if (this.status === 400) {
-        // inpField.style.borderColor = 'red';
-        DOM.saveEventButton.disabled = true;
-        DOM.saveEventButton.style.background = 'grey';
-        DOM.saveEventButton.style.border = 'grey';
+        console.log(stringCheckEvent.indexOf(inpField.id) )
+        if (stringCheckEvent.indexOf(inpField.id) === -1) {
+          inpField.style.borderColor = 'red';
+          DOM.saveEventButton.disabled = true;
+          DOM.saveEventButton.style.background = 'grey';
+          DOM.saveEventButton.style.border = 'grey';
+        }
       }
     }
   }
@@ -439,7 +427,7 @@ function importEvents() {
     request.open('POST', 'https://msd3-webapp.herokuapp.com/api/upload/csv', true);
     request.setRequestHeader('Content-type', 'multipart/form-data');
     // eslint-disable-next-line func-names
-    request.onreadystatechange = function () {
+    request.onreadystatechange = function() {
       if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
         console.log('Successfully sent CSV');
       } else {
@@ -456,7 +444,7 @@ function importEvents() {
 function exportCSVEvents() {
   const request = new XMLHttpRequest();
 
-  request.onreadystatechange = function () {
+  request.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 200) {
       const downloadUrl = URL.createObjectURL(request.response);
       const a = document.createElement('a');
@@ -471,10 +459,11 @@ function exportCSVEvents() {
   request.responseType = 'blob';
   request.send();
 }
+
 function exportPDFEvents() {
   const request = new XMLHttpRequest();
 
-  request.onreadystatechange = function () {
+  request.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 200) {
       const downloadUrl = URL.createObjectURL(request.response);
       const a = document.createElement('a');
