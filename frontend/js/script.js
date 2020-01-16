@@ -34,8 +34,8 @@ const orderedEventDefinitions = [{
 ];
 
 // URLs of backend api: production, development
-// const url = 'https://msd3-webapp.herokuapp.com/api/events';
-const url = 'http://localhost:8080/api';
+const url = 'https://msd3-webapp.herokuapp.com/api';
+// const url = 'http://localhost:8080/api';
 
 // Collection of all loaded events --> filled during onload
 let events = [];
