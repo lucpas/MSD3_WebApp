@@ -72,6 +72,8 @@ window.onload = () => {
   DOM.inputButton.addEventListener('click', importEvents);
   DOM.exportCSVButton.addEventListener('click', exportCSVEvents);
   DOM.exportPDFButton.addEventListener('click', exportPDFEvents);
+  // DOM.exportPDFButton.addEventListener('click', testExportPDFEvents);
+
 
   DOM.inputTitle.addEventListener('blur', () => checkInp(DOM.inputTitle));
   DOM.inputDesc.addEventListener('blur', () => checkInp(DOM.inputDesc));
@@ -136,7 +138,7 @@ function validateEvent(checkEvent, inpField, callback) {
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   const stringCheckEvent = JSON.stringify(checkEvent)
   request.send(stringCheckEvent);
-  // console.log(checkEvent)
+  console.log(checkEvent)
   request.onreadystatechange = function() {
     if (this.readyState === 4) {
       if (this.status === 200) {
@@ -466,6 +468,12 @@ function exportCSVEvents() {
   request.responseType = 'blob';
   request.send();
 }
+
+function testExportPDFEvents(){
+  let pdf = new jsPDF();
+  pdf.autoTable({ html: '#tableEvents'})
+  pdf.save('events.pdf')
+};
 
 function exportPDFEvents() {
   const request = new XMLHttpRequest();

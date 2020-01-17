@@ -7,7 +7,7 @@ var parseForSemicolon = function(inpField) {
   if (currInpField.indexOf(';') === -1) {
     return true;
   } else {
-    //console.log("Semicolons not allowed");
+    console.log("Semicolons not allowed");
     return false;
   }
 };
