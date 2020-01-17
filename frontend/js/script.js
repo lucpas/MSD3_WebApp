@@ -34,8 +34,8 @@ const orderedEventDefinitions = [{
 ];
 
 // URLs of backend api: production, development
-const url = 'https://msd3-webapp.herokuapp.com/api';
-// const url = 'http://localhost:8080/api';
+// const url = 'https://msd3-webapp.herokuapp.com/api';
+const url = 'http://localhost:8080/api';
 
 // Collection of all loaded events --> filled during onload
 let events = [];
@@ -189,7 +189,7 @@ function fetchEvents(callback) {
 
 function pushNewEvent(selectedEvent, callback) {
   const request = new XMLHttpRequest();
-  request.open('POST', url);
+  request.open('POST', url+"/events");
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   request.send(JSON.stringify(selectedEvent));
 
