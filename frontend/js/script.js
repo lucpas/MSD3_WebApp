@@ -34,8 +34,8 @@ const orderedEventDefinitions = [{
 ];
 
 // URLs of backend api: production, development
-const url = 'https://msd3-webapp.herokuapp.com/api/events';
-// const url = 'http://localhost:8080/api/events';
+const url = 'https://msd3-webapp.herokuapp.com/api';
+// const url = 'http://localhost:8080/api';
 
 // Collection of all loaded events --> filled during onload
 let events = [];
@@ -57,14 +57,14 @@ window.onload = () => {
   DOM.exportPDFButton = document.getElementById('exportPDFButton');
   // eslint-disable-next-line prefer-destructuring
   DOM.modalCloseSpan = document.getElementsByClassName('close')[0];
-  DOM.inputTitle = document.getElementById('inpTitle');
-  DOM.inputDesc = document.getElementById('inpDescription');
-  DOM.inputDate = document.getElementById('inpDate');
-  DOM.inputTime = document.getElementById('inpTime');
-  DOM.inputLoc = document.getElementById('inpLocation');
-  DOM.inputContact = document.getElementById('inpContact');
-  DOM.inputInst = document.getElementById('inpInstitute');
-  DOM.inputSignup = document.getElementById('inpSignup');
+  DOM.inputTitle = document.getElementById('title');
+  DOM.inputDesc = document.getElementById('description');
+  DOM.inputDate = document.getElementById('date');
+  DOM.inputTime = document.getElementById('time');
+  DOM.inputLoc = document.getElementById('place');
+  DOM.inputContact = document.getElementById('contact');
+  DOM.inputInst = document.getElementById('institute');
+  DOM.inputSignup = document.getElementById('entry');
   DOM.saveEventButton = document.getElementById('saveEventButton');
 
   DOM.printButton.addEventListener('click', printTable);
@@ -72,15 +72,17 @@ window.onload = () => {
   DOM.inputButton.addEventListener('click', importEvents);
   DOM.exportCSVButton.addEventListener('click', exportCSVEvents);
   DOM.exportPDFButton.addEventListener('click', exportPDFEvents);
+  // DOM.exportPDFButton.addEventListener('click', testExportPDFEvents);
 
-  DOM.inputTitle.addEventListener('blur', () => parseForSemicolon(DOM.inputTitle));
-  DOM.inputDesc.addEventListener('blur', () => parseForSemicolon(DOM.inputDesc));
-  DOM.inputDate.addEventListener('blur', () => parseForSemicolon(DOM.inputDate));
-  DOM.inputTime.addEventListener('blur', () => parseForSemicolon(DOM.inputTime));
-  DOM.inputLoc.addEventListener('blur', () => parseForSemicolon(DOM.inputLoc));
-  DOM.inputContact.addEventListener('blur', () => parseForSemicolon(DOM.inputContact));
-  DOM.inputInst.addEventListener('blur', () => parseForSemicolon(DOM.inputInst));
-  DOM.inputSignup.addEventListener('blur', () => parseForSemicolon(DOM.inputSignup));
+
+  DOM.inputTitle.addEventListener('blur', () => checkInp(DOM.inputTitle));
+  DOM.inputDesc.addEventListener('blur', () => checkInp(DOM.inputDesc));
+  DOM.inputDate.addEventListener('blur', () => checkInp(DOM.inputDate));
+  DOM.inputTime.addEventListener('blur', () => checkInp(DOM.inputTime));
+  DOM.inputLoc.addEventListener('blur', () => checkInp(DOM.inputLoc));
+  DOM.inputContact.addEventListener('blur', () => checkInp(DOM.inputContact));
+  DOM.inputInst.addEventListener('blur', () => checkInp(DOM.inputInst));
+  DOM.inputSignup.addEventListener('blur', () => checkInp(DOM.inputSignup));
 
   DOM.addEventButton.onclick = () => {
     DOM.saveEventButton.style = 'initial';
@@ -118,22 +120,6 @@ window.onload = () => {
   window.setInterval(() => fetchEvents(), 30000);
 };
 
-function parseForSemicolon(inpField){
-  const currInpField = inpField;
-  if (currInpField.value.indexOf(';') === -1) {
-    // currInpField.style.borderColor = 'initial';
-    DOM.saveEventButton.disabled = false;
-    DOM.saveEventButton.style = 'initial';
-    checkInp(currInpField)
-  } else {
-    console.log("Semicolons not allowed");
-    // inpField.style.borderColor = 'red';
-    DOM.saveEventButton.disabled = true;
-    DOM.saveEventButton.style.background = 'grey';
-    DOM.saveEventButton.style.border = 'grey';
-  }
-};
-
 function checkInp(inpField) {
   const checkEvent = createEvent();
   const currInpField = inpField;
@@ -147,10 +133,12 @@ function checkInp(inpField) {
 
 function validateEvent(checkEvent, inpField, callback) {
   const request = new XMLHttpRequest();
-  request.open('POST', url+"?validate=true");
+  // request.open('POST', "http://localhost:8080/api/events?validate=true");
+  request.open('POST', url+"/events?validate=true");
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-  request.send(JSON.stringify(checkEvent));
-
+  const stringCheckEvent = JSON.stringify(checkEvent)
+  request.send(stringCheckEvent);
+  console.log(checkEvent)
   request.onreadystatechange = function() {
     if (this.readyState === 4) {
       if (this.status === 200) {
@@ -158,10 +146,14 @@ function validateEvent(checkEvent, inpField, callback) {
           callback();
         }
       } else if (this.status === 400) {
-        // inpField.style.borderColor = 'red';
-        DOM.saveEventButton.disabled = true;
-        DOM.saveEventButton.style.background = 'grey';
-        DOM.saveEventButton.style.border = 'grey';
+        // console.log(stringCheckEvent.indexOf(inpField.id))
+        // console.log(inpField.id)
+        // if (stringCheckEvent.indexOf(inpField.id) === -1) {
+          // inpField.style.borderColor = 'red';
+          DOM.saveEventButton.disabled = true;
+          DOM.saveEventButton.style.background = 'grey';
+          DOM.saveEventButton.style.border = 'grey';
+        // }
       }
     }
   }
@@ -179,7 +171,7 @@ function fetchEvents(callback) {
   // console.log('DEBUG: Starting fetch');
 
   const request = new XMLHttpRequest();
-  request.open('GET', url);
+  request.open('GET', `${url}/events`);
   request.send();
 
   // eslint-disable-next-line func-names
@@ -199,7 +191,7 @@ function fetchEvents(callback) {
 
 function pushNewEvent(selectedEvent, callback) {
   const request = new XMLHttpRequest();
-  request.open('POST', url);
+  request.open('POST', url+"/events");
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   request.send(JSON.stringify(selectedEvent));
 
@@ -215,7 +207,7 @@ function pushNewEvent(selectedEvent, callback) {
 
 function pushUpdatedEvent(selectedEvent, callback) {
   const request = new XMLHttpRequest();
-  request.open('PUT', `${url}/${selectedEvent.id}`, true);
+  request.open('PUT', `${url}/events/${selectedEvent.id}`, true);
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   request.send(JSON.stringify(selectedEvent));
 
@@ -327,7 +319,7 @@ function editEvent(event) {
 
 function deleteEvent(selectedEvent, callback) {
   const request = new XMLHttpRequest();
-  request.open('DELETE', `${url}/${selectedEvent.id}`, true);
+  request.open('DELETE', `${url}/events/${selectedEvent.id}`, true);
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   request.send(JSON.stringify(selectedEvent));
 
@@ -431,19 +423,24 @@ function importEvents() {
   let file;
 
   function handleFiles() {
-    // eslint-disable-next-line prefer-destructuring
+    // const boundary = '----'
+
     file = this.files[0];
     const formData = new FormData();
-    formData.append('uploadCsv', file);
+    // formData.append('boundary', boundary);
+    formData.append('readme.me', file, 'readme.me');
+    // formData.append('boundary', boundary);
     const request = new XMLHttpRequest();
-    request.open('POST', 'https://msd3-webapp.herokuapp.com/api/upload/csv', true);
-    request.setRequestHeader('Content-type', 'multipart/form-data');
+    request.open('POST', `${url}/upload/csv`, true);
+    // request.setRequestHeader('Content-type', 'multipart/form-data');
     // eslint-disable-next-line func-names
     request.onreadystatechange = function () {
-      if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-        console.log('Successfully sent CSV');
-      } else {
-        console.log('failed to sent csv');
+      if (request.readyState === XMLHttpRequest.DONE) {
+        if (request.status === 200) {
+          console.log('Successfully sent CSV');
+        } else {
+          console.log('failed to sent csv');
+        }
       }
     };
     request.send(file);
@@ -456,7 +453,7 @@ function importEvents() {
 function exportCSVEvents() {
   const request = new XMLHttpRequest();
 
-  request.onreadystatechange = function () {
+  request.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 200) {
       const downloadUrl = URL.createObjectURL(request.response);
       const a = document.createElement('a');
@@ -467,14 +464,21 @@ function exportCSVEvents() {
       a.click();
     }
   };
-  request.open('GET', 'https://msd3-webapp.herokuapp.com/api/download/csv', true);
+  request.open('GET', `${url}/download/csv`, true);
   request.responseType = 'blob';
   request.send();
 }
+
+function testExportPDFEvents(){
+  let pdf = new jsPDF();
+  pdf.autoTable({ html: '#tableEvents'})
+  pdf.save('events.pdf')
+};
+
 function exportPDFEvents() {
   const request = new XMLHttpRequest();
 
-  request.onreadystatechange = function () {
+  request.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 200) {
       const downloadUrl = URL.createObjectURL(request.response);
       const a = document.createElement('a');
@@ -485,7 +489,7 @@ function exportPDFEvents() {
       a.click();
     }
   };
-  request.open('GET', 'https://msd3-webapp.herokuapp.com/api/download/pdf', true);
+  request.open('GET', `${url}/download/pdf`, true);
   request.responseType = 'blob';
   request.send();
 }
