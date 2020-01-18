@@ -72,7 +72,6 @@ window.onload = () => {
   DOM.inputButton.addEventListener('click', importEvents);
   DOM.exportCSVButton.addEventListener('click', exportCSVEvents);
   DOM.exportPDFButton.addEventListener('click', exportPDFEvents);
-  // DOM.exportPDFButton.addEventListener('click', testExportPDFEvents);
 
 
   DOM.inputTitle.addEventListener('blur', () => checkInp(DOM.inputTitle));
@@ -132,8 +131,7 @@ function checkInp(inpField) {
 
 function validateEvent(checkEvent, inpField, callback) {
   const request = new XMLHttpRequest();
-  // request.open('POST', "http://localhost:8080/api/events?validate=true");
-  request.open('POST', url+"/events?validate=true");
+  request.open('POST', url + "/events?validate=true");
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   const stringCheckEvent = JSON.stringify(checkEvent)
   request.send(stringCheckEvent);
@@ -191,7 +189,7 @@ function fetchEvents(callback) {
 
 function pushNewEvent(selectedEvent, callback) {
   const request = new XMLHttpRequest();
-  request.open('POST', url+"/events");
+  request.open('POST', url + "/events");
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   request.send(JSON.stringify(selectedEvent));
 
@@ -334,10 +332,10 @@ function errorMessage(message) {
 	if(document.getElementById("popup").style.display === "none")
 	{
 		document.getElementById("demo").innerHTML = message;
-		document.getElementById("popup").style.display = "block"; 
+		document.getElementById("popup").style.display = "block";
 		}
         else {
-			document.getElementById("popup").style.display = "none"; 
+			document.getElementById("popup").style.display = "none";
 			}
 }
 
@@ -424,7 +422,7 @@ function importEvents() {
     request.open('POST', `${url}/upload/csv`, true);
     // request.setRequestHeader('Content-type', 'multipart/form-data');
     // eslint-disable-next-line func-names
-    request.onreadystatechange = function () {
+    request.onreadystatechange = function() {
       if (request.readyState === XMLHttpRequest.DONE) {
         if (request.status === 200) {
           console.log('Successfully sent CSV');
@@ -459,13 +457,8 @@ function exportCSVEvents() {
   request.send();
 }
 
-function testExportPDFEvents(){
-  let pdf = new jsPDF();
-  pdf.autoTable({ html: '#tableEvents'})
-  pdf.save('events.pdf')
-};
-
 function exportPDFEvents() {
+
   const request = new XMLHttpRequest();
 
   request.onreadystatechange = function() {

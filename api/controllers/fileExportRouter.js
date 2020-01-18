@@ -10,7 +10,9 @@ fileExportRouter.get('/pdf', (req, res) => {
     .then((events) => {
       const pdfData = convertEventsArrayToPDF(events);
       res.contentType('application/pdf');
-      res.status(200).send(pdfData);
+      // res.status(200).send(pdfData);
+      pdfData.pipe(res);
+      pdfData.end();
     })
     .catch((error) => {
       console.log(`Failed at GET:/pdf -  ${error}`);
