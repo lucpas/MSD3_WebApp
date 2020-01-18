@@ -1,8 +1,8 @@
 import { State } from './state.js';
 
 // URL of backend api (prod and dev)
-const backendURL = 'https://msd3-webapp.herokuapp.com/api';
-// const backendURL = 'http://localhost:8080/api';
+// const backendURL = 'https://msd3-webapp.herokuapp.com/api';
+const backendURL = 'http://localhost:8080/api';
 
 // Console logs are only allowed when this is on!
 const enableLogging = true;
@@ -127,5 +127,12 @@ export const state = {
   selectedEvents: new State([], true, 'selected events'),
   activeEvent: new State(null, true, 'event that is currently being edited'),
   mode: new State(Mode.CLEAN, true, 'application mode'),
-  error: new State(null, true, 'current error')
+  message: new State({
+    heading: null,
+    text: null,
+    backdropClickHandler: null,
+    okButtonClickHandler: null,
+    cancelButtonClickHandler: null,
+  }, true, 'popup message')
 };
+

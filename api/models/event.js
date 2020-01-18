@@ -2,229 +2,221 @@ const mongoose = require('mongoose');
 
 // All Validators
 
-var parseForSemicolon = function(inpField) {
-  const currInpField = inpField;
-  if (currInpField.indexOf(';') === -1) {
-    return true;
-  } else {
-    // console.log("Semicolons [;] not allowed");
+const semicolonValidator = {
+  validator: function(inpField) {
+    const currInpField = inpField;
+    if (currInpField.indexOf(';') === -1) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+  msg: 'Eingabe darf keine Semikolons [;] enthalten',
+};
+
+const parseTitle = function(inp) {
+  if (inp.length === 0 || inp.length > 50) {
     return false;
+  } else {
+    return true;
   }
 };
 
-var parseTitle = function(inp) {
-  if (inp.length === 0 || inp.length > 30) {
-    return false;
-  } else {
-    return true;
-  };
-};
-
-var parseDesc = function(inp) {
+const parseDesc = function(inp) {
   if (inp.length === 0 || inp.length > 200) {
     return false;
   } else {
     return true;
-  };
+  }
 };
 
-var parseDate = function(inp) {
+const parseDate = function(inp) {
   if (/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/.test(inp)) {
     return true;
   } else {
     return false;
-  };
+  }
 };
 
-var parseTime = function(inp) {
+const parseTime = function(inp) {
   if (/^(0[0-9]|1[0-9]|2[0-3]|[0-9]):[0-5][0-9]$/.test(inp)) {
     return true;
   } else {
     return false;
-  };
+  }
 };
 
-var parsePlace = function(inp) {
-  if (inp.length === 0 || inp.length > 30) {
+const parsePlace = function(inp) {
+  if (inp.length === 0 || inp.length > 100) {
     return false;
   } else {
     return true;
-  };
+  }
 };
 
-var parseContact = function(inp) {
-  if (/^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$|^(https:|http:|www\.)\S*/.test(inp)) {
+const parseContact = function(inp) {
+  if (
+    /^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$|^(https:|http:|www\.)\S*/.test(
+      inp,
+    )
+  ) {
     return true;
   } else {
     return false;
-  };
+  }
 };
 
-// List of institutes of FH Joanneum
-var institutes = [
-  "International Management",
-  "Industriewirtschaft",
-  "Gesundheits- und Tourismusmanagement",
-  "Bank- und Versicherungswirtschaft",
-  "Biomedizinische Analytik",
-  "Logopaedie",
-  "Radiologietechnologie",
-  "Physiotherapie",
-  "Diaetologie",
-  "Ergotherapie",
-  "Hebammenwesen",
-  "Gesundheits- und Krankenpflege",
-  "Internet-Technologien & -Anwendungen",
-  "Informationsmanagement",
-  "eHealth",
-  "Journalismus und Public Relations",
-  "Design & Kommunikation",
-  "Product & Transportation Design",
-  "Fahrzeugtechnik / Automotive Engineering",
-  "Luftfahrt / Aviation",
-  "Electronic Engineering",
-  "Angewandte Produktionswissenschaften",
-  "Architektur & Management",
-  "Bauplanung und Bauwirtschaft",
-  "Energie-, Verkehrs- und Umweltmanagement",
-  "Soziale Arbeit",
-];
-
-
-var parseInst = function(inp) {
-  if (institutes.includes(inp)) {
-    return true;
-  } else {
-    return false;
-  };
-};
-
-var parseEntry = function(inp) {
-  if (inp.length === 0 || inp.length > 30) {
+const parseInst = function(inp) {
+  if (inp.length === 0 || inp.length > 100) {
     return false;
   } else {
     return true;
-  };
+  }
 };
 
+const parseEntry = function(inp) {
+  if (inp.length === 0 || inp.length > 100) {
+    return false;
+  } else {
+    return true;
+  }
+};
 
+const checkIfFieldEmpty = function(inp) {
+  return inp.length > 0;
+};
 
 // Combined Validators.
 
-var validateTitle = [{
-    validator: parseForSemicolon,
-    msg: 'Kein Semikolons [;] erlaubt'
+const validateTitle = [
+  semicolonValidator,
+  {
+    validator: checkIfFieldEmpty,
+    msg: 'Titel darf nicht leer sein',
   },
   {
     validator: parseTitle,
-    msg: 'Titel darf nicht leer sein/maximal 30 Zeichen erlaubt'
-  }
+    msg: 'Titel darf maximal 50 Zeichen enthalten',
+  },
 ];
 
-var validateDesc = [{
-    validator: parseForSemicolon,
-    msg: 'Kein Semikolons [;] erlaubt'
+const validateDesc = [
+  semicolonValidator,
+  {
+    validator: checkIfFieldEmpty,
+    msg: 'Beschreibung darf nicht leer sein',
   },
   {
     validator: parseDesc,
-    msg: 'Beschreibung darf nicht leer sein/maximal 200 Zeichen erlaubt'
-  }
+    msg: 'Beschreibung darf maximal 200 Zeichen enthalten',
+  },
 ];
 
-var validateDate = [{
-    validator: parseForSemicolon,
-    msg: 'Kein Semikolons [;] erlaubt'
+const validateDate = [
+  semicolonValidator,
+  {
+    validator: checkIfFieldEmpty,
+    msg: 'Datum darf nicht leer sein',
   },
   {
     validator: parseDate,
-    msg: 'Kein passendes Datum-Format (yyyy.mm.dd)'
-  }
+    msg: 'Kein unterstütztes Datum-Format (yyyy-mm-dd)',
+  },
 ];
 
-var validateTime = [{
-    validator: parseForSemicolon,
-    msg: 'Kein Semikolons [;] erlaubt'
+const validateTime = [
+  semicolonValidator,
+  {
+    validator: checkIfFieldEmpty,
+    msg: 'Uhrzeit darf nicht leer sein',
   },
   {
     validator: parseTime,
-    msg: 'Kein passendes Zeit-Format (24h, HH:MM)'
-  }
+    msg: 'Kein unterstütztes Zeit-Format (24h, HH:MM)',
+  },
 ];
 
-var validatePlace = [{
-    validator: parseForSemicolon,
-    msg: 'Kein Semikolons [;] erlaubt'
+const validatePlace = [
+  semicolonValidator,
+  {
+    validator: checkIfFieldEmpty,
+    msg: 'Ort darf nicht leer sein',
   },
   {
     validator: parsePlace,
-    msg: 'Ort darf nicht leer sein/maximal 30 Zeichen erlaubt'
-  }
+    msg: 'Ort darf maximal 100 Zeichen enhalten',
+  },
 ];
 
-var validateContact = [{
-    validator: parseForSemicolon,
-    msg: 'Kein Semikolons [;] erlaubt'
+const validateContact = [
+  semicolonValidator,
+  {
+    validator: checkIfFieldEmpty,
+    msg: 'Kontakt darf nicht leer sein',
   },
   {
     validator: parseContact,
-    msg: 'Kein passendes Kontakt-Format (Email oder URL)'
-  }
+    msg: 'Kontakt muss eine Email-Adresse oder URL sein',
+  },
 ];
 
-var validateInst = [{
-    validator: parseForSemicolon,
-    msg: 'Kein Semikolons [;] erlaubt'
+const validateInst = [
+  semicolonValidator,
+  {
+    validator: checkIfFieldEmpty,
+    msg: 'Institut darf nicht leer sein',
   },
   {
     validator: parseInst,
-    msg: 'Institut nicht gefunden'
-  }
+    msg: 'Institut darf maximal 100 Zeichen enthalten',
+  },
 ];
 
-var validateEntry = [{
-    validator: parseForSemicolon,
-    msg: 'Kein Semikolons [;] erlaubt'
+const validateEntry = [
+  semicolonValidator,
+  {
+    validator: checkIfFieldEmpty,
+    msg: 'Eintritt darf nicht leer sein',
   },
   {
-  validator: parseEntry,
-  msg: 'Eintritt darf nicht leer sein/maximal 30 Zeichen erlaubt'
-  }
+    validator: parseEntry,
+    msg: 'Eintritt darf maximal 100 Zeichen enthalten',
+  },
 ];
-
 
 // Validation schema
 const eventSchema = mongoose.Schema({
   title: {
     type: String,
-    validate: validateTitle
+    validate: validateTitle,
   },
   description: {
     type: String,
-    validate: validateDesc
+    validate: validateDesc,
   },
   date: {
     type: String,
-    validate: validateDate
+    validate: validateDate,
   },
   time: {
     type: String,
-    validate: validateTime
+    validate: validateTime,
   },
   place: {
     type: String,
-    validate: validatePlace
+    validate: validatePlace,
   },
   contact: {
     type: String,
-    validate: validateContact
+    validate: validateContact,
   },
   institute: {
     type: String,
-    validate: validateInst
+    validate: validateInst,
   },
   entry: {
     type: String,
-    validate: validateEntry
+    validate: validateEntry,
   },
 });
 

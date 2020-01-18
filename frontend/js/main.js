@@ -15,7 +15,6 @@ import {
   setActionBarToMode,
   addValidationHandlersTo,
   removeValidationHandlersFrom,
-  showErrorMessage
 } from './functions.js';
 
 document.addEventListener('keydown', onKeyDownHandler);
@@ -31,11 +30,12 @@ window.addEventListener('DOMContentLoaded', () => {
   DOM.table = document.getElementById('tableEvents');
   DOM.tBody = document.getElementById('tableBody');
   DOM.tHeader = document.getElementById('tableHeader');
-  DOM.modal = document.getElementById('addEventModal');
-  DOM.popup = document.getElementById('popup');
+  // Popup elements
   DOM.popupContainer = document.getElementById('popup-container');
+  DOM.popupHeading = document.getElementById('popup-heading')
   DOM.popupMessage = document.getElementById('popup-message');
   DOM.popupOkButton = document.getElementById('popup-btn-ok');
+  DOM.popupCancelButton = document.getElementById('popup-btn-cancel');
   // Interaction elements
   DOM.searchField = document.getElementById('searchfield');
   DOM.addButton = document.getElementById('addButton');
@@ -47,8 +47,6 @@ window.addEventListener('DOMContentLoaded', () => {
   DOM.importCSVButton = document.getElementById('importCSVButton');
   DOM.exportCSVButton = document.getElementById('exportCSVButton');
   DOM.exportPDFButton = document.getElementById('exportPDFButton');
-
-  DOM.popupOkButton.onclick = () => state.error.set(null);
 
   // Static Event handlers
   DOM.searchField.addEventListener('input', (event) => {
@@ -210,10 +208,51 @@ const setInputFieldValidationObserver = new Observer((activeEventID) => {
 const focusOnActiveEventObserver = new Observer(setFocusOnRow);
 
 /*
-  State required: error
+  State required: message
   State modified: none
  */
-const handleErrorObserver = new Observer(showErrorMessage);
+const updatePopupObserver = new Observer((message) => {
+  if (message === null) {
+    return;
+  };
+
+  DOM.popupHeading.innerText = message.heading;
+  DOM.popupMessage.innerText = message.text;
+  
+  if (typeof message.okButtonClickHandler === 'function') {
+    DOM.popupOkButton.onclick = message.okButtonClickHandler;
+    DOM.popupOkButton.classList.add('visible'); 
+  } else {
+    DOM.popupOkButton.onclick = null;
+    DOM.popupOkButton.classList.remove('visible'); 
+  }
+  
+  if (typeof message.cancelButtonClickHandler === 'function') {
+    DOM.popupCancelButton.onclick = message.cancelButtonClickHandler;
+    DOM.popupCancelButton.classList.add('visible'); 
+  } else {
+    DOM.popupCancelButton.onclick = null;
+    DOM.popupCancelButton.classList.remove('visible'); 
+  }
+  
+  if (typeof message.backdropClickHandler === 'function') {
+    DOM.popupContainer.onclick = message.backdropClickHandler;
+  } else {
+    DOM.popupContainer.onclick = null;
+  }
+});
+
+/*
+  State required: message
+  State modified: none
+ */
+const togglePopupVisibilityObserver = new Observer((message) => {
+  if (message === null) {
+    DOM.popupContainer.classList.remove('visible');
+  } else {
+    DOM.popupContainer.classList.add('visible');
+  }
+});
 
 // Attaching Observers
 state.allEvents.attachObserver(
@@ -254,7 +293,8 @@ state.mode.attachObserver(
   setActionBarObserver,
 );
 
-state.error.attachObserver(
+state.message.attachObserver(
   logStateChangeObserver,
-  handleErrorObserver
-)
+  updatePopupObserver,
+  togglePopupVisibilityObserver
+);

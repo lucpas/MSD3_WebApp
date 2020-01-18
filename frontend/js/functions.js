@@ -243,12 +243,21 @@ export function saveButtonClickHandler() {
       pushUpdatedEvent(saveEventCallback, editedEvent);
     }
   } else {
-    // Format error message
-    let errorMessage = 'Ein oder oder mehrere Felder enhalten ungültige Eingaben:\n';
-    
-    Object.values(validationErrors).forEach(error => errorMessage += `\n${error}`)
+    // Create formatted error message
+    let errorMessage =
+      'Ein oder oder mehrere Felder enhalten ungültige Eingaben:\n';
 
-    state.error.set(errorMessage);
+    Object.values(validationErrors).forEach(
+      error => (errorMessage += `\n${error}`),
+    );
+
+    state.message.set({
+      heading: 'Fehlerhafte Eingabe',
+      text: errorMessage,
+      backdropClickHandler: () => state.message.set(null),
+      okButtonClickHandler: () => state.message.set(null),
+      cancelButtonClickHandler: null,
+    });
   }
 }
 
@@ -264,24 +273,29 @@ export function cancelButtonClickHandler() {
       state.selectedEvents.set([]);
       break;
     case Mode.EDITING:
-      // TODO: Styled prompt
-      if (!confirm('Ungespeicherte Änderung werden verworfen. Fortfahren?')) {
-        break;
-      }
-
-      if (state.activeEvent.get() === CONSTANTS.newRowID) {
-        // Delete new table row, if exists
-        if (DOM.tBody.rows[0].id === 'NEW') {
-          DOM.tBody.deleteRow(0);
+      const successCallback = () => {
+        if (state.activeEvent.get() === CONSTANTS.newRowID) {
+          // Delete new table row, if exists
+          if (DOM.tBody.rows[0].id === 'NEW') {
+            DOM.tBody.deleteRow(0);
+          } else {
+            return;
+          }
         } else {
-          break;
+          lockTableRow(state.activeEvent.get());
+          state.selectedEvents.set(state.selectedEvents.previousState);
         }
-      } else {
-        lockTableRow(state.activeEvent.get());
-        state.selectedEvents.set(state.selectedEvents.previousState);
-      }
 
-      state.activeEvent.set(null);
+        state.activeEvent.set(null);
+      };
+
+      state.message.set({
+        heading: 'Event bearbeiten',
+        text: 'Ungespeicherte Änderung werden verworfen. Fortfahren?',
+        okButtonClickHandler: successCallback,
+        cancelButtonClickHandler: () => state.message.set(null),
+        backdropClickHandler: () => null,
+      });
       break;
     default:
       break;
@@ -291,31 +305,38 @@ export function cancelButtonClickHandler() {
 export function deleteButtonClickHandler() {
   if (CONSTANTS.enableLogging) console.log('FUNCTION_deleteEvents');
 
-  if (!confirm('Alle ausgewählten Events werden gelöscht. Fortfahren?')) {
-    return;
-  }
+  const successCallback = () => {
+    let deleteableEvents = collectSelectedEvents();
+    const deletedEvents = [];
 
-  let deleteableEvents = collectSelectedEvents();
-  const deletedEvents = [];
+    for (let i = 0; i < deleteableEvents.length; i++) {
+      deleteEvent(event => {
+        document.getElementById(event.id).classList.add('fade-out');
 
-  for (let i = 0; i < deleteableEvents.length; i++) {
-    deleteEvent(event => {
-      document.getElementById(event.id).classList.add('fade-out');
+        deleteableEvents = deleteableEvents.filter(e => e.id !== event.id);
+        deletedEvents.push(event);
 
-      deleteableEvents = deleteableEvents.filter(e => e.id !== event.id);
-      deletedEvents.push(event);
+        if (deleteableEvents.length === 0) {
+          setTimeout(() => {
+            const updatedEvents = state.allEvents
+              .get()
+              .filter(e => !deletedEvents.includes(e));
+            state.allEvents.set(updatedEvents);
+            state.selectedEvents.set([]);
+          }, 750);
+        }
+      }, deleteableEvents[i]);
+    }
+  };
 
-      if (deleteableEvents.length === 0) {
-        setTimeout(() => {
-          const updatedEvents = state.allEvents
-            .get()
-            .filter(e => !deletedEvents.includes(e));
-          state.allEvents.set(updatedEvents);
-          state.selectedEvents.set([]);
-        }, 750);
-      }
-    }, deleteableEvents[i]);
-  }
+  state.message.set({
+    heading: 'Event(s) löschen',
+    text: 'Alle ausgewählten Events werden gelöscht. Fortfahren?',
+    okButtonClickHandler: successCallback,
+    cancelButtonClickHandler: () => state.message.set(null),
+    backdropClickHandler: null,
+  });
+
 }
 
 export function printButtonClickHandler() {
@@ -627,22 +648,22 @@ export function setFocusOnRow(rowID) {
   }
 }
 
-export function showErrorMessage(message) {
-  if (CONSTANTS.enableLogging) console.log('FUNCTION_showErrorMessage:', message);
+// export function showErrorMessage(message) {
+//   if (CONSTANTS.enableLogging)
+//     console.log('FUNCTION_showErrorMessage:', message);
 
-  // message =
-  //   message ||
-  //   'Unbekannter Fehler! Falls das Problem weiterhin besteht, wenden bitte Sie sich an einen Administrator.';
+//   // message =
+//   //   message ||
+//   //   'Unbekannter Fehler! Falls das Problem weiterhin besteht, wenden bitte Sie sich an einen Administrator.';
 
-  if (message !== null) {
-    DOM.popupMessage.innerText = message;
-    DOM.popupContainer.classList.add('visible');
-    DOM.popupContainer.onclick = () => state.error.set(null);
-  } else {
-    DOM.popupContainer.classList.remove('visible');
-    DOM.popupContainer.onclick = null;
-  }
-}
+//   if (message !== null) {
+//     DOM.popupMessage.innerText = message;
+//     DOM.popupContainer.classList.add('visible');
+//   } else {
+//     DOM.popupContainer.classList.remove('visible');
+//     DOM.popupContainer.onclick = null;
+//   }
+// }
 
 export function addValidationHandlersTo(eventID) {
   if (CONSTANTS.enableLogging) console.log('FUNCTION_addValidationHandlersTo');

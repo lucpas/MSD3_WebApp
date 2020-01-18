@@ -44,13 +44,13 @@ let event = {};
 
 const interval = setInterval(() => {
   event = {
-    title: faker.company.catchPhrase().substring(0, 30),
+    title: faker.company.catchPhrase().substring(0, 50),
     description: faker.lorem.sentence().substring(0, 200),
     date: faker.date.future().toISOString().substring(0, 10),
     time: faker.date.future().toISOString().substring(11, 16),
-    place: faker.address.streetAddress(),
+    place: faker.address.streetAddress().substring(0, 100),
     contact: faker.random.boolean() ? faker.internet.email() : faker.internet.url(),
-    institute: faker.random.boolean() ? faker.random.arrayElement(institutes) : faker.company.companyName(),
+    institute: faker.random.boolean() ? faker.random.arrayElement(institutes) : faker.company.companyName().substring(0, 100),
     entry: faker.random.boolean() ? `${faker.finance.amount()}€` : 'Keine Anmeldung erforderlich',
   };
 
