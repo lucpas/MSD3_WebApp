@@ -105,8 +105,7 @@ window.onload = () => {
         });
         fetchEvents();
       } else {
-        // Temp error message/ TODO: Sprint 3 validate -> errorMessage()
-        errorMessage();
+        errorMessage("test");
       }
     };
     DOM.modal.style.display = 'block';
@@ -311,7 +310,7 @@ function editEvent(event) {
       });
     } else {
       // Temp error message/ TODO: Sprint 3 validate -> errorMessage()
-      errorMessage();
+      errorMessage("editTest");
     }
   };
   DOM.modal.style.display = 'block';
@@ -334,21 +333,15 @@ function deleteEvent(selectedEvent, callback) {
 }
 
 // Params: {status ('warning', error), message: String}
-function errorMessage(message, title) {
-  if (!title) title = 'Fehler';
-
-  if (!message) message = 'Fehler bei der Eingabe.';
-
-  $('<div></div>').html(message).dialog({
-    title,
-    resizable: false,
-    modal: true,
-    buttons: {
-      Ok() {
-        $(this).dialog('close');
-      },
-    },
-  });
+function errorMessage(message) {
+	if(document.getElementById("popup").style.display === "none")
+	{
+		document.getElementbyId("popup").innerHTML.value(message);
+		document.getElementById("popup").style.display = "block"; 
+		}
+        else {
+			document.getElementById("popup").style.display = "none"; 
+			}
 }
 
 function printTable() {
