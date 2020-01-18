@@ -297,3 +297,26 @@ p {
   font-weight: bold;
   cursor: pointer;
 }
+
+.icon{
+  margin: 15px;
+  height: 50px;
+  width: 50px;
+}
+
+.icon:hover{
+  fill: #c03;
+  cursor: pointer;
+  transform: scale(1.4);
+}
+
+.actionicons{
+  height: 20px;
+  width: 20px;
+}
+
+.actionicons:hover{
+  fill: #c03;
+  cursor: pointer;
+  transform: scale(1.4);
+}

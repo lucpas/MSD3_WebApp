@@ -241,28 +241,25 @@ function drawTable(selectedEvents) {
     }
 
     // Add edit button
-    const editButton = document.createElement('img');
-    editButton.src = 'img/pencil.svg';
-    editButton.alt = 'edit icon';
-    editButton.height = '20';
-    editButton.width = '20';
+    const editButton = document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
+        editIcon = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    editIcon.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href','./img/icons.svg#pencil');
+    editButton.appendChild(editIcon);
 
     editButton.addEventListener('click', () => editEvent(event));
-    editButton.classList.add('icon');
+    editButton.classList.add('actionicons');
 
     // Add delete button
-    const deleteButton = document.createElement('img');
-    deleteButton.src = 'img/delete.svg';
-    deleteButton.alt = 'delete icon';
-    deleteButton.height = '20';
-    deleteButton.width = '20';
-
+    const deleteButton = document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
+        deleteIcon = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    deleteIcon.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href','./img/icons.svg#delete');
+    editButton.appendChild(deleteIcon);
     deleteButton.addEventListener('click', () => deleteEvent(event, () => {
       events.delete(event);
       fetchEvents(() => drawTable(events));
       DOM.modal.style.display = 'none';
     }));
-    deleteButton.classList.add('icon');
+    deleteButton.classList.add('actionicons');
 
     cell = row.insertCell(-1);
     cell.setAttribute('data-title', 'Aktionen');
