@@ -37,6 +37,10 @@ window.addEventListener('DOMContentLoaded', () => {
   DOM.cancelButton = document.getElementById('cancelButton');
   DOM.deleteButton = document.getElementById('deleteButton');
   DOM.printButton = document.getElementById('printButton');
+  DOM.importCSVButton = document.getElementById('importCSVButton');
+  DOM.exportCSVButton = document.getElementById('exportCSVButton');
+  DOM.exportPDFButton = document.getElementById('exportPDFButton');
+
   // Static Event handlers
   DOM.searchField.addEventListener('input', (event) => {
     state.filter.set(event.target.value);

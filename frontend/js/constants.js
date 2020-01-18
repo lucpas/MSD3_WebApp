@@ -1,8 +1,8 @@
 import { State } from './state.js';
 
 // URL of backend api (prod and dev)
-const backendURL = 'https://msd3-webapp.herokuapp.com/api/events';
-// const backendURL = 'http://localhost:8080/api/events';
+const backendURL = 'https://msd3-webapp.herokuapp.com/api';
+// const backendURL = 'http://localhost:8080/api';
 
 // Console logs are only allowed when this is on!
 const enableLogging = true;

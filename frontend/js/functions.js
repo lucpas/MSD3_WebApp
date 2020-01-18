@@ -1,15 +1,18 @@
-import { CONSTANTS, DOM, Mode, state } from './constants.js';
+/* eslint-disable prefer-destructuring */
+import {
+  CONSTANTS, DOM, Mode, state,
+} from './constants.js';
 
 // ----------- IO
 export function fetchEvents(callback) {
   if (CONSTANTS.enableLogging) console.log('FUNCTION_fetchEvents');
 
   const request = new XMLHttpRequest();
-  request.open('GET', CONSTANTS.backendURL);
+  request.open('GET', `${CONSTANTS.backendURL}/events`);
   request.send();
 
   // eslint-disable-next-line func-names
-  request.onreadystatechange = function() {
+  request.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
       // state.set({ events: JSON.parse(request.responseText) })
       // state.dumpToConsole()
@@ -27,12 +30,12 @@ export function pushNewEvent(callback, selectedEvent) {
   }
 
   const request = new XMLHttpRequest();
-  request.open('POST', CONSTANTS.backendURL);
+  request.open('POST', `${CONSTANTS.backendURL}/events`);
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   request.send(JSON.stringify(selectedEvent));
 
   // eslint-disable-next-line func-names
-  request.onreadystatechange = function() {
+  request.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 201) {
       if (typeof callback === 'function') {
         callback();
@@ -47,12 +50,12 @@ export function pushUpdatedEvent(callback, selectedEvent) {
   }
 
   const request = new XMLHttpRequest();
-  request.open('PUT', `${CONSTANTS.backendURL}/${selectedEvent.id}`, true);
+  request.open('PUT', `${CONSTANTS.backendURL}/events/${selectedEvent.id}`, true);
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   request.send(JSON.stringify(selectedEvent));
 
   // eslint-disable-next-line func-names
-  request.onreadystatechange = function() {
+  request.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
       if (typeof callback === 'function') {
         callback();
@@ -67,18 +70,91 @@ export function deleteEvent(callback, selectedEvent) {
   }
 
   const request = new XMLHttpRequest();
-  request.open('DELETE', `${CONSTANTS.backendURL}/${selectedEvent.id}`, true);
+  request.open('DELETE', `${CONSTANTS.backendURL}/events/${selectedEvent.id}`, true);
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   request.send();
 
   // eslint-disable-next-line func-names
-  request.onreadystatechange = function() {
+  request.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 204) {
       if (typeof callback === 'function') {
         callback(selectedEvent);
       }
     }
   };
+}
+
+export function importEvents() {
+  const input = document.createElement('input');
+  input.setAttribute('type', 'file');
+  input.setAttribute('accept', 'text/csv');
+  input.addEventListener('change', handleFiles, false);
+  let file;
+
+  function handleFiles() {
+    // const boundary = '----'
+
+    file = this.files[0];
+    const formData = new FormData();
+    // formData.append('boundary', boundary);
+    formData.append('readme.me', file, 'readme.me');
+    // formData.append('boundary', boundary);
+    const request = new XMLHttpRequest();
+    request.open('POST', `${CONSTANTS.backendURL}/upload/csv`, true);
+    // request.setRequestHeader('Content-type', 'multipart/form-data');
+    // eslint-disable-next-line func-names
+    request.onreadystatechange = function () {
+      if (request.readyState === XMLHttpRequest.DONE) {
+        if (request.status === 200) {
+          console.log('Successfully sent CSV');
+        } else {
+          console.log('failed to sent csv');
+        }
+      }
+    };
+    request.send(file);
+  }
+  input.click();
+
+  return false; // avoiding navigation
+}
+
+export function exportCSVEvents() {
+  const request = new XMLHttpRequest();
+
+  request.onreadystatechange = function () {
+    if (this.readyState === 4 && this.status === 200) {
+      const downloadUrl = URL.createObjectURL(request.response);
+      const a = document.createElement('a');
+      document.body.appendChild(a);
+      a.style = 'display: none';
+      a.href = downloadUrl;
+      a.download = '';
+      a.click();
+    }
+  };
+  request.open('GET', `${CONSTANTS.backendURL}/download/csv`, true);
+  request.responseType = 'blob';
+  request.send();
+}
+
+export function exportPDFEvents() {
+  const request = new XMLHttpRequest();
+
+  request.onreadystatechange = function () {
+    if (this.readyState === 4 && this.status === 200) {
+      const downloadUrl = URL.createObjectURL(request.response);
+      const a = document.createElement('a');
+      document.body.appendChild(a);
+      a.style = 'display: none';
+      a.href = downloadUrl;
+      a.download = '';
+      a.click();
+    }
+  };
+  request.open('GET', `${CONSTANTS.backendURL}/download/pdf`, true);
+  request.responseType = 'blob';
+  request.send();
 }
 
 // ----------- CLICK HANDLERS
@@ -115,7 +191,7 @@ export function saveButtonClickHandler() {
 
   const saveEventCallback = () => {
     const events = state.allEvents.get();
-    const index = events.findIndex(e => e.id === editedEvent.id);
+    const index = events.findIndex((e) => e.id === editedEvent.id);
 
     if (index === -1) {
       state.allEvents.set([...events, editedEvent]);
@@ -146,7 +222,7 @@ export function cancelButtonClickHandler() {
   switch (state.mode.get()) {
     case Mode.SELECTING:
       // Reset selection visually and in state
-      state.selectedEvents.get().forEach(rowId => {
+      state.selectedEvents.get().forEach((rowId) => {
         document.getElementById(rowId).style.background = '';
       });
       state.selectedEvents.set([]);
@@ -187,17 +263,17 @@ export function deleteButtonClickHandler() {
   const deletedEvents = [];
 
   for (let i = 0; i < deleteableEvents.length; i++) {
-    deleteEvent(event => {
+    deleteEvent((event) => {
       document.getElementById(event.id).classList.add('fade-out');
 
-      deleteableEvents = deleteableEvents.filter(e => e.id !== event.id);
+      deleteableEvents = deleteableEvents.filter((e) => e.id !== event.id);
       deletedEvents.push(event);
 
       if (deleteableEvents.length === 0) {
         setTimeout(() => {
           const updatedEvents = state.allEvents
             .get()
-            .filter(e => !deletedEvents.includes(e));
+            .filter((e) => !deletedEvents.includes(e));
           state.allEvents.set(updatedEvents);
           state.selectedEvents.set([]);
         }, 750);
@@ -221,7 +297,7 @@ export function printButtonClickHandler() {
   table.appendChild(tHeader);
 
   const tBody = document.createElement('tbody');
-  printableEvents.forEach(event => {
+  printableEvents.forEach((event) => {
     const tRow = tBody.insertRow(0);
     // eslint-disable-next-line no-restricted-syntax
     for (const column of CONSTANTS.orderedEventDefinitions) {
@@ -247,7 +323,7 @@ export function onSelectRowHandler(mouseEvent) {
     return;
   }
 
-  const row = mouseEvent.composedPath().find(node => node.tagName === 'TR');
+  const row = mouseEvent.composedPath().find((node) => node.tagName === 'TR');
 
   // Prevent selecting borders
   // const rowID = mouseEvent.path[2].id;
@@ -264,8 +340,7 @@ export function onKeyDownHandler(event) {
     return;
   }
 
-  const isInputField =
-    event.target.tagName === 'TEXTAREA' || event.target.tagName === 'INPUT';
+  const isInputField = event.target.tagName === 'TEXTAREA' || event.target.tagName === 'INPUT';
   let activeRow;
   let nextElementID;
 
@@ -349,7 +424,7 @@ export function onKeyDownHandler(event) {
 
 export function getNthNextEventID(eventID, n) {
   const events = state.displayedEvents.get();
-  const nextIndex = events.findIndex(event => event.id === eventID) + n;
+  const nextIndex = events.findIndex((event) => event.id === eventID) + n;
 
   if (nextIndex >= 0 && nextIndex < events.length) {
     return events[nextIndex].id;
@@ -366,7 +441,7 @@ export function renderTable(events) {
     DOM.tBody.firstChild.remove();
   }
 
-  events.forEach(event => {
+  events.forEach((event) => {
     const tRow = document.createElement('tr');
 
     tRow.setAttribute('id', event.id);
@@ -378,7 +453,7 @@ export function renderTable(events) {
       const cell = tRow.insertCell(-1);
 
       const inputField = column.inputField.cloneNode(false);
-      
+
       inputField.setAttribute('disabled', '');
       inputField.value = event[column.dataLabel];
 
@@ -404,7 +479,7 @@ export function filterEvents(events, filterText) {
   }
 
   // filter events
-  const displayedEvents = events.filter(event => {
+  const displayedEvents = events.filter((event) => {
     let isMatch = false;
     // eslint-disable-next-line no-restricted-syntax
     for (const [key, value] of Object.entries(event)) {
@@ -425,7 +500,7 @@ export function highlightFilterMatches(matches) {
     console.log('FUNCTION_highlightFilterMatches:', matches);
   }
 
-  matches.forEach(match => {
+  matches.forEach((match) => {
     document.getElementById(match).classList.add('highlight');
   });
 }
@@ -438,7 +513,7 @@ export function toggleRowSelection(selectedRowID) {
   // If row is already selected, unselect it
   if (events.includes(selectedRowID)) {
     tRow.style.background = '';
-    events = events.filter(id => id !== selectedRowID);
+    events = events.filter((id) => id !== selectedRowID);
   } else {
     tRow.style.background = 'antiquewhite';
     events.push(selectedRowID);
@@ -500,7 +575,7 @@ export function createEmptyRow() {
     inputField.value = '';
 
     cell.classList.add(column.dataLabel);
-    cell.setAttribute('id', `${event.id}_${column.dataLabel}`);
+    cell.setAttribute('id', `${CONSTANTS.newRowID}_${column.dataLabel}`);
     cell.setAttribute('data-title', column.presentationLabel);
     cell.appendChild(inputField);
   }
@@ -518,8 +593,49 @@ export function setFocusOnRow(rowID) {
 export function validateEvent(event) {
   // TODO: FRONTEND VALIDATION LOGIC
 
-  return Object.values(event).every(prop => prop !== '' && prop !== null);
+  return Object.values(event).every((prop) => prop !== '' && prop !== null);
 }
+
+function checkInp(inpField) {
+  const checkEvent = createEvent();
+  const currInpField = inpField;
+  validateEvent(checkEvent, currInpField, () => {
+    // currInpField.style.borderColor = 'initial';
+    DOM.saveEventButton.disabled = false;
+    DOM.saveEventButton.style = 'initial';
+
+  });
+};
+
+function validateEvent2(checkEvent, inpField, callback) {
+  const request = new XMLHttpRequest();
+  // request.open('POST', "http://localhost:8080/api/events?validate=true");
+  request.open('POST', url+"/events?validate=true");
+  request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+  const stringCheckEvent = JSON.stringify(checkEvent)
+  request.send(stringCheckEvent);
+  console.log(checkEvent)
+  request.onreadystatechange = function() {
+    if (this.readyState === 4) {
+      if (this.status === 200) {
+        if (typeof callback === 'function') {
+          callback();
+        }
+      } else if (this.status === 400) {
+        // console.log(stringCheckEvent.indexOf(inpField.id))
+        // console.log(inpField.id)
+        // if (stringCheckEvent.indexOf(inpField.id) === -1) {
+          // inpField.style.borderColor = 'red';
+          DOM.saveEventButton.disabled = true;
+          DOM.saveEventButton.style.background = 'grey';
+          DOM.saveEventButton.style.border = 'grey';
+        // }
+      }
+    }
+  }
+
+};
+
 
 export function collectSelectedEvents() {
   if (CONSTANTS.enableLogging) console.log('FUNCTION_collectSelectedEvents');
@@ -531,7 +647,7 @@ export function collectSelectedEvents() {
   if (mode === Mode.CLEAN) {
     return displayedEvents;
   }
-  return displayedEvents.filter(event => selectedEvents.includes(event.id));
+  return displayedEvents.filter((event) => selectedEvents.includes(event.id));
 }
 
 // Action bar setters
@@ -620,6 +736,48 @@ export const ButtonConfig = {
       onclick: null,
     },
   },
+  importCSVButton: {
+    [Mode.CLEAN]: {
+      classes: [],
+      onclick: importEvents,
+    },
+    [Mode.SELECTING]: {
+      classes: [],
+      onclick: importEvents,
+    },
+    [Mode.EDITING]: {
+      classes: ['disabled'],
+      onclick: null,
+    },
+  },
+  exportCSVButton: {
+    [Mode.CLEAN]: {
+      classes: [],
+      onclick: exportCSVEvents,
+    },
+    [Mode.SELECTING]: {
+      classes: [],
+      onclick: exportCSVEvents,
+    },
+    [Mode.EDITING]: {
+      classes: ['disabled'],
+      onclick: null,
+    },
+  },
+  exportPDFButton: {
+    [Mode.CLEAN]: {
+      classes: [],
+      onclick: exportPDFEvents,
+    },
+    [Mode.SELECTING]: {
+      classes: [],
+      onclick: exportPDFEvents,
+    },
+    [Mode.EDITING]: {
+      classes: ['disabled'],
+      onclick: null,
+    },
+  },
 };
 
 export function setActionBarToMode(mode) {
@@ -638,4 +796,7 @@ export function setActionBarToMode(mode) {
   setButtonToConfig(DOM.cancelButton, ButtonConfig.cancelButton[mode]);
   setButtonToConfig(DOM.deleteButton, ButtonConfig.deleteButton[mode]);
   setButtonToConfig(DOM.printButton, ButtonConfig.printButton[mode]);
+  setButtonToConfig(DOM.importCSVButton, ButtonConfig.importCSVButton[mode]);
+  setButtonToConfig(DOM.exportCSVButton, ButtonConfig.exportCSVButton[mode]);
+  setButtonToConfig(DOM.exportPDFButton, ButtonConfig.exportPDFButton[mode]);
 }
