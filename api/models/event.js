@@ -7,7 +7,7 @@ var parseForSemicolon = function(inpField) {
   if (currInpField.indexOf(';') === -1) {
     return true;
   } else {
-    console.log("Semicolons [;] not allowed");
+    // console.log("Semicolons [;] not allowed");
     return false;
   }
 };
@@ -99,6 +99,14 @@ var parseInst = function(inp) {
   };
 };
 
+var parseEntry = function(inp) {
+  if (inp.length === 0 || inp.length > 30) {
+    return false;
+  } else {
+    return true;
+  };
+};
+
 
 
 // Combined Validators.
@@ -176,6 +184,10 @@ var validateInst = [{
 var validateEntry = [{
     validator: parseForSemicolon,
     msg: 'Kein Semikolons [;] erlaubt'
+  },
+  {
+  validator: parseEntry,
+  msg: 'Eintritt darf nicht leer sein/maximal 30 Zeichen erlaubt'
   }
 ];
 

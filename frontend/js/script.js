@@ -112,8 +112,7 @@ window.onload = () => {
           DOM.modal.style.display = 'none';
         });
         fetchEvents();
-      } else {
-      }
+      } else {}
     };
     DOM.modal.style.display = 'block';
   };
@@ -160,20 +159,20 @@ function validateEvent(checkEvent, inpField, callback) {
           DOM.saveEventButton.disabled = true;
           DOM.saveEventButton.style.background = 'grey';
           DOM.saveEventButton.style.border = 'grey';
-        // }
-		
-		var obj = JSON.parse(request.responseText);
-		var output = "";
-		for (var error in obj.errors) 
-			output += obj.errors[error] + "<br>";
-		errorMessage(output);
-		
-		      } else {
-        inpField.style.borderColor = 'initial';
+          // }
+
+          var obj = JSON.parse(request.responseText);
+          var output = "";
+          for (var error in obj.errors)
+            output += obj.errors[error] + "<br>";
+          errorMessage(output);
+
+        } else {
+          inpField.style.borderColor = 'initial';
+        }
       }
     }
   }
-}
 
 };
 
@@ -332,8 +331,7 @@ function editEvent(event) {
         drawTable(events);
         DOM.modal.style.display = 'none';
       });
-    } else {
-    }
+    } else {}
   };
   DOM.modal.style.display = 'block';
 }
@@ -356,18 +354,16 @@ function deleteEvent(selectedEvent, callback) {
 
 // Params: {status ('warning', error), message: String}
 function errorMessage(message) {
-	if(document.getElementById("popup").style.display === "none")
-	{
-		if(!Boolean(message))
-			message = "Es wurde keine Fehlermeldung geliefert! Wenn der Fehler weiterhin besteht, bitte wenden Sie sich an einen Administrator."
-		document.getElementById("popupMessage").innerHTML = message;
-		document.getElementById("popup").style.display = "block";
-		document.getElementById("popup-container").style.visibility = "visible";
-		}
-        else {
-			document.getElementById("popup").style.display = "none";
-			document.getElementById("popup-container").style.visibility = "hidden";
-			}
+  if (document.getElementById("popup").style.display === "none") {
+    if (!Boolean(message))
+      message = "Es wurde keine Fehlermeldung geliefert! Wenn der Fehler weiterhin besteht, bitte wenden Sie sich an einen Administrator."
+    document.getElementById("popupMessage").innerHTML = message;
+    document.getElementById("popup").style.display = "block";
+    document.getElementById("popup-container").style.visibility = "visible";
+  } else {
+    document.getElementById("popup").style.display = "none";
+    document.getElementById("popup-container").style.visibility = "hidden";
+  }
 }
 
 function printTable() {
