@@ -36,7 +36,7 @@ main {
   width: 40px;
   height: 40px;
 
-  margin-top: 4vh;
+  margin-top: 3vh;
   margin-right: 10vw;
 }
 
@@ -452,5 +452,9 @@ button.visible {
     width: 100%;
 
     border-bottom: 3px solid #a8a8a8;
+  }
+
+  .icon {
+    margin: 2vh 0;
   }
 }
