@@ -3,86 +3,77 @@ const mongoose = require('mongoose');
 // All Validators
 
 const semicolonValidator = {
-  validator: function(inpField) {
+  validator(inpField) {
     const currInpField = inpField;
     if (currInpField.indexOf(';') === -1) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   },
   msg: 'Eingabe darf keine Semikolons [;] enthalten',
 };
 
-const parseTitle = function(inp) {
+const parseTitle = function (inp) {
   if (inp.length === 0 || inp.length > 50) {
     return false;
-  } else {
-    return true;
   }
+  return true;
 };
 
-const parseDesc = function(inp) {
+const parseDesc = function (inp) {
   if (inp.length === 0 || inp.length > 200) {
     return false;
-  } else {
-    return true;
   }
+  return true;
 };
 
-const parseDate = function(inp) {
+const parseDate = function (inp) {
   if (/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/.test(inp)) {
     return true;
-  } else {
-    return false;
   }
+  return false;
 };
 
-const parseTime = function(inp) {
+const parseTime = function (inp) {
   if (/^(0[0-9]|1[0-9]|2[0-3]|[0-9]):[0-5][0-9]$/.test(inp)) {
     return true;
-  } else {
-    return false;
   }
+  return false;
 };
 
-const parsePlace = function(inp) {
+const parsePlace = function (inp) {
   if (inp.length === 0 || inp.length > 100) {
     return false;
-  } else {
-    return true;
   }
+  return true;
 };
 
-const parseContact = function(inp) {
+const parseContact = function (inp) {
   if (
     /^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$|^(https:|http:|www\.)\S*/.test(
       inp,
     )
   ) {
     return true;
-  } else {
-    return false;
   }
+  return false;
 };
 
-const parseInst = function(inp) {
+const parseInst = function (inp) {
   if (inp.length === 0 || inp.length > 100) {
     return false;
-  } else {
-    return true;
   }
+  return true;
 };
 
-const parseEntry = function(inp) {
+const parseEntry = function (inp) {
   if (inp.length === 0 || inp.length > 100) {
     return false;
-  } else {
-    return true;
   }
+  return true;
 };
 
-const checkIfFieldEmpty = function(inp) {
+const checkIfFieldEmpty = function (inp) {
   return inp.length > 0;
 };
 

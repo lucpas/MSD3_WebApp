@@ -21,8 +21,6 @@ document.addEventListener('keydown', onKeyDownHandler);
 
 // Initialization and first render
 window.addEventListener('DOMContentLoaded', () => {
-  if (CONSTANTS.enableLogging) console.log('FUNCTION_window.onload');
-
   // --- UNIQUE DOM ELEMENTS
   // Table and structural elements
   DOM.body = document.getElementsByTagName('body')[0];
@@ -32,7 +30,7 @@ window.addEventListener('DOMContentLoaded', () => {
   DOM.tHeader = document.getElementById('tableHeader');
   // Popup elements
   DOM.popupContainer = document.getElementById('popup-container');
-  DOM.popupHeading = document.getElementById('popup-heading')
+  DOM.popupHeading = document.getElementById('popup-heading');
   DOM.popupMessage = document.getElementById('popup-message');
   DOM.popupOkButton = document.getElementById('popup-btn-ok');
   DOM.popupCancelButton = document.getElementById('popup-btn-cancel');
@@ -197,7 +195,7 @@ const setInputFieldValidationObserver = new Observer((activeEventID) => {
   if (activeEventID) {
     addValidationHandlersTo(activeEventID);
   } else {
-    removeValidationHandlersFrom(state.activeEvent.previousState)
+    removeValidationHandlersFrom(state.activeEvent.previousState);
   }
 });
 
@@ -214,27 +212,27 @@ const focusOnActiveEventObserver = new Observer(setFocusOnRow);
 const updatePopupObserver = new Observer((message) => {
   if (message === null) {
     return;
-  };
+  }
 
   DOM.popupHeading.innerText = message.heading;
   DOM.popupMessage.innerText = message.text;
-  
+
   if (typeof message.okButtonClickHandler === 'function') {
     DOM.popupOkButton.onclick = message.okButtonClickHandler;
-    DOM.popupOkButton.classList.add('visible'); 
+    DOM.popupOkButton.classList.add('visible');
   } else {
     DOM.popupOkButton.onclick = null;
-    DOM.popupOkButton.classList.remove('visible'); 
+    DOM.popupOkButton.classList.remove('visible');
   }
-  
+
   if (typeof message.cancelButtonClickHandler === 'function') {
     DOM.popupCancelButton.onclick = message.cancelButtonClickHandler;
-    DOM.popupCancelButton.classList.add('visible'); 
+    DOM.popupCancelButton.classList.add('visible');
   } else {
     DOM.popupCancelButton.onclick = null;
-    DOM.popupCancelButton.classList.remove('visible'); 
+    DOM.popupCancelButton.classList.remove('visible');
   }
-  
+
   if (typeof message.backdropClickHandler === 'function') {
     DOM.popupContainer.onclick = message.backdropClickHandler;
   } else {
@@ -261,10 +259,10 @@ const togglePopupVisibilityObserver = new Observer((message) => {
 const setModeOnPopupChangeObserver = new Observer((message) => {
   if (message === null) {
     if (state.mode.get() === Mode.POPUP) {
-      state.mode.set(state.mode.previousState)
+      state.mode.set(state.mode.previousState);
     }
   } else {
-    state.mode.set(Mode.POPUP)
+    state.mode.set(Mode.POPUP);
   }
 });
 
@@ -311,5 +309,5 @@ state.message.attachObserver(
   logStateChangeObserver,
   updatePopupObserver,
   togglePopupVisibilityObserver,
-  setModeOnPopupChangeObserver
+  setModeOnPopupChangeObserver,
 );

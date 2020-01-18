@@ -1,24 +1,23 @@
 // Convert an incoming array of JS event objects to a PDF binary object
 // in some service
-var PdfTable = require('voilab-pdf-table'),
-  PdfDocument = require('pdfkit');
+const PdfTable = require('voilab-pdf-table');
+const PdfDocument = require('pdfkit');
 
 function convertEventsArrayToPDF(events) {
-
   // create a PDF from PDFKit, and a table from PDFTable
-  var pdf = new PdfDocument({
+  const pdf = new PdfDocument({
     autoFirstPage: false,
     size: 'A4',
-    layout: 'landscape'
+    layout: 'landscape',
   });
   pdf.info.Title = 'Events';
 
 
-  var headertable = new PdfTable(pdf, {
+  const headertable = new PdfTable(pdf, {
     bottomMargin: 10,
   });
 
-  var table = new PdfTable(pdf, {
+  const table = new PdfTable(pdf, {
     bottomMargin: 10,
   });
 
@@ -35,7 +34,7 @@ function convertEventsArrayToPDF(events) {
     })
     // add table columns
     .addColumns([
-      //headerCols
+      // headerCols
 
       {
         id: 'htitle',
@@ -82,13 +81,13 @@ function convertEventsArrayToPDF(events) {
         width: 100,
       },
 
-    ])
+    ]);
 
   table
-    // add some plugins (here, a 'fit-to-width' for a column)
-    // .addPlugin(new(require('voilab-pdf-table/plugins/fitcolumn'))({
-    //   column: 'title',
-    // }))
+  // add some plugins (here, a 'fit-to-width' for a column)
+  // .addPlugin(new(require('voilab-pdf-table/plugins/fitcolumn'))({
+  //   column: 'title',
+  // }))
 
     // set defaults to your columns
     .setColumnsDefaults({
@@ -100,7 +99,7 @@ function convertEventsArrayToPDF(events) {
     // add table columns
     .addColumns([
 
-      //MainBody
+      // MainBody
       {
         id: 'title',
         // header: 'Titel',
@@ -147,17 +146,16 @@ function convertEventsArrayToPDF(events) {
       },
     ])
     // add events (here, we draw headers on each new page)
-    .onPageAdded(function() {
+    .onPageAdded(() => {
       pdf.fontSize('12');
       headertable.addHeader();
       pdf.fontSize('9');
-
     });
   // if no page already exists in your PDF, do not forget to add one
   pdf.addPage();
 
   pdf.fontSize('20').text('Events der FH Joanneum', {
-    align: 'center'
+    align: 'center',
   });
   pdf.moveDown();
 
@@ -166,27 +164,27 @@ function convertEventsArrayToPDF(events) {
   pdf.fontSize('9');
 
   // draw content, by passing data to the addBody method
-  events.forEach(function(event) {
+  events.forEach((event) => {
     table.addBody([{
-        emptyLine: '',
-      },
-      {
-        title: event.title,
-        description: event.description,
-        date: event.date,
-        time: event.time,
-        place: event.place,
-        contact: event.contact,
-        institute: event.institute,
-        entry: event.entry
-      },
-      {
-        emptyLine: '',
-      }
+      emptyLine: '',
+    },
+    {
+      title: event.title,
+      description: event.description,
+      date: event.date,
+      time: event.time,
+      place: event.place,
+      contact: event.contact,
+      institute: event.institute,
+      entry: event.entry,
+    },
+    {
+      emptyLine: '',
+    },
     ]);
   });
 
   return pdf;
-};
+}
 
 module.exports = convertEventsArrayToPDF;

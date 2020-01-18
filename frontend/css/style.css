@@ -35,7 +35,6 @@ main {
 .icon {
   width: 40px;
   height: 40px;
-
   margin-top: 3vh;
   margin-right: 10vw;
 }
@@ -91,7 +90,7 @@ th {
 }
 
 tr:hover {
-  background-color: #ffffff;
+  background-color: #fff;
 }
 
 tr:focus {
@@ -100,10 +99,6 @@ tr:focus {
 
 td {
   color: inherit;
-}
-
-td.title > textarea {
-  font-weight: bold;
 }
 
 textarea,
@@ -125,9 +120,6 @@ input.invalid {
   border: 2px solid red;
 }
 
-textarea:invalid {
-}
-
 textarea {
   height: 50px;
   resize: none;
@@ -143,6 +135,7 @@ textarea:disabled,
 input:disabled {
   background-color: transparent;
   border: 1px solid transparent;
+  pointer-events: none;
 }
 
 input.institute {
@@ -155,9 +148,8 @@ textarea.entry {
   width: 70px;
 }
 
-textarea:disabled,
-input:disabled {
-  pointer-events: none;
+td.title > textarea {
+  font-weight: bold;
 }
 
 button {
@@ -194,10 +186,7 @@ button.visible {
 }
 
 @keyframes fade-out {
-  from {
-  }
   to {
-    background-color: #fff;
     background: #fff;
     color: #fff;
   }
@@ -279,7 +268,7 @@ button.visible {
   z-index: 200;
 }
 
-#popup-container:before {
+#popup-container::before {
   content: '';
   background: rgba(0, 0, 0, 0.6);
   position: fixed;
@@ -390,10 +379,6 @@ button.visible {
     height: 90px;
   }
 
-  td.description > textarea {
-    /* height: 80px; */
-  }
-
   td.date,
   td.time,
   td.institute {
@@ -430,8 +415,8 @@ button.visible {
   input {
     padding-top: 0;
     padding-bottom: 0;
-
     margin-top: 0;
+
     /* margin-bottom: 10px; */
     min-height: 25px;
     width: 90% !important;
@@ -447,10 +432,8 @@ button.visible {
 
   #actions {
     display: flex;
-
     justify-content: space-evenly;
     width: 100%;
-
     border-bottom: 3px solid #a8a8a8;
   }
 

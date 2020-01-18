@@ -134,6 +134,5 @@ export const state = {
     backdropClickHandler: null,
     okButtonClickHandler: null,
     cancelButtonClickHandler: null,
-  }, true, 'popup message')
+  }, true, 'popup message'),
 };
-
