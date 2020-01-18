@@ -333,9 +333,11 @@ function errorMessage(message) {
 	{
 		document.getElementById("demo").innerHTML = message;
 		document.getElementById("popup").style.display = "block";
+		document.getElementById("popup-container").style.visibility = "visible";
 		}
         else {
 			document.getElementById("popup").style.display = "none";
+			document.getElementById("popup-container").style.visibility = "hidden";
 			}
 }
 

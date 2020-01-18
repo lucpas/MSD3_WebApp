@@ -290,6 +290,27 @@ p {
 	display: none;
 }
 
+#popup-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    visibility: hidden;
+	z-index: 2;
+}
+
+#popup-container:before {
+    content:"";
+    background: rgba(0, 0, 0, .8);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+}
+
 .closePopup{
   color: #aaa;
   text-align: center;
