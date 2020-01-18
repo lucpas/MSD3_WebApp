@@ -15,6 +15,7 @@ import {
   setActionBarToMode,
   addValidationHandlersTo,
   removeValidationHandlersFrom,
+  showErrorMessage
 } from './functions.js';
 
 document.addEventListener('keydown', onKeyDownHandler);
@@ -32,7 +33,9 @@ window.addEventListener('DOMContentLoaded', () => {
   DOM.tHeader = document.getElementById('tableHeader');
   DOM.modal = document.getElementById('addEventModal');
   DOM.popup = document.getElementById('popup');
-  DOM.popupText = document.getElementById('popupText');
+  DOM.popupContainer = document.getElementById('popup-container');
+  DOM.popupMessage = document.getElementById('popup-message');
+  DOM.popupOkButton = document.getElementById('popup-btn-ok');
   // Interaction elements
   DOM.searchField = document.getElementById('searchfield');
   DOM.addButton = document.getElementById('addButton');
@@ -44,6 +47,8 @@ window.addEventListener('DOMContentLoaded', () => {
   DOM.importCSVButton = document.getElementById('importCSVButton');
   DOM.exportCSVButton = document.getElementById('exportCSVButton');
   DOM.exportPDFButton = document.getElementById('exportPDFButton');
+
+  DOM.popupOkButton.onclick = () => state.error.set(null);
 
   // Static Event handlers
   DOM.searchField.addEventListener('input', (event) => {
@@ -204,6 +209,12 @@ const setInputFieldValidationObserver = new Observer((activeEventID) => {
  */
 const focusOnActiveEventObserver = new Observer(setFocusOnRow);
 
+/*
+  State required: error
+  State modified: none
+ */
+const handleErrorObserver = new Observer(showErrorMessage);
+
 // Attaching Observers
 state.allEvents.attachObserver(
   logStateChangeObserver,
@@ -242,3 +253,8 @@ state.mode.attachObserver(
   setRowCursorObserver,
   setActionBarObserver,
 );
+
+state.error.attachObserver(
+  logStateChangeObserver,
+  handleErrorObserver
+)

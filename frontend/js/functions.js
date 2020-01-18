@@ -243,10 +243,12 @@ export function saveButtonClickHandler() {
       pushUpdatedEvent(saveEventCallback, editedEvent);
     }
   } else {
-    // alert('INVALID');
-    showErrorMessage(
-      'Ein oder oder mehrere Felder enhalten ungültige Eingaben',
-    );
+    // Format error message
+    let errorMessage = 'Ein oder oder mehrere Felder enhalten ungültige Eingaben:\n';
+    
+    Object.values(validationErrors).forEach(error => errorMessage += `\n${error}`)
+
+    state.error.set(errorMessage);
   }
 }
 
@@ -481,7 +483,6 @@ export function renderTable(events) {
 
     tRow.setAttribute('id', event.id);
     tRow.setAttribute('tabIndex', '0');
-    tRow.setAttribute('title', 'Event auswählen');
 
     // Write event data to table
     // eslint-disable-next-line no-restricted-syntax
@@ -626,47 +627,20 @@ export function setFocusOnRow(rowID) {
   }
 }
 
-export function validateEvent(event) {
-  // const validationErrors = pushEventForValidation(event);
-  // showErrorMessage(validationErrors);
-  // console.log(validationErrors);
-  // return !validationErrors;
-  // return Object.values(event).every(prop => prop !== '' && prop !== null);
-}
+export function showErrorMessage(message) {
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_showErrorMessage:', message);
 
-function checkInp(inpField) {
-  // const checkEvent = createEvent();
-  /* 
-  pushEventForValidation(
-    checkEvent,
-    () => {
-      // currInpField.style.borderColor = 'initial';
-      // DOM.saveEventButton.disabled = false;
-      // DOM.saveEventButton.style = 'initial';
-      console.log('EVENT IS GOOD');
-    },
-    () => {
-      // console.log(stringCheckEvent.indexOf(inpField.id))
-      // console.log(inpField.id)
-      // if (stringCheckEvent.indexOf(inpField.id) === -1) {
-      // inpField.style.borderColor = 'red';
-      // DOM.saveEventButton.disabled = true;
-      // DOM.saveEventButton.style.background = 'grey';
-      // DOM.saveEventButton.style.border = 'grey';
-      // }
-      console.log('EVENT IS BAD');
-    },
-  ); */
-}
+  // message =
+  //   message ||
+  //   'Unbekannter Fehler! Falls das Problem weiterhin besteht, wenden bitte Sie sich an einen Administrator.';
 
-function showErrorMessage(message) {
-  if (CONSTANTS.enableLogging) console.log('FUNCTION_showErrorMessage');
-
-  if (!DOM.popup.style.display || DOM.popup.style.display === 'none') {
-    DOM.popupText.innerText = message;
-    DOM.popup.style.display = 'block';
+  if (message !== null) {
+    DOM.popupMessage.innerText = message;
+    DOM.popupContainer.classList.add('visible');
+    DOM.popupContainer.onclick = () => state.error.set(null);
   } else {
-    DOM.popup.style.display = 'none';
+    DOM.popupContainer.classList.remove('visible');
+    DOM.popupContainer.onclick = null;
   }
 }
 

@@ -161,6 +161,7 @@ input:disabled {
 }
 
 .logo {
+  max-height: 80px;
   max-width: 80%;
   padding-left: 20%;
 }
@@ -401,10 +402,39 @@ input:disabled {
   display: none;
 }
 
+#popup-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  visibility: hidden;
+  z-index: 200;
+}
+
+#popup-container:before {
+  content: '';
+  background: rgba(0, 0, 0, 0.6);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+}
+
 .closePopup {
   color: #aaa;
   text-align: center;
   font-size: 28px;
   font-weight: bold;
   cursor: pointer;
+}
+
+#popup-container.visible {
+  visibility: visible;
+}
+
+#popup-container.visible > #popup {
+  display: block;
 }

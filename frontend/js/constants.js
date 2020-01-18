@@ -127,4 +127,5 @@ export const state = {
   selectedEvents: new State([], true, 'selected events'),
   activeEvent: new State(null, true, 'event that is currently being edited'),
   mode: new State(Mode.CLEAN, true, 'application mode'),
+  error: new State(null, true, 'current error')
 };

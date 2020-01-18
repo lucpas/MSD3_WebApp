@@ -19,7 +19,11 @@
   <header>
     <input type="text" id="searchfield" placeholder="Welches Event suchen Sie?" />
     <div id="logo-container">
-      <img src="img/fhlogo.svg" alt="Logo FH JOANNEUM" class="logo" />
+      <!-- <img src="img/fhlogo.svg" alt="Logo FH JOANNEUM" class="logo" /> -->
+      <svg class="logo">
+        <title>Logo FH JOANNEUM</title>
+        <use xlink:href="./img/icons.svg#fh-joanneum-logo" />
+      </svg>
     </div>
   </header>
 
@@ -77,17 +81,18 @@
             <th>Eintritt</th>
           </tr>
         </thead>
-        <tbody id="tableBody"></tbody>
+        <tbody id="tableBody" title="Event auswählen (Shortkey: Enter) | Navigation mittels Pfeiltasten oder Tabulator"></tbody>
       </table>
     </div>
   </main>
-
-  <div id="popup">
-    <h2>Fehlermeldung</h2>
-    <p id="popupText"></p>
-    <button onclick="showErrorMessage()">OK</a>
+      
+  <div id="popup-container">
+    <div id="popup">
+      <h2>Fehlermeldung</h2>
+      <p id="popup-message"></p>
+      <button id="popup-btn-ok">OK</a>
+    </div>  
   </div>
-
 
   <p id="footer">
     Diese Seite wurde im Rahmen der Lehrveranstaltungen "Agiles
