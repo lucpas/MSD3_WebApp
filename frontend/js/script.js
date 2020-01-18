@@ -152,8 +152,6 @@ function validateEvent(checkEvent, inpField, callback) {
           DOM.saveEventButton.disabled = true;
           DOM.saveEventButton.style.background = 'grey';
           DOM.saveEventButton.style.border = 'grey';
-<<<<<<< HEAD
-
         // }
 		
 		var obj = JSON.parse(request.responseText);
@@ -161,10 +159,9 @@ function validateEvent(checkEvent, inpField, callback) {
 		for (var error in obj.errors) 
 			output += obj.errors[error] + "<br>";
 		errorMessage(output);
-=======
-      } else {
+		
+		      } else {
         inpField.style.borderColor = 'initial';
->>>>>>> 52c4e4c2301dc87c676699274c5fcb293cc31a28
       }
     }
   }
