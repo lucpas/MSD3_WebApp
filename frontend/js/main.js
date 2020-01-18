@@ -254,6 +254,20 @@ const togglePopupVisibilityObserver = new Observer((message) => {
   }
 });
 
+/*
+  State required: message
+  State modified: mode
+ */
+const setModeOnPopupChangeObserver = new Observer((message) => {
+  if (message === null) {
+    if (state.mode.get() === Mode.POPUP) {
+      state.mode.set(state.mode.previousState)
+    }
+  } else {
+    state.mode.set(Mode.POPUP)
+  }
+});
+
 // Attaching Observers
 state.allEvents.attachObserver(
   logStateChangeObserver,
@@ -296,5 +310,6 @@ state.mode.attachObserver(
 state.message.attachObserver(
   logStateChangeObserver,
   updatePopupObserver,
-  togglePopupVisibilityObserver
+  togglePopupVisibilityObserver,
+  setModeOnPopupChangeObserver
 );

@@ -292,7 +292,10 @@ export function cancelButtonClickHandler() {
       state.message.set({
         heading: 'Event bearbeiten',
         text: 'Ungespeicherte Änderung werden verworfen. Fortfahren?',
-        okButtonClickHandler: successCallback,
+        okButtonClickHandler: () => {
+          successCallback();
+          state.message.set(null);
+        },
         cancelButtonClickHandler: () => state.message.set(null),
         backdropClickHandler: () => null,
       });
@@ -332,11 +335,13 @@ export function deleteButtonClickHandler() {
   state.message.set({
     heading: 'Event(s) löschen',
     text: 'Alle ausgewählten Events werden gelöscht. Fortfahren?',
-    okButtonClickHandler: successCallback,
+    okButtonClickHandler: () => {
+      successCallback();
+      state.message.set(null);
+    },
     cancelButtonClickHandler: () => state.message.set(null),
     backdropClickHandler: null,
   });
-
 }
 
 export function printButtonClickHandler() {
@@ -426,6 +431,10 @@ export function onKeyDownHandler(event) {
       if (typeof DOM.cancelButton.onclick === 'function' && !isInputField) {
         DOM.cancelButton.onclick();
         event.preventDefault();
+      } else if (state.mode.get() === Mode.POPUP) {
+        if (typeof DOM.popupCancelButton.onclick === 'function') {
+          DOM.popupCancelButton.onclick();
+        }
       }
       break;
     case 'Delete':
@@ -443,10 +452,15 @@ export function onKeyDownHandler(event) {
       break;
     case 'Enter':
       if (state.mode.get() === Mode.EDITING) {
-        DOM.saveButton.onclick();
+        if (typeof DOM.saveButton.onclick === 'function') {
+          DOM.saveButton.onclick();
+        }
+      } else if (state.mode.get() === Mode.POPUP) {
+        if (typeof DOM.popupOkButton.onclick === 'function') {
+          DOM.popupOkButton.onclick();
+        }
       } else if (event.target.tagName === 'TR') {
         toggleRowSelection(event.target.id);
-        // event.preventDefault();
       }
       break;
     case 'ArrowDown':
@@ -745,6 +759,10 @@ export const ButtonConfig = {
       classes: ['big', 'disabled'],
       onclick: null,
     },
+    [Mode.POPUP]: {
+      classes: ['disabled'],
+      onclick: null,
+    },
   },
   editButton: {
     [Mode.CLEAN]: {
@@ -756,6 +774,10 @@ export const ButtonConfig = {
       onclick: editButtonClickHandler,
     },
     [Mode.EDITING]: {
+      classes: ['disabled'],
+      onclick: null,
+    },
+    [Mode.POPUP]: {
       classes: ['disabled'],
       onclick: null,
     },
@@ -773,6 +795,10 @@ export const ButtonConfig = {
       classes: ['big'],
       onclick: saveButtonClickHandler,
     },
+    [Mode.POPUP]: {
+      classes: ['disabled'],
+      onclick: null,
+    },
   },
   cancelButton: {
     [Mode.CLEAN]: {
@@ -787,6 +813,10 @@ export const ButtonConfig = {
       classes: [],
       onclick: cancelButtonClickHandler,
     },
+    [Mode.POPUP]: {
+      classes: ['disabled'],
+      onclick: null,
+    },
   },
   deleteButton: {
     [Mode.CLEAN]: {
@@ -798,6 +828,10 @@ export const ButtonConfig = {
       onclick: deleteButtonClickHandler,
     },
     [Mode.EDITING]: {
+      classes: ['disabled'],
+      onclick: null,
+    },
+    [Mode.POPUP]: {
       classes: ['disabled'],
       onclick: null,
     },
@@ -815,6 +849,10 @@ export const ButtonConfig = {
       classes: ['disabled'],
       onclick: null,
     },
+    [Mode.POPUP]: {
+      classes: ['disabled'],
+      onclick: null,
+    },
   },
   importCSVButton: {
     [Mode.CLEAN]: {
@@ -826,6 +864,10 @@ export const ButtonConfig = {
       onclick: importEvents,
     },
     [Mode.EDITING]: {
+      classes: ['disabled'],
+      onclick: null,
+    },
+    [Mode.POPUP]: {
       classes: ['disabled'],
       onclick: null,
     },
@@ -843,6 +885,10 @@ export const ButtonConfig = {
       classes: ['disabled'],
       onclick: null,
     },
+    [Mode.POPUP]: {
+      classes: ['disabled'],
+      onclick: null,
+    },
   },
   exportPDFButton: {
     [Mode.CLEAN]: {
@@ -854,6 +900,10 @@ export const ButtonConfig = {
       onclick: exportPDFEvents,
     },
     [Mode.EDITING]: {
+      classes: ['disabled'],
+      onclick: null,
+    },
+    [Mode.POPUP]: {
       classes: ['disabled'],
       onclick: null,
     },

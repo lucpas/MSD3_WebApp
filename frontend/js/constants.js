@@ -116,6 +116,7 @@ export const Mode = {
   CLEAN: 1, // no rows being edited, selected or created
   SELECTING: 2, // one or more rows are selected but none is edited or created
   EDITING: 3, // a existing row is being edited
+  POPUP: 4, // a popup message is currently displayed
 };
 
 // Object containing all application state
