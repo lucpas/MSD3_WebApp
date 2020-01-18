@@ -84,7 +84,16 @@ window.onload = () => {
   DOM.inputSignup.addEventListener('blur', () => checkInp(DOM.inputSignup));
 
   DOM.addEventButton.onclick = () => {
+    DOM.inputTitle.style.borderColor = 'initial';
+    DOM.inputDesc.style.borderColor = 'initial';
+    DOM.inputDate.style.borderColor = 'initial';
+    DOM.inputTime.style.borderColor = 'initial';
+    DOM.inputLoc.style.borderColor = 'initial';
+    DOM.inputContact.style.borderColor = 'initial';
+    DOM.inputInst.style.borderColor = 'initial';
+    DOM.inputSignup.style.borderColor = 'initial';
     DOM.saveEventButton.style = 'initial';
+
     DOM.inputTitle.value = '';
     DOM.inputDesc.value = '';
     DOM.inputDate.value = new Date().toISOString().substr(0, 10);
@@ -136,7 +145,7 @@ function validateEvent(checkEvent, inpField, callback) {
   const stringCheckEvent = JSON.stringify(checkEvent)
   request.send(stringCheckEvent);
   // console.log(checkEvent)
-  console.log("inner: " + inpField.value)
+  // console.log(inpField.value)
   request.onreadystatechange = function() {
     if (this.readyState === 4) {
       if (this.status === 200) {
@@ -288,7 +297,16 @@ function createEvent() {
 }
 
 function editEvent(event) {
+  DOM.inputTitle.style.borderColor = 'initial';
+  DOM.inputDesc.style.borderColor = 'initial';
+  DOM.inputDate.style.borderColor = 'initial';
+  DOM.inputTime.style.borderColor = 'initial';
+  DOM.inputLoc.style.borderColor = 'initial';
+  DOM.inputContact.style.borderColor = 'initial';
+  DOM.inputInst.style.borderColor = 'initial';
+  DOM.inputSignup.style.borderColor = 'initial';
   DOM.saveEventButton.style = 'initial';
+
   DOM.saveEventButton.innerHTML = 'Übernehmen';
   DOM.inputTitle.value = event.title;
   DOM.inputDesc.value = event.description;
