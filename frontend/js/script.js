@@ -104,7 +104,6 @@ window.onload = () => {
         });
         fetchEvents();
       } else {
-        errorMessage("");
       }
     };
     DOM.modal.style.display = 'block';
@@ -316,7 +315,6 @@ function editEvent(event) {
         DOM.modal.style.display = 'none';
       });
     } else {
-      errorMessage("");
     }
   };
   DOM.modal.style.display = 'block';
