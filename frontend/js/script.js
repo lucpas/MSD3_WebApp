@@ -104,7 +104,7 @@ window.onload = () => {
         });
         fetchEvents();
       } else {
-        errorMessage("test");
+        errorMessage("");
       }
     };
     DOM.modal.style.display = 'block';
@@ -309,7 +309,7 @@ function editEvent(event) {
         DOM.modal.style.display = 'none';
       });
     } else {
-      errorMessage("editTest");
+      errorMessage("");
     }
   };
   DOM.modal.style.display = 'block';
@@ -333,14 +333,18 @@ function deleteEvent(selectedEvent, callback) {
 
 // Params: {status ('warning', error), message: String}
 function errorMessage(message) {
-  if (document.getElementById("popup").style.display === "none") {
-    document.getElementById("demo").innerHTML = message;
-    document.getElementById("popup").style.display = "block";
-    document.getElementById("popup-container").style.visibility = "visible";
-  } else {
-    document.getElementById("popup").style.display = "none";
-    document.getElementById("popup-container").style.visibility = "hidden";
-  }
+	if(document.getElementById("popup").style.display === "none")
+	{
+		if(!Boolean(message))
+			message = "Es wurde keine Fehlermeldung geliefert! Wenn der Fehler weiterhin besteht, bitte wenden Sie sich an einen Administrator."
+		document.getElementById("popupMessage").innerHTML = message;
+		document.getElementById("popup").style.display = "block";
+		document.getElementById("popup-container").style.visibility = "visible";
+		}
+        else {
+			document.getElementById("popup").style.display = "none";
+			document.getElementById("popup-container").style.visibility = "hidden";
+			}
 }
 
 function printTable() {
