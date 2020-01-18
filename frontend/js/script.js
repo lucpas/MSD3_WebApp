@@ -122,7 +122,7 @@ function checkInp(inpField) {
   const checkEvent = createEvent();
   const currInpField = inpField;
   validateEvent(checkEvent, currInpField, () => {
-    // currInpField.style.borderColor = 'initial';
+    currInpField.style.borderColor = 'initial';
     DOM.saveEventButton.disabled = false;
     DOM.saveEventButton.style = 'initial';
 
@@ -135,7 +135,8 @@ function validateEvent(checkEvent, inpField, callback) {
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   const stringCheckEvent = JSON.stringify(checkEvent)
   request.send(stringCheckEvent);
-  console.log(checkEvent)
+  // console.log(checkEvent)
+  console.log("inner: " + inpField.value)
   request.onreadystatechange = function() {
     if (this.readyState === 4) {
       if (this.status === 200) {
@@ -143,13 +144,15 @@ function validateEvent(checkEvent, inpField, callback) {
           callback();
         }
       } else if (this.status === 400) {
+        // console.log(request.responseText)
         // console.log(stringCheckEvent.indexOf(inpField.id))
         // console.log(inpField.id)
-        // if (stringCheckEvent.indexOf(inpField.id) === -1) {
-          // inpField.style.borderColor = 'red';
+        if (request.responseText.indexOf(inpField.id) > -1) {
+          inpField.style.borderColor = 'red';
           DOM.saveEventButton.disabled = true;
           DOM.saveEventButton.style.background = 'grey';
           DOM.saveEventButton.style.border = 'grey';
+<<<<<<< HEAD
 
         // }
 		
@@ -158,9 +161,14 @@ function validateEvent(checkEvent, inpField, callback) {
 		for (var error in obj.errors) 
 			output += obj.errors[error] + "<br>";
 		errorMessage(output);
+=======
+      } else {
+        inpField.style.borderColor = 'initial';
+>>>>>>> 52c4e4c2301dc87c676699274c5fcb293cc31a28
       }
     }
   }
+}
 
 };
 
@@ -246,8 +254,8 @@ function drawTable(selectedEvents) {
 
     // Add edit button
     const editButton = document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
-        editIcon = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-    editIcon.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href','./img/icons.svg#pencil');
+      editIcon = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    editIcon.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', './img/icons.svg#pencil');
     editButton.appendChild(editIcon);
 
     editButton.addEventListener('click', () => editEvent(event));
@@ -255,8 +263,8 @@ function drawTable(selectedEvents) {
 
     // Add delete button
     const deleteButton = document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
-        deleteIcon = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-    deleteIcon.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href','./img/icons.svg#delete');
+      deleteIcon = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    deleteIcon.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', './img/icons.svg#delete');
     editButton.appendChild(deleteIcon);
     deleteButton.addEventListener('click', () => deleteEvent(event, () => {
       events.delete(event);
