@@ -27,6 +27,16 @@ h1 {
   margin-bottom: 20px;
 }
 
+h2 {
+  color: black;
+  font-family: helvetica, sans-serif;
+  font-weight: bold;
+  text-align: center;
+  font-size: 30px;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
 #specification {
   color: grey;
   background-color: #384046;
@@ -271,17 +281,19 @@ p {
 	width: 500px;
 	overflow: hidden;
 	position: fixed;
+	z-index:2;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 	text-align: center;
-	background: #f1f1f1;
+	background: #c03;
 	display: none;
 }
 
 .closePopup{
-	color: #aaa;
-  float: right;
+  color: #aaa;
+  text-align: center;
   font-size: 28px;
   font-weight: bold;
+  cursor: pointer;
 }

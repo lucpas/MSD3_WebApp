@@ -152,6 +152,7 @@ function validateEvent(checkEvent, inpField, callback) {
           DOM.saveEventButton.disabled = true;
           DOM.saveEventButton.style.background = 'grey';
           DOM.saveEventButton.style.border = 'grey';
+		  errorMessage(this.status);
         // }
       }
     }
@@ -309,7 +310,6 @@ function editEvent(event) {
         DOM.modal.style.display = 'none';
       });
     } else {
-      // Temp error message/ TODO: Sprint 3 validate -> errorMessage()
       errorMessage("editTest");
     }
   };
@@ -336,7 +336,7 @@ function deleteEvent(selectedEvent, callback) {
 function errorMessage(message) {
 	if(document.getElementById("popup").style.display === "none")
 	{
-		document.getElementbyId("popup").innerHTML.value(message);
+		document.getElementById("demo").innerHTML = message;
 		document.getElementById("popup").style.display = "block"; 
 		}
         else {
