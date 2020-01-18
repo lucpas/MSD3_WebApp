@@ -1,7 +1,5 @@
 /* eslint-disable prefer-destructuring */
-import {
-  CONSTANTS, DOM, Mode, state,
-} from './constants.js';
+import { CONSTANTS, DOM, Mode, state } from './constants.js';
 
 // ----------- IO
 export function fetchEvents(callback) {
@@ -12,7 +10,7 @@ export function fetchEvents(callback) {
   request.send();
 
   // eslint-disable-next-line func-names
-  request.onreadystatechange = function () {
+  request.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 200) {
       // state.set({ events: JSON.parse(request.responseText) })
       // state.dumpToConsole()
@@ -35,7 +33,7 @@ export function pushNewEvent(callback, selectedEvent) {
   request.send(JSON.stringify(selectedEvent));
 
   // eslint-disable-next-line func-names
-  request.onreadystatechange = function () {
+  request.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 201) {
       if (typeof callback === 'function') {
         callback();
@@ -44,18 +42,49 @@ export function pushNewEvent(callback, selectedEvent) {
   };
 }
 
+export function pushEventForValidation(event, async, successCB, errorCB) {
+  const request = new XMLHttpRequest();
+  request.open('POST', `${CONSTANTS.backendURL}/events?validate=true`, async);
+  request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+  const json = JSON.stringify(event);
+  request.send(json);
+
+  if (async) {
+    request.onreadystatechange = function() {
+      if (this.readyState === 4) {
+        if (this.status === 200) {
+          if (typeof successCB === 'function') {
+            successCB();
+          }
+        } else if (this.status === 400) {
+          if (typeof errorCB === 'function') {
+            const errors = JSON.parse(request.responseText).errors;
+            errorCB(errors);
+          }
+        }
+      }
+    };
+  } else if (request.status === 400) {
+    return JSON.parse(request.responseText).errors;
+  }
+}
+
 export function pushUpdatedEvent(callback, selectedEvent) {
   if (CONSTANTS.enableLogging) {
     console.log('FUNCTION_pushNewEvent:', selectedEvent);
   }
 
   const request = new XMLHttpRequest();
-  request.open('PUT', `${CONSTANTS.backendURL}/events/${selectedEvent.id}`, true);
+  request.open(
+    'PUT',
+    `${CONSTANTS.backendURL}/events/${selectedEvent.id}`,
+    true,
+  );
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   request.send(JSON.stringify(selectedEvent));
 
   // eslint-disable-next-line func-names
-  request.onreadystatechange = function () {
+  request.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 200) {
       if (typeof callback === 'function') {
         callback();
@@ -70,12 +99,16 @@ export function deleteEvent(callback, selectedEvent) {
   }
 
   const request = new XMLHttpRequest();
-  request.open('DELETE', `${CONSTANTS.backendURL}/events/${selectedEvent.id}`, true);
+  request.open(
+    'DELETE',
+    `${CONSTANTS.backendURL}/events/${selectedEvent.id}`,
+    true,
+  );
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   request.send();
 
   // eslint-disable-next-line func-names
-  request.onreadystatechange = function () {
+  request.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 204) {
       if (typeof callback === 'function') {
         callback(selectedEvent);
@@ -103,7 +136,7 @@ export function importEvents() {
     request.open('POST', `${CONSTANTS.backendURL}/upload/csv`, true);
     // request.setRequestHeader('Content-type', 'multipart/form-data');
     // eslint-disable-next-line func-names
-    request.onreadystatechange = function () {
+    request.onreadystatechange = function() {
       if (request.readyState === XMLHttpRequest.DONE) {
         if (request.status === 200) {
           console.log('Successfully sent CSV');
@@ -122,7 +155,7 @@ export function importEvents() {
 export function exportCSVEvents() {
   const request = new XMLHttpRequest();
 
-  request.onreadystatechange = function () {
+  request.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 200) {
       const downloadUrl = URL.createObjectURL(request.response);
       const a = document.createElement('a');
@@ -141,7 +174,7 @@ export function exportCSVEvents() {
 export function exportPDFEvents() {
   const request = new XMLHttpRequest();
 
-  request.onreadystatechange = function () {
+  request.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 200) {
       const downloadUrl = URL.createObjectURL(request.response);
       const a = document.createElement('a');
@@ -185,13 +218,9 @@ export function saveButtonClickHandler() {
     return;
   }
 
-  const editedEvent = createEventOutOfRow(activeEventID);
-
-  const isValidEvent = validateEvent(editedEvent);
-
   const saveEventCallback = () => {
     const events = state.allEvents.get();
-    const index = events.findIndex((e) => e.id === editedEvent.id);
+    const index = events.findIndex(e => e.id === editedEvent.id);
 
     if (index === -1) {
       state.allEvents.set([...events, editedEvent]);
@@ -203,7 +232,10 @@ export function saveButtonClickHandler() {
     state.activeEvent.set(null);
   };
 
-  if (isValidEvent) {
+  const editedEvent = createEventOutOfRow(activeEventID);
+  const validationErrors = pushEventForValidation(editedEvent, false);
+
+  if (!validationErrors) {
     // Check edited event is new by its ID
     if (editedEvent.id === CONSTANTS.newRowID) {
       pushNewEvent(saveEventCallback, editedEvent);
@@ -211,8 +243,10 @@ export function saveButtonClickHandler() {
       pushUpdatedEvent(saveEventCallback, editedEvent);
     }
   } else {
-    // TODO: SPRINT 3 --> React to bad validation
-    alert('INVALID');
+    // alert('INVALID');
+    showErrorMessage(
+      'Ein oder oder mehrere Felder enhalten ungültige Eingaben',
+    );
   }
 }
 
@@ -222,7 +256,7 @@ export function cancelButtonClickHandler() {
   switch (state.mode.get()) {
     case Mode.SELECTING:
       // Reset selection visually and in state
-      state.selectedEvents.get().forEach((rowId) => {
+      state.selectedEvents.get().forEach(rowId => {
         document.getElementById(rowId).style.background = '';
       });
       state.selectedEvents.set([]);
@@ -263,17 +297,17 @@ export function deleteButtonClickHandler() {
   const deletedEvents = [];
 
   for (let i = 0; i < deleteableEvents.length; i++) {
-    deleteEvent((event) => {
+    deleteEvent(event => {
       document.getElementById(event.id).classList.add('fade-out');
 
-      deleteableEvents = deleteableEvents.filter((e) => e.id !== event.id);
+      deleteableEvents = deleteableEvents.filter(e => e.id !== event.id);
       deletedEvents.push(event);
 
       if (deleteableEvents.length === 0) {
         setTimeout(() => {
           const updatedEvents = state.allEvents
             .get()
-            .filter((e) => !deletedEvents.includes(e));
+            .filter(e => !deletedEvents.includes(e));
           state.allEvents.set(updatedEvents);
           state.selectedEvents.set([]);
         }, 750);
@@ -297,7 +331,7 @@ export function printButtonClickHandler() {
   table.appendChild(tHeader);
 
   const tBody = document.createElement('tbody');
-  printableEvents.forEach((event) => {
+  printableEvents.forEach(event => {
     const tRow = tBody.insertRow(0);
     // eslint-disable-next-line no-restricted-syntax
     for (const column of CONSTANTS.orderedEventDefinitions) {
@@ -323,7 +357,7 @@ export function onSelectRowHandler(mouseEvent) {
     return;
   }
 
-  const row = mouseEvent.composedPath().find((node) => node.tagName === 'TR');
+  const row = mouseEvent.composedPath().find(node => node.tagName === 'TR');
 
   // Prevent selecting borders
   // const rowID = mouseEvent.path[2].id;
@@ -340,52 +374,53 @@ export function onKeyDownHandler(event) {
     return;
   }
 
-  const isInputField = event.target.tagName === 'TEXTAREA' || event.target.tagName === 'INPUT';
+  const isInputField =
+    event.target.tagName === 'TEXTAREA' || event.target.tagName === 'INPUT';
   let activeRow;
   let nextElementID;
 
   switch (event.key) {
     case 'n':
       if (typeof DOM.addButton.onclick === 'function') {
-        DOM.addButton.click();
+        DOM.addButton.onclick();
         event.preventDefault();
       }
       break;
     case 'e':
       if (typeof DOM.editButton.onclick === 'function') {
-        DOM.editButton.click();
+        DOM.editButton.onclick();
         event.preventDefault();
       }
       break;
     case 's':
       if (typeof DOM.saveButton.onclick === 'function' && !isInputField) {
-        DOM.saveButton.click();
+        DOM.saveButton.onclick();
         // event.preventDefault();
       }
       break;
     case 'c':
     case 'Escape':
       if (typeof DOM.cancelButton.onclick === 'function' && !isInputField) {
-        DOM.cancelButton.click();
+        DOM.cancelButton.onclick();
         event.preventDefault();
       }
       break;
     case 'Delete':
     case 'd':
       if (typeof DOM.deleteButton.onclick === 'function' && !isInputField) {
-        DOM.deleteButton.click();
+        DOM.deleteButton.onclick();
         event.preventDefault();
       }
       break;
     case 'p':
       if (typeof DOM.printButton.onclick === 'function') {
-        DOM.printButton.click();
+        DOM.printButton.onclick();
         event.preventDefault();
       }
       break;
     case 'Enter':
       if (state.mode.get() === Mode.EDITING) {
-        DOM.saveButton.click();
+        DOM.saveButton.onclick();
       } else if (event.target.tagName === 'TR') {
         toggleRowSelection(event.target.id);
         // event.preventDefault();
@@ -424,7 +459,7 @@ export function onKeyDownHandler(event) {
 
 export function getNthNextEventID(eventID, n) {
   const events = state.displayedEvents.get();
-  const nextIndex = events.findIndex((event) => event.id === eventID) + n;
+  const nextIndex = events.findIndex(event => event.id === eventID) + n;
 
   if (nextIndex >= 0 && nextIndex < events.length) {
     return events[nextIndex].id;
@@ -441,11 +476,12 @@ export function renderTable(events) {
     DOM.tBody.firstChild.remove();
   }
 
-  events.forEach((event) => {
+  events.forEach(event => {
     const tRow = document.createElement('tr');
 
     tRow.setAttribute('id', event.id);
     tRow.setAttribute('tabIndex', '0');
+    tRow.setAttribute('title', 'Event auswählen');
 
     // Write event data to table
     // eslint-disable-next-line no-restricted-syntax
@@ -479,7 +515,7 @@ export function filterEvents(events, filterText) {
   }
 
   // filter events
-  const displayedEvents = events.filter((event) => {
+  const displayedEvents = events.filter(event => {
     let isMatch = false;
     // eslint-disable-next-line no-restricted-syntax
     for (const [key, value] of Object.entries(event)) {
@@ -500,7 +536,7 @@ export function highlightFilterMatches(matches) {
     console.log('FUNCTION_highlightFilterMatches:', matches);
   }
 
-  matches.forEach((match) => {
+  matches.forEach(match => {
     document.getElementById(match).classList.add('highlight');
   });
 }
@@ -513,7 +549,7 @@ export function toggleRowSelection(selectedRowID) {
   // If row is already selected, unselect it
   if (events.includes(selectedRowID)) {
     tRow.style.background = '';
-    events = events.filter((id) => id !== selectedRowID);
+    events = events.filter(id => id !== selectedRowID);
   } else {
     tRow.style.background = 'antiquewhite';
     events.push(selectedRowID);
@@ -591,51 +627,100 @@ export function setFocusOnRow(rowID) {
 }
 
 export function validateEvent(event) {
-  // TODO: FRONTEND VALIDATION LOGIC
-
-  return Object.values(event).every((prop) => prop !== '' && prop !== null);
+  // const validationErrors = pushEventForValidation(event);
+  // showErrorMessage(validationErrors);
+  // console.log(validationErrors);
+  // return !validationErrors;
+  // return Object.values(event).every(prop => prop !== '' && prop !== null);
 }
 
 function checkInp(inpField) {
-  const checkEvent = createEvent();
-  const currInpField = inpField;
-  validateEvent(checkEvent, currInpField, () => {
-    // currInpField.style.borderColor = 'initial';
-    DOM.saveEventButton.disabled = false;
-    DOM.saveEventButton.style = 'initial';
+  // const checkEvent = createEvent();
+  /* 
+  pushEventForValidation(
+    checkEvent,
+    () => {
+      // currInpField.style.borderColor = 'initial';
+      // DOM.saveEventButton.disabled = false;
+      // DOM.saveEventButton.style = 'initial';
+      console.log('EVENT IS GOOD');
+    },
+    () => {
+      // console.log(stringCheckEvent.indexOf(inpField.id))
+      // console.log(inpField.id)
+      // if (stringCheckEvent.indexOf(inpField.id) === -1) {
+      // inpField.style.borderColor = 'red';
+      // DOM.saveEventButton.disabled = true;
+      // DOM.saveEventButton.style.background = 'grey';
+      // DOM.saveEventButton.style.border = 'grey';
+      // }
+      console.log('EVENT IS BAD');
+    },
+  ); */
+}
 
-  });
-};
+function showErrorMessage(message) {
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_showErrorMessage');
 
-function validateEvent2(checkEvent, inpField, callback) {
-  const request = new XMLHttpRequest();
-  // request.open('POST', "http://localhost:8080/api/events?validate=true");
-  request.open('POST', url+"/events?validate=true");
-  request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-  const stringCheckEvent = JSON.stringify(checkEvent)
-  request.send(stringCheckEvent);
-  console.log(checkEvent)
-  request.onreadystatechange = function() {
-    if (this.readyState === 4) {
-      if (this.status === 200) {
-        if (typeof callback === 'function') {
-          callback();
-        }
-      } else if (this.status === 400) {
-        // console.log(stringCheckEvent.indexOf(inpField.id))
-        // console.log(inpField.id)
-        // if (stringCheckEvent.indexOf(inpField.id) === -1) {
-          // inpField.style.borderColor = 'red';
-          DOM.saveEventButton.disabled = true;
-          DOM.saveEventButton.style.background = 'grey';
-          DOM.saveEventButton.style.border = 'grey';
-        // }
-      }
-    }
+  if (!DOM.popup.style.display || DOM.popup.style.display === 'none') {
+    DOM.popupText.innerText = message;
+    DOM.popup.style.display = 'block';
+  } else {
+    DOM.popup.style.display = 'none';
+  }
+}
+
+export function addValidationHandlersTo(eventID) {
+  if (CONSTANTS.enableLogging) console.log('FUNCTION_addValidationHandlersTo');
+  const inputFields = collectInputFieldsOfEvent(eventID);
+
+  inputFields.forEach(
+    field =>
+      (field.onblur = function() {
+        if (CONSTANTS.enableLogging) console.log('FUNCTION_validationHandler');
+        const editedEvent = createEventOutOfRow(state.activeEvent.get());
+        const dataLabel = this.parentElement.classList[0];
+
+        pushEventForValidation(
+          editedEvent,
+          true,
+          () => {
+            this.classList.add('valid');
+            this.classList.remove('invalid');
+          },
+          errors => {
+            if (errors[dataLabel]) {
+              this.classList.remove('valid');
+              this.classList.add('invalid');
+            } else {
+              this.classList.add('valid');
+              this.classList.remove('invalid');
+            }
+          },
+        );
+      }),
+  );
+}
+
+export function removeValidationHandlersFrom(eventID) {
+  if (CONSTANTS.enableLogging)
+    console.log('FUNCTION_removeValidationHandlersFrom');
+
+  const inputFields = collectInputFieldsOfEvent(eventID);
+
+  inputFields.forEach(field => (field.onblur = null));
+}
+
+function collectInputFieldsOfEvent(eventID) {
+  const inputFields = [];
+
+  for (const field of CONSTANTS.orderedEventDefinitions) {
+    const cell = document.getElementById(`${eventID}_${field.dataLabel}`);
+    inputFields.push(cell.firstChild);
   }
 
-};
-
+  return inputFields;
+}
 
 export function collectSelectedEvents() {
   if (CONSTANTS.enableLogging) console.log('FUNCTION_collectSelectedEvents');
@@ -647,7 +732,7 @@ export function collectSelectedEvents() {
   if (mode === Mode.CLEAN) {
     return displayedEvents;
   }
-  return displayedEvents.filter((event) => selectedEvents.includes(event.id));
+  return displayedEvents.filter(event => selectedEvents.includes(event.id));
 }
 
 // Action bar setters

@@ -1,117 +1,100 @@
 <!DOCTYPE html>
 <html lang="de">
-  <head>
-    <title>FH JOANNEUM Events</title>
-    <meta charset="UTF-8" />
-    <meta
-      name="description"
-      content="Hier finden Sie alle Veranstaltungen der FH JOANNEUM."
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preload" href="https://msd3-webapp.herokuapp.com/api/events" as="fetch" crossorigin="anonymous">
-    <link rel="icon" type="image/png" href="favicon.png" sizes="96x96" />
-    <link rel="stylesheet" type="text/css" href="./css/style.css" />
-    <script type="module" src="./js/constants.js"></script>
-    <script type="module" src="./js/state.js"></script>
-    <script type="module" src="./js/functions.js"></script>
-    <script type="module" src="./js/main.js"></script>
-  </head>
 
-  <body>
-    <header>
-      <input
-        type="text"
-        id="searchfield"
-        placeholder="Welches Event suchen Sie?"
-      />
-      <div id="logo-container">
-        <img src="img/fhlogo.svg" alt="Logo FH JOANNEUM" class="logo" />
-      </div>
-    </header>
+<head>
+  <title>FH JOANNEUM Events</title>
+  <meta charset="UTF-8" />
+  <meta name="description" content="Hier finden Sie alle Veranstaltungen der FH JOANNEUM." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preload" href="https://msd3-webapp.herokuapp.com/api/events" as="fetch" crossorigin="anonymous">
+  <link rel="icon" type="image/png" href="favicon.png" sizes="96x96" />
+  <link rel="stylesheet" type="text/css" href="./css/style.css" />
+  <script type="module" src="./js/constants.js"></script>
+  <script type="module" src="./js/state.js"></script>
+  <script type="module" src="./js/functions.js"></script>
+  <script type="module" src="./js/main.js"></script>
+</head>
 
-    <main>
-      <div id="actions">
-        <img
-          src="img/new.svg"
-          class="icon"
-          id="addButton"
-          alt="add icon"
-        />
-        <img
-          src="img/edit.svg"
-          class="icon"
-          id="editButton"
-          alt="edit icon"
-        />
-        <img
-          src="img/save.svg"
-          class="icon"
-          id="saveButton"
-          alt="save icon"
-        />
-        <img
-          src="img/cancel.svg"
-          class="icon"
-          id="cancelButton"
-          alt="cancel icon"
-        />
-        <img
-          src="img/delete.svg"
-          class="icon"
-          id="deleteButton"
-          alt="delete icon"
-        />
-        <img
-          src="img/print.svg"
-          class="icon"
-          id="printButton"
-          alt="print icon"
-        />
-        <img
-          src="img/import.svg"
-          class="icon"
-          id="importCSVButton"
-          alt="import icon"
-        />
-        <img
-          src="img/export_csv.svg"
-          class="icon"
-          id="exportCSVButton"
-          alt="exportCSV icon"
-        />
-        <img
-          src="img/export_pdf.svg"
-          class="icon"
-          id="exportPDFButton"
-          alt="exportPDF icon"
-        />
+<body>
+  <header>
+    <input type="text" id="searchfield" placeholder="Welches Event suchen Sie?" />
+    <div id="logo-container">
+      <img src="img/fhlogo.svg" alt="Logo FH JOANNEUM" class="logo" />
+    </div>
+  </header>
 
-      </div>
+  <main>
+    <div id="actions">
+      <svg class="icon" id="addButton" alt="add icon">
+        <title>Event hinzufügen (Shortkey: n)</title>
+        <use xlink:href="./img/icons.svg#add" />
+      </svg>
+      <svg class="icon" id="editButton" alt="edit icon">
+        <title>Ausgewählte Events bearbeiten (Shortkey: e)</title>
+        <use xlink:href="./img/icons.svg#pencil" />
+      </svg>
+      <svg class="icon" id="saveButton" alt="save icon">
+        <title>Event speichern (Shortkey: s)</title>
+        <use xlink:href="./img/icons.svg#floppy" />
+      </svg>
+      <svg class="icon" id="cancelButton" alt="cancel icon">
+        <title>Auswahl zurücksetzen oder Bearbeiten abbrechen (Shortkey: c)</title>
+        <use xlink:href="./img/icons.svg#cross" />
+      </svg>
+      <svg class="icon" id="deleteButton" alt="delete icon">
+        <title>Ausgewählte Events löschen (Shortkey: d)</title>
+        <use xlink:href="./img/icons.svg#trashcan" />
+      </svg>
+      <svg class="icon" id="printButton" alt="print icon">
+        <title>Ausgewählte Events drucken (Shortkey: p)</title>
+        <use xlink:href="./img/icons.svg#printer" />
+      </svg>
+      <svg class="icon" id="importCSVButton" alt="import icon">
+        <title>Neue Events als CSV hochladen</title>
+        <use xlink:href="./img/icons.svg#upload" />
+      </svg>
+      <svg class="icon" id="exportCSVButton" alt="exportCSV icon">
+        <title>Alle Events als CSV exportieren</title>
+        <use xlink:href="./img/icons.svg#csv" />
+      </svg>
+      <svg class="icon" id="exportPDFButton" alt="exportPDF icon">
+        <title>Alle Events als PDF exportieren</title>
+        <use xlink:href="./img/icons.svg#adobe" />
+      </svg>
+    </div>
 
-      <div id="table-container" class="scrollable">
-        <table id="tableEvents">
-          <thead>
-            <tr id="tableHeader">
-              <th>Titel</th>
-              <th>Beschreibung</th>
-              <th>Datum</th>
-              <th>Uhrzeit</th>
-              <th>Ort</th>
-              <th>Kontakt</th>
-              <th>Institut</th>
-              <th>Eintritt</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody"></tbody>
-        </table>
-      </div>
-    </main>
+    <div id="table-container" class="scrollable">
+      <table id="tableEvents">
+        <thead>
+          <tr id="tableHeader">
+            <th>Titel</th>
+            <th>Beschreibung</th>
+            <th>Datum</th>
+            <th>Uhrzeit</th>
+            <th>Ort</th>
+            <th>Kontakt</th>
+            <th>Institut</th>
+            <th>Eintritt</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </main>
 
-    <p id="footer">
-      Diese Seite wurde im Rahmen der Lehrveranstaltungen "Agiles
-      Projektmanagement" und "Web Application Development" am Studiengang
-      "Mobile Software Development" entwickelt. Es handelt sich um keine
-      offizielle Seite der FH JOANNEUM.
-    </p>
-  </body>
+  <div id="popup">
+    <h2>Fehlermeldung</h2>
+    <p id="popupText"></p>
+    <button onclick="showErrorMessage()">OK</a>
+  </div>
+
+
+  <p id="footer">
+    Diese Seite wurde im Rahmen der Lehrveranstaltungen "Agiles
+    Projektmanagement" und "Web Application Development" am Studiengang
+    "Mobile Software Development" entwickelt. Es handelt sich um keine
+    offizielle Seite der FH JOANNEUM.
+  </p>
+</body>
+
 </html>

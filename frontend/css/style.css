@@ -8,6 +8,16 @@ body {
   margin: 0 auto;
 }
 
+h2 {
+  color: black;
+  font-family: helvetica, sans-serif;
+  text-align: center;
+  font-size: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid black;
+}
+
 header {
   display: flex;
   position: sticky;
@@ -22,7 +32,7 @@ main {
   display: flex;
 }
 
-img.icon {
+.icon {
   width: 40px;
   height: 40px;
 
@@ -30,22 +40,22 @@ img.icon {
   margin-right: 10vw;
 }
 
-img.icon.big {
+.icon.big {
   transform: scale(1.2);
 }
 
-img.icon:hover,
-img.icon.big:hover {
+.icon:hover:not(.disabled) {
+  fill: #d61637;
   cursor: pointer;
   transform: scale(1.6);
 }
 
-img.icon.disabled {
+.icon.disabled {
   opacity: 0.25;
   cursor: auto;
 }
 
-img.icon.disabled:hover {
+.icon.disabled:hover {
   cursor: auto;
   transform: scale(1);
 }
@@ -96,10 +106,26 @@ td.title > textarea {
   font-weight: bold;
 }
 
-textarea, input {
+textarea,
+input {
   font-family: sans-serif;
   font-size: inherit;
   color: inherit;
+  border: 1px solid rgb(169, 169, 169);
+  border-radius: 5px;
+}
+
+textarea.valid,
+input.valid {
+  border: 2px solid green;
+}
+
+textarea.invalid,
+input.invalid {
+  border: 2px solid red;
+}
+
+textarea:invalid {
 }
 
 textarea {
@@ -156,7 +182,8 @@ input:disabled {
 }
 
 @keyframes fade-out {
-  from { }
+  from {
+  }
   to {
     background-color: #fff;
     background: #fff;
@@ -165,7 +192,7 @@ input:disabled {
 }
 
 .fade-out {
-  animation: fade-out 0.75s cubic-bezier(.35,1.12,1,.94) forwards;
+  animation: fade-out 0.75s cubic-bezier(0.35, 1.12, 1, 0.94) forwards;
 }
 
 #logo-container {
@@ -342,7 +369,7 @@ input:disabled {
     min-height: 25px;
     width: 90% !important;
   }
-  
+
   textarea {
     height: inherit;
   }
@@ -359,27 +386,25 @@ input:disabled {
 
     border-bottom: 3px solid #a8a8a8;
   }
-
-  #actions > img.icon {
-    margin: 3vh 0;
-  }
-
-  #footer {
-    margin-left: 0 !important;
-  }
 }
 
-@media only screen and (max-width: 600px) {
-  body {
-    padding: 0;
-    margin: 0 10px;
-  }
+#popup {
+  width: 500px;
+  overflow: hidden;
+  position: fixed;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  background-color: #f8f8f8;
+  display: none;
+}
 
-  #searchfield {
-    width: 100%;
-  }
-
-  #table-container {
-    height: 100%;
-  }
+.closePopup {
+  color: #aaa;
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
 }

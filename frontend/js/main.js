@@ -13,6 +13,8 @@ import {
   createEmptyRow,
   setFocusOnRow,
   setActionBarToMode,
+  addValidationHandlersTo,
+  removeValidationHandlersFrom,
 } from './functions.js';
 
 document.addEventListener('keydown', onKeyDownHandler);
@@ -29,6 +31,8 @@ window.addEventListener('DOMContentLoaded', () => {
   DOM.tBody = document.getElementById('tableBody');
   DOM.tHeader = document.getElementById('tableHeader');
   DOM.modal = document.getElementById('addEventModal');
+  DOM.popup = document.getElementById('popup');
+  DOM.popupText = document.getElementById('popupText');
   // Interaction elements
   DOM.searchField = document.getElementById('searchfield');
   DOM.addButton = document.getElementById('addButton');
@@ -184,6 +188,20 @@ const activateRowObserver = new Observer((activeEventID) => {
   State required: activeEvent
   State modified: none
  */
+const setInputFieldValidationObserver = new Observer((activeEventID) => {
+  const activeRow = document.getElementById(activeEventID);
+  // Add event handlers if new state is an ID (and not null), else remove them
+  if (activeEventID) {
+    addValidationHandlersTo(activeEventID);
+  } else {
+    removeValidationHandlersFrom(state.activeEvent.previousState)
+  }
+});
+
+/*
+  State required: activeEvent
+  State modified: none
+ */
 const focusOnActiveEventObserver = new Observer(setFocusOnRow);
 
 // Attaching Observers
@@ -214,6 +232,7 @@ state.selectedEvents.attachObserver(
 state.activeEvent.attachObserver(
   logStateChangeObserver,
   activateRowObserver,
+  setInputFieldValidationObserver,
   focusOnActiveEventObserver,
   setModeOnActiveEventChangeObserver,
 );
