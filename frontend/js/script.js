@@ -150,7 +150,7 @@ function validateEvent(checkEvent, inpField, callback) {
           DOM.saveEventButton.disabled = true;
           DOM.saveEventButton.style.background = 'grey';
           DOM.saveEventButton.style.border = 'grey';
-		  errorMessage(this.status);
+		  errorMessage(request.responseText);
         // }
       }
     }
