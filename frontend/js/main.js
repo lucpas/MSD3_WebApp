@@ -15,6 +15,7 @@ import {
   setActionBarToMode,
   addValidationHandlersTo,
   removeValidationHandlersFrom,
+  setPopupClickHandlersToMessage
 } from './functions.js';
 
 document.addEventListener('keydown', onKeyDownHandler);
@@ -209,35 +210,25 @@ const focusOnActiveEventObserver = new Observer(setFocusOnRow);
   State required: message
   State modified: none
  */
-const updatePopupObserver = new Observer((message) => {
+const updatePopupContentObserver = new Observer((message) => {
   if (message === null) {
     return;
   }
 
   DOM.popupHeading.innerText = message.heading;
   DOM.popupMessage.innerText = message.text;
+});
 
-  if (typeof message.okButtonClickHandler === 'function') {
-    DOM.popupOkButton.onclick = message.okButtonClickHandler;
-    DOM.popupOkButton.classList.add('visible');
-  } else {
-    DOM.popupOkButton.onclick = null;
-    DOM.popupOkButton.classList.remove('visible');
+/*
+  State required: message
+  State modified: none
+ */
+const updatePopupClickHandlersObserver = new Observer((message) => {
+  if (message === null) {
+    return;
   }
 
-  if (typeof message.cancelButtonClickHandler === 'function') {
-    DOM.popupCancelButton.onclick = message.cancelButtonClickHandler;
-    DOM.popupCancelButton.classList.add('visible');
-  } else {
-    DOM.popupCancelButton.onclick = null;
-    DOM.popupCancelButton.classList.remove('visible');
-  }
-
-  if (typeof message.backdropClickHandler === 'function') {
-    DOM.popupContainer.onclick = message.backdropClickHandler;
-  } else {
-    DOM.popupContainer.onclick = null;
-  }
+  setPopupClickHandlersToMessage(message);
 });
 
 /*
@@ -307,7 +298,8 @@ state.mode.attachObserver(
 
 state.message.attachObserver(
   logStateChangeObserver,
-  updatePopupObserver,
+  updatePopupContentObserver,
+  updatePopupClickHandlersObserver,
   togglePopupVisibilityObserver,
   setModeOnPopupChangeObserver,
 );

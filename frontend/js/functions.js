@@ -232,15 +232,16 @@ export function cancelButtonClickHandler() {
       break;
     case Mode.EDITING:
       const successCallback = () => {
-        if (state.activeEvent.get() === CONSTANTS.newRowID) {
+        const activeEvent = state.activeEvent.get();
+
+        if (activeEvent === CONSTANTS.newRowID) {
           // Delete new table row, if exists
           if (DOM.tBody.rows[0].id === 'NEW') {
             DOM.tBody.deleteRow(0);
-          } else {
-            return;
           }
         } else {
-          lockTableRow(state.activeEvent.get());
+          lockTableRow(activeEvent);
+          resetRowContent(activeEvent);
           state.selectedEvents.set(state.selectedEvents.previousState);
         }
 
@@ -463,7 +464,14 @@ export function onKeyDownHandler(event) {
 }
 
 // ----------- UTILS
-
+export function resetRowContent(eventID) {
+  const event = state.allEvents.get().find((event) => event.id === eventID)
+  
+  for (const column of CONSTANTS.orderedEventDefinitions) {
+    const cell = document.getElementById(`${eventID}_${column.dataLabel}`);
+    cell.firstChild.value = event[column.dataLabel];
+  }
+}
 
 export function generateFileName(fileType = 'file') {
   const date = new Date().toISOString().substring(0, 10)
@@ -860,4 +868,28 @@ export function setActionBarToMode(mode) {
   setButtonToConfig(DOM.importCSVButton, ButtonConfig.importCSVButton[mode]);
   setButtonToConfig(DOM.exportCSVButton, ButtonConfig.exportCSVButton[mode]);
   setButtonToConfig(DOM.exportPDFButton, ButtonConfig.exportPDFButton[mode]);
+}
+
+export function setPopupClickHandlersToMessage(message) {
+  if (typeof message.okButtonClickHandler === 'function') {
+    DOM.popupOkButton.onclick = message.okButtonClickHandler;
+    DOM.popupOkButton.classList.add('visible');
+  } else {
+    DOM.popupOkButton.onclick = null;
+    DOM.popupOkButton.classList.remove('visible');
+  }
+
+  if (typeof message.cancelButtonClickHandler === 'function') {
+    DOM.popupCancelButton.onclick = message.cancelButtonClickHandler;
+    DOM.popupCancelButton.classList.add('visible');
+  } else {
+    DOM.popupCancelButton.onclick = null;
+    DOM.popupCancelButton.classList.remove('visible');
+  }
+
+  if (typeof message.backdropClickHandler === 'function') {
+    DOM.popupContainer.onclick = message.backdropClickHandler;
+  } else {
+    DOM.popupContainer.onclick = null;
+  }
 }
