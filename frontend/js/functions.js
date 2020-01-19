@@ -140,42 +140,21 @@ export function importEvents() {
   return false; // avoiding navigation
 }
 
-export function exportCSVEvents() {
+export function downloadExportFile(fileType, eventIDs, successCallback) {
   const request = new XMLHttpRequest();
-
+  
+  request.open('POST', `${CONSTANTS.backendURL}/download/${fileType.toLowerCase()}`, true);
+  request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   request.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
-      const downloadUrl = URL.createObjectURL(request.response);
-      const a = document.createElement('a');
-      document.body.appendChild(a);
-      a.style = 'display: none';
-      a.href = downloadUrl;
-      a.download = '';
-      a.click();
+      if (typeof successCallback === 'function') {
+        successCallback(request.response);
+      }
     }
   };
-  request.open('GET', `${CONSTANTS.backendURL}/download/csv`, true);
+  
   request.responseType = 'blob';
-  request.send();
-}
-
-export function exportPDFEvents() {
-  const request = new XMLHttpRequest();
-
-  request.onreadystatechange = function () {
-    if (this.readyState === 4 && this.status === 200) {
-      const downloadUrl = URL.createObjectURL(request.response);
-      const a = document.createElement('a');
-      document.body.appendChild(a);
-      a.style = 'display: none';
-      a.href = downloadUrl;
-      a.download = '';
-      a.click();
-    }
-  };
-  request.open('GET', `${CONSTANTS.backendURL}/download/pdf`, true);
-  request.responseType = 'blob';
-  request.send();
+  request.send(JSON.stringify(eventIDs));
 }
 
 // ----------- CLICK HANDLERS
@@ -354,6 +333,23 @@ export function printButtonClickHandler() {
   printWin.close();
 }
 
+export function exportButtonClickHandler(fileType) {
+  const exportableEvents = collectSelectedEvents();
+  const eventIDs = exportableEvents.map((event) => event.id);
+
+  const successCallback = (response) => {
+    const downloadUrl = URL.createObjectURL(response);
+    const a = document.createElement('a');
+    document.body.appendChild(a);
+    a.style = 'display: none';
+    a.href = downloadUrl;
+    a.download = generateFileName(fileType);
+    a.click();
+  }
+
+  downloadExportFile(fileType, eventIDs, successCallback)
+}
+
 export function onSelectRowHandler(mouseEvent) {
   // Prevent selecting rows when editing
   if (state.mode.get() === Mode.EDITING) {
@@ -467,6 +463,12 @@ export function onKeyDownHandler(event) {
 }
 
 // ----------- UTILS
+
+
+export function generateFileName(fileType = 'file') {
+  const date = new Date().toISOString().substring(0, 10)
+  return `Events_Datenexport_${date}.${fileType.toLowerCase()}`
+}
 
 export function getNthNextEventID(eventID, n) {
   const events = state.displayedEvents.get();
@@ -806,11 +808,11 @@ export const ButtonConfig = {
   exportCSVButton: {
     [Mode.CLEAN]: {
       classes: [],
-      onclick: exportCSVEvents,
+      onclick: () => exportButtonClickHandler('CSV'),
     },
     [Mode.SELECTING]: {
       classes: [],
-      onclick: exportCSVEvents,
+      onclick: () => exportButtonClickHandler('CSV'),
     },
     [Mode.EDITING]: {
       classes: ['disabled'],
@@ -824,11 +826,11 @@ export const ButtonConfig = {
   exportPDFButton: {
     [Mode.CLEAN]: {
       classes: [],
-      onclick: exportPDFEvents,
+      onclick: () => exportButtonClickHandler('PDF'),
     },
     [Mode.SELECTING]: {
       classes: [],
-      onclick: exportPDFEvents,
+      onclick: () => exportButtonClickHandler('PDF'),
     },
     [Mode.EDITING]: {
       classes: ['disabled'],
