@@ -3,18 +3,22 @@ const multer = require('multer');
 
 const upload = multer();
 
+// const upload = require('express-fileupload')
+
 const Event = require('../models/event');
 
-const convertCSVToEventsArray = require('../filehandlers/eventsToCSV');
-const { reformatValidationErrors } = require('../utils');
+const convertCSVToEventsArray = require('../filehandlers/csvToEvents');
 
-fileImportRouter.post('/csv', upload.single(''), (req, res) => {
-  console.log('Success upload');
+fileImportRouter.post('/csv', upload.single('file'), (req, res) => {
+  const events = convertCSVToEventsArray(req.file.buffer).map(
+    (event) => new Event(event),
+  );
 
-  const csv = req.file.buffer.toString('utf8');
-  console.log('FILE:', csv);
-
-  res.send('GREAT SUCCESS');
+  Event.insertMany(events, { ordered: false })
+    .then((result) => {
+      res.status(200).send(`${result.length}`);
+    })
+    .catch((error) => res.status(500).send());
 });
 
 module.exports = fileImportRouter;

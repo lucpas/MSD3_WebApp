@@ -15,7 +15,7 @@ import {
   setActionBarToMode,
   addValidationHandlersTo,
   removeValidationHandlersFrom,
-  setPopupClickHandlersToMessage
+  setPopupClickHandlersToMessage,
 } from './functions.js';
 
 document.addEventListener('keydown', onKeyDownHandler);
@@ -55,7 +55,7 @@ window.addEventListener('DOMContentLoaded', () => {
   state.mode.set(Mode.CLEAN);
 
   fetchEvents((events) => state.allEvents.set(events));
-  // window.setInterval(() => fetchEvents((events) => state.allEvents.set(events));
+  // window.setInterval(() => fetchEvents((events) => state.allEvents.set(events)), 30000);
 
   // Add and populate institute options list
   const instituteList = document.createElement('datalist');

@@ -1,11 +1,11 @@
 import { State } from './state.js';
 
 // URL of backend api (prod and dev)
-// const backendURL = 'https://msd3-webapp.herokuapp.com/api';
-const backendURL = 'http://localhost:8080/api';
+const backendURL = 'https://msd3-webapp.herokuapp.com/api';
+// const backendURL = 'http://localhost:8080/api';
 
 // Console logs are only allowed when this is on!
-const enableLogging = true;
+const enableLogging = false;
 
 // Temporary ID of rows that have not been given a backend ID yet
 const newRowID = 'NEW';

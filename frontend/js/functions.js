@@ -113,27 +113,41 @@ export function importEvents() {
   let file;
 
   function handleFiles() {
-    // const boundary = '----'
-
     file = this.files[0];
     const formData = new FormData();
-    // formData.append('boundary', boundary);
-    formData.append('readme.me', file, 'readme.me');
-    // formData.append('boundary', boundary);
+    formData.append('file', file, 'file');
     const request = new XMLHttpRequest();
-    request.open('POST', `${CONSTANTS.backendURL}/upload/csv`, true);
-    // request.setRequestHeader('Content-type', 'multipart/form-data');
+    request.open('POST', `${CONSTANTS.backendURL}/upload/csv`);
     // eslint-disable-next-line func-names
     request.onreadystatechange = function () {
       if (request.readyState === XMLHttpRequest.DONE) {
         if (request.status === 200) {
-          console.log('Successfully sent CSV');
+          const text = request.responseText === '1'
+            ? 'Es wurde 1 gültiger Datensatz eingelesen'
+            : `Es wurden ${request.responseText} gültige Datensätze eingelesen`;
+
+
+          state.message.set({
+            heading: 'Event-Import erfolgreich',
+            text,
+            okButtonClickHandler: () => state.message.set(null),
+            cancelButtonClickHandler: null,
+            backdropClickHandler: () => state.message.set(null),
+          });
+
+          fetchEvents((events) => state.allEvents.set(events));
         } else {
-          console.log('failed to sent csv');
+          state.message.set({
+            heading: 'Event-Import fehlgeschlagen',
+            text: 'Ein oder mehrere Datensätze sind ungültig. Es können nur CSV-Dateien mit Semikolons als Trennzeichen und vollständigen Event-Daten importiert werden.',
+            okButtonClickHandler: () => state.message.set(null),
+            cancelButtonClickHandler: null,
+            backdropClickHandler: () => state.message.set(null),
+          });
         }
       }
     };
-    request.send(file);
+    request.send(formData);
   }
   input.click();
 
@@ -142,7 +156,7 @@ export function importEvents() {
 
 export function downloadExportFile(fileType, eventIDs, successCallback) {
   const request = new XMLHttpRequest();
-  
+
   request.open('POST', `${CONSTANTS.backendURL}/download/${fileType.toLowerCase()}`, true);
   request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   request.onreadystatechange = function () {
@@ -152,7 +166,7 @@ export function downloadExportFile(fileType, eventIDs, successCallback) {
       }
     }
   };
-  
+
   request.responseType = 'blob';
   request.send(JSON.stringify(eventIDs));
 }
@@ -346,9 +360,9 @@ export function exportButtonClickHandler(fileType) {
     a.href = downloadUrl;
     a.download = generateFileName(fileType);
     a.click();
-  }
+  };
 
-  downloadExportFile(fileType, eventIDs, successCallback)
+  downloadExportFile(fileType, eventIDs, successCallback);
 }
 
 export function onSelectRowHandler(mouseEvent) {
@@ -465,8 +479,8 @@ export function onKeyDownHandler(event) {
 
 // ----------- UTILS
 export function resetRowContent(eventID) {
-  const event = state.allEvents.get().find((event) => event.id === eventID)
-  
+  const event = state.allEvents.get().find((event) => event.id === eventID);
+
   for (const column of CONSTANTS.orderedEventDefinitions) {
     const cell = document.getElementById(`${eventID}_${column.dataLabel}`);
     cell.firstChild.value = event[column.dataLabel];
@@ -474,8 +488,8 @@ export function resetRowContent(eventID) {
 }
 
 export function generateFileName(fileType = 'file') {
-  const date = new Date().toISOString().substring(0, 10)
-  return `Events_Datenexport_${date}.${fileType.toLowerCase()}`
+  const date = new Date().toISOString().substring(0, 10);
+  return `Events_Datenexport_${date}.${fileType.toLowerCase()}`;
 }
 
 export function getNthNextEventID(eventID, n) {

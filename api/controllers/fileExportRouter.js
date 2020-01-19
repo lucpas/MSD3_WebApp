@@ -17,14 +17,14 @@ fileExportRouter.post('/pdf', (req, res) => {
   }
 
   queryPromise
-    .then(events => {
+    .then((events) => {
       const pdfData = convertEventsArrayToPDF(events);
       res.contentType('application/pdf');
       // res.status(200).send(pdfData);
       pdfData.pipe(res);
       pdfData.end();
     })
-    .catch(error => {
+    .catch((error) => {
       console.log(`Failed at GET:/pdf -  ${error}`);
       res.status(500).send();
     });
@@ -42,12 +42,12 @@ fileExportRouter.post('/csv', (req, res) => {
   }
 
   queryPromise
-    .then(events => {
+    .then((events) => {
       const csvData = convertEventsArrayToCSV(events);
       res.contentType('text/csv');
       res.status(200).send(csvData);
     })
-    .catch(error => {
+    .catch((error) => {
       console.log(`Failed at GET:/csv -  ${error}`);
       res.status(500).send();
     });
