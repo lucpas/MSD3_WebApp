@@ -252,6 +252,7 @@ export function cancelButtonClickHandler() {
     case Mode.EDITING:
       const successCallback = () => {
         const activeEvent = state.activeEvent.get();
+        state.activeEvent.set(null);
 
         if (activeEvent === CONSTANTS.newRowID) {
           // Delete new table row, if exists
@@ -264,7 +265,6 @@ export function cancelButtonClickHandler() {
           state.selectedEvents.set(state.selectedEvents.previousState);
         }
 
-        state.activeEvent.set(null);
       };
 
       state.message.set({
