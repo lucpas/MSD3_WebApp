@@ -434,7 +434,11 @@ button.visible {
   input {
     transform: translateY(-5px);
   }
-
+  
+    .icon {
+      margin: 2vh 0;
+    }
+  
   #actions {
     display: flex;
     justify-content: space-evenly;
@@ -446,8 +450,9 @@ button.visible {
     z-index: 10;
   }
 
-  .icon {
-    margin: 2vh 0;
+  #popup {
+    max-width: 500px;
+    width: 90%;
   }
 
   #table-container {

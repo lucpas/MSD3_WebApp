@@ -32,7 +32,7 @@ export function pushNewEvent(callback, selectedEvent) {
   request.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 201) {
       if (typeof callback === 'function') {
-        callback();
+        callback(JSON.parse(request.responseText));
       }
     }
   };
@@ -79,7 +79,7 @@ export function pushUpdatedEvent(callback, selectedEvent) {
   request.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
       if (typeof callback === 'function') {
-        callback();
+        callback(JSON.parse(request.responseText));
       }
     }
   };
@@ -193,16 +193,21 @@ export function saveButtonClickHandler() {
     return;
   }
 
-  const saveEventCallback = () => {
+  const saveEventCallback = (responseEvent) => {
     const events = state.allEvents.get();
-    const index = events.findIndex((e) => e.id === editedEvent.id);
+    const index = events.findIndex((e) => e.id === responseEvent.id);
 
     if (index === -1) {
-      state.allEvents.set([...events, editedEvent]);
+      state.allEvents.set([...events, responseEvent]);
     } else {
-      events[index] = editedEvent;
+      events[index] = responseEvent;
       state.allEvents.set(events);
     }
+
+    // Workaround in case id has changed (e.g. NEW --> MongoDB-ID)
+    state.activeEvent.autoNotify = false;
+    state.activeEvent.set(responseEvent.id);
+    state.activeEvent.autoNotify = true;
 
     state.activeEvent.set(null);
   };
