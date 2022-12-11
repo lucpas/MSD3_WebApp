@@ -36,7 +36,7 @@
     "cors": "^2.8.5",
     "csv-parse": "^4.8.5",
     "csv-parser": "^2.3.2",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "mongoose": "^5.7.13",
     "multer": "^1.4.2",
     "pdfkit": "^0.11.0",
